@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StaroSTAT - Журнал ИБМ1-51Б</title>
+    <title>StaroSTAT - Журнал ИБМ1-32Б</title>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
@@ -180,7 +180,10 @@
             <button class="nav-btn" onclick="switchPage('notes', this)">Информация</button>
             <button class="nav-btn" onclick="switchPage('teacher', this)">Для преподавателя</button>
         </div>
-        <button class="btn-stats" onclick="openStats()">Общая Статистика</button>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn-stats" style="border-color: #00B0FF; color: #00B0FF;" onclick="openCuratorModal()" onmouseover="this.style.background='#00B0FF'; this.style.color='#000'" onmouseout="this.style.background='rgba(0, 176, 255, 0.1)'; this.style.color='#00B0FF'">Смотр куратору</button>
+            <button class="btn-stats" onclick="openStats()">Общая Статистика</button>
+        </div>
     </header>
 
     <!-- Окно 1: Журнал -->
@@ -281,6 +284,40 @@
         </div>
     </div>
 
+    <!-- Модальное окно для Куратора -->
+    <div class="modal" id="curator-modal">
+        <div class="modal-content">
+            <div class="modal-header slide-header" style="margin-bottom: 20px; border-left-color: #00B0FF;">
+                <h2 class="unbounded" style="color: #00B0FF; text-shadow: 0 0 10px rgba(0, 176, 255, 0.3);">Смотр для Куратора</h2>
+                <button class="close-btn unbounded" style="color: #00B0FF;" onclick="closeCuratorModal()">×</button>
+            </div>
+            
+            <div class="controls" style="margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 15px;">
+                <div class="control-group">
+                    <label>Выберите неделю для смотра:</label>
+                    <select id="curator-week-select" onchange="renderCuratorTable()" style="max-width: 300px;"></select>
+                </div>
+                <div id="curator-summary" style="margin-top: 15px; color: var(--text-sec); font-family: 'Roboto'; font-size: 0.95rem;">
+                    <!-- Сюда выводится инфа о количестве пар -->
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Студент</th>
+                            <th style="text-align:center;">Семинары (Был / Не был)</th>
+                            <th style="text-align:center;">Лекции (Был / Не был)</th>
+                            <th style="text-align:center;">Итог за неделю</th>
+                        </tr>
+                    </thead>
+                    <tbody id="curator-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <script>
         // 1. ИНИЦИАЛИЗАЦИЯ THREE.JS
         const scene = new THREE.Scene();
@@ -351,7 +388,6 @@
             return 'Прочее';
         }
 
-        // Список уникальных предметов
         const uniqueSubjects = [
             "Рынок ценных бумаг", "БЖД", "Налогообложение", "Финансовые институты и рынки", 
             "Государственное и муниц. управление", "Основы венчурного бизнеса", "Английский язык", 
@@ -364,8 +400,6 @@
             document.getElementById('page-' + pageId).classList.add('active');
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
-            // Если перешли во вкладку преподавателя - отрисовываем плашки
             if(pageId === 'teacher') initTeacherPanel();
         }
 
@@ -479,7 +513,6 @@
             const stats = students.map(() => ({ attended: 0 }));
             let totalClassesForSubject = 0;
 
-            // Проходим по всем 18 неделям и 4 рабочим дням
             for (let w = 1; w <= 18; w++) {
                 const weekType = (w % 2 !== 0) ? 'even' : 'odd';
                 ['mon', 'wed', 'thu', 'sat'].forEach(d => {
@@ -490,7 +523,6 @@
                         const normalized = getNormalizedSubjectName(l.text);
                         if (normalized === subjectName) {
                             totalClassesForSubject++;
-                            // Подсчитываем присутствие каждого студента на этой конкретной паре
                             students.forEach((_, s) => {
                                 const data = JSON.parse(localStorage.getItem(getStorageKey(w, d, l.id, s)));
                                 if (data && data.present) {
@@ -525,7 +557,7 @@
             });
         }
 
-        // 6. ОБЩАЯ СТАТИСТИКА (Модальное окно)
+        // 6. ОБЩАЯ СТАТИСТИКА
         function openStats() {
             const stats = students.map(() => ({ lec: 0, sem: 0 }));
             let totalLec = 0; let totalSem = 0;
@@ -571,6 +603,103 @@
         }
 
         function closeStats() { document.getElementById('stats-modal').style.display = 'none'; }
+
+        // 7. СМОТР ДЛЯ КУРАТОРА
+        function openCuratorModal() {
+            const select = document.getElementById('curator-week-select');
+            if (select.children.length === 0) {
+                for (let i = 1; i <= 18; i++) {
+                    const opt = document.createElement('option');
+                    opt.value = i;
+                    const isEven = (i % 2 !== 0);
+                    opt.textContent = `${i} неделя (${isEven ? 'Четная' : 'Нечетная'})`;
+                    select.appendChild(opt);
+                }
+            }
+            select.value = weekSelect.value;
+            renderCuratorTable();
+            document.getElementById('curator-modal').style.display = 'flex';
+        }
+
+        function closeCuratorModal() {
+            document.getElementById('curator-modal').style.display = 'none';
+        }
+
+        function renderCuratorTable() {
+            const w = parseInt(document.getElementById('curator-week-select').value);
+            const weekType = (w % 2 !== 0) ? 'even' : 'odd'; 
+            
+            let totalLec = 0;
+            let totalSem = 0;
+            
+            ['mon', 'wed', 'thu', 'sat'].forEach(d => {
+                const lessons = schedule[weekType][d];
+                if (lessons) {
+                    lessons.forEach(l => {
+                        if (l.text.includes('(Л)')) totalLec++;
+                        if (l.text.includes('(С)')) totalSem++;
+                    });
+                }
+            });
+            
+            const totalClasses = totalLec + totalSem;
+            const tbody = document.getElementById('curator-tbody');
+            tbody.innerHTML = '';
+            
+            document.getElementById('curator-summary').innerHTML = `
+                Всего на ${w} неделе по расписанию: 
+                <span style="color:#00E676; font-weight:bold;">${totalSem} семинаров</span> и 
+                <span style="color:#00E676; font-weight:bold;">${totalLec} лекций</span>.
+            `;
+            
+            if (totalClasses === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">На этой неделе нет занятий</td></tr>';
+                return;
+            }
+
+            students.forEach((name, s) => {
+                let attendedLec = 0;
+                let attendedSem = 0;
+                
+                ['mon', 'wed', 'thu', 'sat'].forEach(d => {
+                    const lessons = schedule[weekType][d];
+                    if (lessons) {
+                        lessons.forEach(l => {
+                            const key = getStorageKey(w, d, l.id, s);
+                            const data = JSON.parse(localStorage.getItem(key));
+                            
+                            if (data && data.present) {
+                                if (l.text.includes('(Л)')) attendedLec++;
+                                if (l.text.includes('(С)')) attendedSem++;
+                            }
+                        });
+                    }
+                });
+                
+                let missedLec = totalLec - attendedLec;
+                let missedSem = totalSem - attendedSem;
+                let percent = Math.round(((attendedLec + attendedSem) / totalClasses) * 100);
+                let percentStyle = percent >= 80 ? 'color: var(--accent); text-shadow: var(--accent-glow);' : 
+                                  (percent < 50 ? 'color: #FF5252;' : 'color: #fff;');
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight: 500;">${name}</td>
+                        <td style="text-align:center;">
+                            <span style="color: var(--accent);">${attendedSem}</span> / 
+                            <span style="color: #FF5252;">${missedSem}</span>
+                        </td>
+                        <td style="text-align:center;">
+                            <span style="color: var(--accent);">${attendedLec}</span> / 
+                            <span style="color: #FF5252;">${missedLec}</span>
+                        </td>
+                        <td style="text-align:center; font-family: 'Unbounded'; font-size: 1.1rem;">
+                            <span style="${percentStyle}">${percent}%</span>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
 
         datePicker.valueAsDate = new Date();
         syncDateToDay();
