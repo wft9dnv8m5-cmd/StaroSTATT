@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StaroSTAT - Журнал ИБМ1-51Б</title>
+    <title>StaroSTAT - Журнал ИБМ1-32Б</title>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
@@ -154,7 +154,7 @@
             box-shadow: var(--accent-glow); transform: translateY(-3px);
         }
 
-        /* Модальное окно */
+        /* Модальные окна */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(5, 10, 20, 0.8); backdrop-filter: blur(10px); z-index: 1000;
@@ -237,9 +237,7 @@
         <div class="glass-card">
             <div class="slide-header"><h2>Сводка по предметам</h2></div>
             <p style="color: var(--text-sec); margin-bottom: 20px;">Выберите плашку предмета, чтобы получить объединенную посещаемость (лекции + семинары) по всей группе.</p>
-            <div class="subject-grid" id="subject-grid">
-                <!-- Плашки генерируются JS -->
-            </div>
+            <div class="subject-grid" id="subject-grid"></div>
         </div>
 
         <div class="glass-card" id="teacher-table-wrapper" style="display: none;">
@@ -284,17 +282,17 @@
         </div>
     </div>
 
-    <!-- Модальное окно для Куратора -->
+    <!-- Модальное окно для Куратора (НАКОПИТЕЛЬНЫЙ ИТОГ) -->
     <div class="modal" id="curator-modal">
         <div class="modal-content">
             <div class="modal-header slide-header" style="margin-bottom: 20px; border-left-color: #00B0FF;">
-                <h2 class="unbounded" style="color: #00B0FF; text-shadow: 0 0 10px rgba(0, 176, 255, 0.3);">Смотр для Куратора</h2>
+                <h2 class="unbounded" style="color: #00B0FF; text-shadow: 0 0 10px rgba(0, 176, 255, 0.3);">Накопительный смотр для Куратора</h2>
                 <button class="close-btn unbounded" style="color: #00B0FF;" onclick="closeCuratorModal()">×</button>
             </div>
             
             <div class="controls" style="margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 15px;">
                 <div class="control-group">
-                    <label>Выберите неделю для смотра:</label>
+                    <label>Рассчитать по неделю включительно:</label>
                     <select id="curator-week-select" onchange="renderCuratorTable()" style="max-width: 300px;"></select>
                 </div>
                 <div id="curator-summary" style="margin-top: 15px; color: var(--text-sec); font-family: 'Roboto'; font-size: 0.95rem;">
@@ -307,9 +305,9 @@
                     <thead>
                         <tr>
                             <th>Студент</th>
-                            <th style="text-align:center;">Семинары (Был / Не был)</th>
-                            <th style="text-align:center;">Лекции (Был / Не был)</th>
-                            <th style="text-align:center;">Итог за неделю</th>
+                            <th style="text-align:center;">Семинары (Посетил / Всего)</th>
+                            <th style="text-align:center;">Лекции (Посетил / Всего)</th>
+                            <th style="text-align:center;">Общая Посещаемость</th>
                         </tr>
                     </thead>
                     <tbody id="curator-tbody"></tbody>
@@ -372,7 +370,7 @@
             }
         };
 
-        // 3. УНИФИКАЦИЯ ПРЕДМЕТОВ (Нормализация названий для преподавателя)
+        // 3. УНИФИКАЦИЯ ПРЕДМЕТОВ
         function getNormalizedSubjectName(text) {
             let s = text.toLowerCase();
             if (s.includes('рынок ценных бумаг')) return 'Рынок ценных бумаг';
@@ -492,15 +490,12 @@
         function initTeacherPanel() {
             const grid = document.getElementById('subject-grid');
             grid.innerHTML = '';
-            
             uniqueSubjects.forEach(subject => {
                 const card = document.createElement('div');
-                card.className = 'subject-card';
-                card.textContent = subject;
+                card.className = 'subject-card'; card.textContent = subject;
                 card.onclick = () => {
                     document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('active'));
-                    card.classList.add('active');
-                    buildTeacherStats(subject);
+                    card.classList.add('active'); buildTeacherStats(subject);
                 };
                 grid.appendChild(card);
             });
@@ -518,16 +513,13 @@
                 ['mon', 'wed', 'thu', 'sat'].forEach(d => {
                     const lessons = schedule[weekType][d];
                     if (!lessons) return;
-                    
                     lessons.forEach(l => {
                         const normalized = getNormalizedSubjectName(l.text);
                         if (normalized === subjectName) {
                             totalClassesForSubject++;
                             students.forEach((_, s) => {
                                 const data = JSON.parse(localStorage.getItem(getStorageKey(w, d, l.id, s)));
-                                if (data && data.present) {
-                                    stats[s].attended++;
-                                }
+                                if (data && data.present) stats[s].attended++;
                             });
                         }
                     });
@@ -544,8 +536,6 @@
 
             students.forEach((name, i) => {
                 const percent = Math.round((stats[i].attended / totalClassesForSubject) * 100);
-                let colorClass = percent >= 80 ? 'neon' : (percent < 50 ? 'style="color: #FF5252;"' : '');
-                
                 tbody.innerHTML += `
                     <tr>
                         <td>${name}</td>
@@ -568,16 +558,12 @@
                     const lessons = schedule[weekType][d];
                     if (!lessons) return;
                     lessons.forEach(l => {
-                        const isLec = l.text.includes('(Л)');
-                        const isSem = l.text.includes('(С)');
-                        if (isLec) totalLec++;
-                        if (isSem) totalSem++;
-
+                        const isLec = l.text.includes('(Л)'); const isSem = l.text.includes('(С)');
+                        if (isLec) totalLec++; if (isSem) totalSem++;
                         students.forEach((_, s) => {
                             const data = JSON.parse(localStorage.getItem(getStorageKey(w, d, l.id, s)));
                             if (data && data.present) {
-                                if (isLec) stats[s].lec++;
-                                if (isSem) stats[s].sem++;
+                                if (isLec) stats[s].lec++; if (isSem) stats[s].sem++;
                             }
                         });
                     });
@@ -601,10 +587,9 @@
             });
             document.getElementById('stats-modal').style.display = 'flex';
         }
-
         function closeStats() { document.getElementById('stats-modal').style.display = 'none'; }
 
-        // 7. СМОТР ДЛЯ КУРАТОРА
+        // 7. СМОТР ДЛЯ КУРАТОРА (НАКОПИТЕЛЬНЫЙ)
         function openCuratorModal() {
             const select = document.getElementById('curator-week-select');
             if (select.children.length === 0) {
@@ -626,34 +611,37 @@
         }
 
         function renderCuratorTable() {
-            const w = parseInt(document.getElementById('curator-week-select').value);
-            const weekType = (w % 2 !== 0) ? 'even' : 'odd'; 
+            const targetWeek = parseInt(document.getElementById('curator-week-select').value);
             
             let totalLec = 0;
             let totalSem = 0;
             
-            ['mon', 'wed', 'thu', 'sat'].forEach(d => {
-                const lessons = schedule[weekType][d];
-                if (lessons) {
-                    lessons.forEach(l => {
-                        if (l.text.includes('(Л)')) totalLec++;
-                        if (l.text.includes('(С)')) totalSem++;
-                    });
-                }
-            });
+            // Считаем все пары с 1-й недели до выбранной включительно
+            for (let w = 1; w <= targetWeek; w++) {
+                const weekType = (w % 2 !== 0) ? 'even' : 'odd'; 
+                ['mon', 'wed', 'thu', 'sat'].forEach(d => {
+                    const lessons = schedule[weekType][d];
+                    if (lessons) {
+                        lessons.forEach(l => {
+                            if (l.text.includes('(Л)')) totalLec++;
+                            if (l.text.includes('(С)')) totalSem++;
+                        });
+                    }
+                });
+            }
             
             const totalClasses = totalLec + totalSem;
             const tbody = document.getElementById('curator-tbody');
             tbody.innerHTML = '';
             
             document.getElementById('curator-summary').innerHTML = `
-                Всего на ${w} неделе по расписанию: 
-                <span style="color:#00E676; font-weight:bold;">${totalSem} семинаров</span> и 
-                <span style="color:#00E676; font-weight:bold;">${totalLec} лекций</span>.
+                С 1-й по ${targetWeek}-ю неделю прошло суммарно: 
+                <span style="color:#00B0FF; font-weight:bold;">${totalSem} семинаров</span> и 
+                <span style="color:#00B0FF; font-weight:bold;">${totalLec} лекций</span>.
             `;
             
             if (totalClasses === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">На этой неделе нет занятий</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">До этой недели занятий не было</td></tr>';
                 return;
             }
 
@@ -661,40 +649,47 @@
                 let attendedLec = 0;
                 let attendedSem = 0;
                 
-                ['mon', 'wed', 'thu', 'sat'].forEach(d => {
-                    const lessons = schedule[weekType][d];
-                    if (lessons) {
-                        lessons.forEach(l => {
-                            const key = getStorageKey(w, d, l.id, s);
-                            const data = JSON.parse(localStorage.getItem(key));
-                            
-                            if (data && data.present) {
-                                if (l.text.includes('(Л)')) attendedLec++;
-                                if (l.text.includes('(С)')) attendedSem++;
-                            }
-                        });
-                    }
-                });
+                // Проверяем посещаемость с 1-й по выбранную неделю
+                for (let w = 1; w <= targetWeek; w++) {
+                    const weekType = (w % 2 !== 0) ? 'even' : 'odd'; 
+                    ['mon', 'wed', 'thu', 'sat'].forEach(d => {
+                        const lessons = schedule[weekType][d];
+                        if (lessons) {
+                            lessons.forEach(l => {
+                                const key = getStorageKey(w, d, l.id, s);
+                                const data = JSON.parse(localStorage.getItem(key));
+                                
+                                if (data && data.present) {
+                                    if (l.text.includes('(Л)')) attendedLec++;
+                                    if (l.text.includes('(С)')) attendedSem++;
+                                }
+                            });
+                        }
+                    });
+                }
                 
-                let missedLec = totalLec - attendedLec;
-                let missedSem = totalSem - attendedSem;
-                let percent = Math.round(((attendedLec + attendedSem) / totalClasses) * 100);
-                let percentStyle = percent >= 80 ? 'color: var(--accent); text-shadow: var(--accent-glow);' : 
-                                  (percent < 50 ? 'color: #FF5252;' : 'color: #fff;');
+                let percentSem = totalSem > 0 ? Math.round((attendedSem / totalSem) * 100) : 0;
+                let percentLec = totalLec > 0 ? Math.round((attendedLec / totalLec) * 100) : 0;
+                let percentTotal = Math.round(((attendedLec + attendedSem) / totalClasses) * 100);
+                
+                let styleSem = percentSem >= 80 ? 'color: var(--accent);' : (percentSem < 50 ? 'color: #FF5252;' : 'color: #fff;');
+                let styleLec = percentLec >= 80 ? 'color: var(--accent);' : (percentLec < 50 ? 'color: #FF5252;' : 'color: #fff;');
+                let styleTotal = percentTotal >= 80 ? 'color: var(--accent); text-shadow: var(--accent-glow);' : 
+                                  (percentTotal < 50 ? 'color: #FF5252;' : 'color: #fff;');
                 
                 tbody.innerHTML += `
                     <tr>
                         <td style="font-weight: 500;">${name}</td>
                         <td style="text-align:center;">
-                            <span style="color: var(--accent);">${attendedSem}</span> / 
-                            <span style="color: #FF5252;">${missedSem}</span>
+                            <span style="font-family: 'Unbounded';">${attendedSem}/${totalSem}</span> 
+                            (<span style="${styleSem}">${percentSem}%</span>)
                         </td>
                         <td style="text-align:center;">
-                            <span style="color: var(--accent);">${attendedLec}</span> / 
-                            <span style="color: #FF5252;">${missedLec}</span>
+                            <span style="font-family: 'Unbounded';">${attendedLec}/${totalLec}</span> 
+                            (<span style="${styleLec}">${percentLec}%</span>)
                         </td>
                         <td style="text-align:center; font-family: 'Unbounded'; font-size: 1.1rem;">
-                            <span style="${percentStyle}">${percent}%</span>
+                            <span style="${styleTotal}">${percentTotal}%</span>
                         </td>
                     </tr>
                 `;
