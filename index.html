@@ -189,7 +189,8 @@
             </div>
             
             <div class="header-center">
-                <img src="image.png" alt="StaroSTATT Logo" class="header-logo-img" id="header-logo-btn" onclick="switchPage('groups', this)">
+                <img src="image.png" alt="StaroSTATT Logo" class="header-logo-img" id="header-logo-btn" onclick="switchPage('groups', this)" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='block';">
+                <div id="fallback-logo" class="header-logo active-logo-glow" onclick="switchPage('groups', this)" style="display:none;">StaroSTATT</div>
             </div>
             
             <div class="header-right">
@@ -383,7 +384,8 @@
         // 1. КОНФИГУРАЦИЯ FIREBASE
         // ==========================================
         const firebaseConfig = {
-            apiKey: "AIzaSyCVgLwa8--Myp1YUPkeGUj_Ik6-r-Qe07U",
+            // ВСТАВЬ СЮДА СВОИ КЛЮЧИ!
+            apiKey: "ТВОЙ_API_KEY", 
             authDomain: "starostat-5252.firebaseapp.com",
             projectId: "starostat-5252",
             storageBucket: "starostat-5252.firebasestorage.app",
@@ -422,10 +424,10 @@
         function openAuthModal() { document.getElementById('auth-modal').style.display = 'flex'; }
         function toggleAuthMode() {
             isLoginMode = !isLoginMode;
-            document.getElementById('auth-title').innerText = isLoginMode ? "Регистрация" : "Вход в аккаунт";
+            document.getElementById('auth-title').innerText = isLoginMode ? "Вход в аккаунт" : "Регистрация";
             document.getElementById('btn-login').style.display = isLoginMode ? "block" : "none";
             document.getElementById('btn-register').style.display = isLoginMode ? "none" : "block";
-            document.getElementById('link-toggle').innerText = isLoginMode ? "Уже есть аккаунт? Войти" : "Нет аккаунта? Создать";
+            document.getElementById('link-toggle').innerText = isLoginMode ? "Нет аккаунта? Создать" : "Уже есть аккаунт? Войти";
             document.getElementById('auth-error').style.display = "none";
         }
         function showError(msg) { const err = document.getElementById('auth-error'); err.innerText = msg; err.style.display = "block"; }
@@ -803,8 +805,8 @@
             const link = document.createElement("a"); link.setAttribute("href", URL.createObjectURL(new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }))); link.setAttribute("download", `Смотр_${userData.currentGroup}.csv`); link.click();
         }
 
-        // АНИМАЦИИ И ЗАПУСК
-        window.addEventListener('load', () => {
+        // АНИМАЦИИ И ЗАПУСК (Используем DOMContentLoaded чтобы не ждать загрузки картинки)
+        document.addEventListener('DOMContentLoaded', () => {
             updateNeonDate();
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen'); const app = document.getElementById('app-content');
