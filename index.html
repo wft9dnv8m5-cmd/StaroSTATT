@@ -16,7 +16,6 @@
 
     <style>
         :root {
-            /* Темная тема (По умолчанию) */
             --bg-color: #050A14; 
             --accent: #00E676; 
             --accent-glow: 0 0 15px rgba(0, 230, 118, 0.4);
@@ -26,50 +25,31 @@
             --card-border: rgba(255, 255, 255, 0.1);
             --input-bg: rgba(0,0,0,0.5);
             --table-hover: rgba(255,255,255,0.05);
-            --modal-bg: rgba(10, 15, 25, 0.95);
         }
 
-        /* Светлая тема */
         body.light-theme {
-            --bg-color: #f3f4f6;
-            --accent: #00a859;
-            --accent-glow: 0 0 15px rgba(0, 168, 89, 0.3);
-            --text-main: #111827;
-            --text-sec: #4B5563;
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --card-border: rgba(0, 0, 0, 0.1);
-            --input-bg: rgba(255, 255, 255, 0.8);
-            --table-hover: rgba(0,0,0,0.05);
-            --modal-bg: rgba(255, 255, 255, 0.95);
+            --bg-color: #f3f4f6; --accent: #00a859; --accent-glow: 0 0 15px rgba(0, 168, 89, 0.3);
+            --text-main: #111827; --text-sec: #4B5563; --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: rgba(0, 0, 0, 0.1); --input-bg: rgba(255, 255, 255, 0.8); --table-hover: rgba(0,0,0,0.05);
         }
 
         body, html { margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-main); font-family: 'Roboto', sans-serif; min-height: 100vh; overflow-x: hidden; scroll-behavior: smooth; transition: background-color 0.3s, color 0.3s; }
         *, *::before, *::after { box-sizing: border-box; }
         h1, h2, h3, h4, .unbounded { font-family: 'Unbounded', sans-serif; margin: 0; }
-        .neon { color: var(--accent); text-shadow: var(--accent-glow); transition: 0.3s; }
+        .neon { color: var(--accent); text-shadow: var(--accent-glow); }
 
-        /* ЭКРАН ЗАГРУЗКИ */
         #splash-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-color); z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: opacity 0.8s ease, visibility 0.8s ease; }
         #splash-oval { position: absolute; width: 350px; height: 350px; background: radial-gradient(ellipse at center, rgba(0, 230, 118, 0.2) 0%, transparent 70%); border-radius: 50%; z-index: 9998; animation: pulseOval 2s infinite alternate; }
         @keyframes pulseOval { from { transform: scale(0.8); opacity: 0.5; } to { transform: scale(1.2); opacity: 1; } }
         #splash-logo { font-family: 'Unbounded', sans-serif; font-size: 4rem; color: var(--accent); text-shadow: var(--accent-glow); position: relative; z-index: 10000; letter-spacing: 2px; text-align: center; }
         
-        .bg-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at center, rgba(5,10,20,0.1) 0%, rgba(5,10,20,0.8) 100%); z-index: 0; pointer-events: none; transition: 0.3s; }
+        .bg-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at center, rgba(5,10,20,0.1) 0%, rgba(5,10,20,0.8) 100%); z-index: 0; pointer-events: none; }
         body.light-theme .bg-overlay { background: radial-gradient(circle at center, rgba(255,255,255,0.4) 0%, rgba(220,225,230,0.8) 100%); }
         
         #app-content { display: none; opacity: 0; transition: opacity 0.5s ease; position: relative; z-index: 1; padding-top: 15px; }
 
-        /* ПЛАВАЮЩАЯ ШАПКА */
-        header { 
-            position: sticky; top: 15px; z-index: 100; 
-            background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
-            border: 1px solid var(--card-border); border-radius: 16px; 
-            margin: 0 2vw 25px 2vw; padding: 10px 20px; 
-            display: flex; justify-content: space-between; align-items: center; gap: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); overflow-x: auto; scrollbar-width: none; white-space: nowrap; transition: 0.3s;
-        }
+        header { position: sticky; top: 15px; z-index: 100; background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--card-border); border-radius: 16px; margin: 0 2vw 25px 2vw; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; gap: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); overflow-x: auto; scrollbar-width: none; white-space: nowrap; }
         header::-webkit-scrollbar { display: none; }
-        
         .header-left, .header-right { display: flex; gap: 8px; align-items: center; }
         .header-center { display: flex; justify-content: center; min-width: 150px; }
         
@@ -90,12 +70,11 @@
         .btn-action { background: rgba(128, 128, 128, 0.1); border: 1px solid rgba(128, 128, 128, 0.3); color: var(--text-main); padding: 6px 12px; border-radius: 8px; font-family: 'Roboto', sans-serif; cursor: pointer; transition: 0.2s; font-size: 0.85rem;}
         .btn-action:hover { border-color: var(--accent); color: var(--accent); }
 
-        /* ВЫПАДАЮЩЕЕ МЕНЮ ПРОФИЛЯ */
         .profile-container { position: relative; display: inline-block; }
         .profile-avatar { width: 35px; height: 35px; border-radius: 50%; background: var(--accent); color: #000; display: flex; justify-content: center; align-items: center; font-family: 'Unbounded'; font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: var(--accent-glow); transition: 0.3s; }
         .profile-avatar:hover { transform: scale(1.1); }
-        
-        .dropdown-menu { display: none; position: absolute; right: 0; top: 50px; background: var(--modal-bg); backdrop-filter: blur(10px); border: 1px solid var(--accent); border-radius: 12px; padding: 10px; width: 240px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); flex-direction: column; gap: 5px; transition: 0.3s; }
+        .dropdown-menu { display: none; position: absolute; right: 0; top: 50px; background: rgba(10, 15, 25, 0.95); backdrop-filter: blur(10px); border: 1px solid var(--accent); border-radius: 12px; padding: 10px; width: 220px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); flex-direction: column; gap: 5px; }
+        body.light-theme .dropdown-menu { background: rgba(255, 255, 255, 0.95); border-color: rgba(0,0,0,0.1); }
         .dropdown-menu.show { display: flex; animation: fadeIn 0.2s ease; }
         .dropdown-item { background: transparent; border: none; color: var(--text-main); padding: 12px; text-align: left; border-radius: 8px; cursor: pointer; transition: 0.2s; font-family: 'Roboto'; display: flex; align-items: center; gap: 10px; font-size: 0.95rem; }
         .dropdown-item:hover { background: rgba(0, 230, 118, 0.1); color: var(--accent); }
@@ -104,15 +83,13 @@
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* НЕОНОВЫЙ ВИДЖЕТ ДАТЫ И ПРИВЕТСТВИЕ */
         .welcome-section { text-align: center; margin-bottom: 40px; }
         .neon-date-text { font-family: 'Unbounded', sans-serif; font-size: 2.2rem; color: var(--accent); text-shadow: var(--accent-glow); letter-spacing: 2px; transition: 0.3s; margin-bottom: 20px;}
-        .welcome-text { font-family: 'Roboto', sans-serif; font-size: 1.1rem; color: var(--text-sec); line-height: 1.6; max-width: 800px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 16px; backdrop-filter: blur(10px); transition: 0.3s; }
+        .welcome-text { font-family: 'Roboto', sans-serif; font-size: 1.1rem; color: var(--text-sec); line-height: 1.6; max-width: 800px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 16px; backdrop-filter: blur(10px); }
 
         .glass-card { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--card-border); border-radius: 16px; padding: 30px; margin-bottom: 30px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15); transition: 0.3s; }
         .slide-header { margin-bottom: 30px; border-left: 4px solid var(--accent); padding-left: 15px; display: flex; justify-content: space-between; align-items: center;}
         
-        /* ЖУРНАЛ */
         .journal-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px; }
         @media (max-width: 900px) { .journal-layout { grid-template-columns: 1fr; } }
         
@@ -165,27 +142,37 @@
 
         /* МОДАЛЬНЫЕ ОКНА */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); z-index: 10000; justify-content: center; align-items: center; }
-        .modal-content { background: var(--modal-bg); border: 1px solid var(--accent); border-radius: 16px; padding: 40px; width: 95%; max-width: 1200px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto; transition: 0.3s; }
+        .modal-content { background: var(--card-bg); border: 1px solid var(--accent); border-radius: 16px; padding: 40px; width: 95%; max-width: 1200px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto; transition: 0.3s; }
         .modal-small { max-width: 500px; }
         .close-btn { background: transparent; border: none; color: var(--accent); font-size: 30px; cursor: pointer; }
         .close-btn:hover { text-shadow: var(--accent-glow); transform: scale(1.1); }
         .sub-text { display: block; font-size: 0.8rem; color: var(--text-sec); font-family: 'Roboto'; margin-top: 5px; font-weight: normal; text-transform: none;}
+        
+        /* СИСТЕМА УВЕДОМЛЕНИЙ (TOAST) */
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 100000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast { background: rgba(10, 15, 25, 0.95); border-left: 4px solid #FF5252; color: #fff; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-family: 'Roboto', sans-serif; animation: slideInRight 0.3s ease-out forwards; pointer-events: auto; max-width: 350px; }
+        body.light-theme .toast { background: #fff; color: #000; border-color: rgba(0,0,0,0.1); border-left: 4px solid #FF5252;}
+        .toast.success { border-left-color: #00E676; }
+        body.light-theme .toast.success { border-left-color: #00a859; }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeOutToast { to { opacity: 0; } }
     </style>
 </head>
 <body>
 
-    <!-- ЭКРАН ЗАГРУЗКИ (Надежный старт) -->
+    <!-- ЭКРАН ЗАГРУЗКИ -->
     <div id="splash-screen">
         <div id="splash-oval"></div>
         <div id="splash-logo">StaroSTATT</div>
     </div>
     
     <div class="bg-overlay"></div>
+    <div id="toast-container"></div> <!-- Контейнер для ошибок -->
 
     <!-- Основное приложение -->
     <div id="app-content">
         
-        <!-- Плавающая шапка (В одну строчку) -->
+        <!-- Плавающая шапка -->
         <header>
             <div class="header-left">
                 <button class="nav-btn" onclick="switchPage('journal', this)">Журнал</button>
@@ -194,7 +181,6 @@
             </div>
             
             <div class="header-center">
-                <!-- Картинка, если нет картинки - запасной текст -->
                 <img src="image.png" alt="StaroSTATT Logo" class="header-logo-img" id="header-logo-btn" onclick="switchPage('groups', this)" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='block';">
                 <div id="fallback-logo" class="fallback-logo-text" onclick="switchPage('groups', this)" style="display:none;">StaroSTATT</div>
             </div>
@@ -203,7 +189,6 @@
                 <button class="btn-stats" style="border-color: #00B0FF; color: #00B0FF;" onclick="openCuratorModal()">Смотр куратору</button>
                 <button class="btn-stats" onclick="openStats()">Статистика группы</button>
                 
-                <!-- Блок авторизации / Профиля -->
                 <div id="auth-controls">
                     <button class="btn-auth" id="header-auth-btn" onclick="openAuthModal()">Войти в аккаунт</button>
                 </div>
@@ -221,10 +206,9 @@
             </div>
         </header>
 
-        <!-- Окно 0: Управление группами (Главная страница) -->
+        <!-- Окно 0: Управление группами -->
         <div id="page-groups" class="page active">
             
-            <!-- Приветствие и Дата -->
             <div class="welcome-section">
                 <div class="neon-date-text" id="neon-date-display">ЗАГРУЗКА...</div>
                 <div class="welcome-text">
@@ -253,14 +237,12 @@
                 <div class="control-group" style="margin-bottom: 15px;"><label>Список студентов (каждый с новой строки)</label><textarea id="setup-students" rows="6"></textarea></div>
                 <div class="control-group" style="margin-bottom: 15px;">
                     <label>Расписание (JSON)</label>
-                    <p style="font-size: 0.85rem; color: var(--accent); margin: 0 0 10px 0;">Пример: "8:30 - БЖД (Л)". Пометки (Л) и (С) обязательны!</p>
+                    <p style="font-size: 0.85rem; color: var(--accent); margin: 0 0 10px 0;">Скопируй правильный код расписания из инструкции!</p>
                     <textarea id="setup-schedule" rows="12" style="font-family: monospace;"></textarea>
                 </div>
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                     <button class="btn-stats" onclick="saveGroup()">💾 Сохранить изменения</button>
-                    <button class="btn-action" onclick="insertScheduleTemplate()">Вставить пустой шаблон расписания</button>
                 </div>
-                <p id="settings-msg" style="color: var(--accent); margin-top: 15px; display: none;">Сохранено!</p>
             </div>
         </div>
 
@@ -293,7 +275,7 @@
             </div>
 
             <div class="glass-card" style="padding: 15px 30px;">
-                <div class="table-container" id="students-table-wrapper">
+                <div class="table-container">
                     <table>
                         <thead><tr><th>№</th><th>Студент</th><th style="text-align: center;">Присутствие</th><th style="text-align: center;">Активность</th><th>Заметки / Долги</th></tr></thead>
                         <tbody id="students-body"></tbody>
@@ -330,7 +312,7 @@
             </div>
         </div>
 
-        <!-- МОДАЛКА АВТОРИЗАЦИИ С ОБРАБОТКОЙ ОШИБОК -->
+        <!-- МОДАЛКА АВТОРИЗАЦИИ -->
         <div class="modal" id="auth-modal">
             <div class="modal-content modal-small">
                 <div class="modal-header slide-header" style="margin-bottom: 20px; border-left-color: #00B0FF;">
@@ -409,6 +391,29 @@
 
     <script>
         // ==========================================
+        // УВЕДОМЛЕНИЯ ОБ ОШИБКАХ (TOASTS)
+        // ==========================================
+        function showToast(msg, type = 'error') {
+            let container = document.getElementById('toast-container');
+            if(!container) { container = document.createElement('div'); container.id = 'toast-container'; document.body.appendChild(container); }
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type === 'success' ? 'success' : ''}`;
+            
+            let supportHTML = type === 'error' ? `<br><span style="font-size:0.8rem; color:#00B0FF; cursor:pointer;" onclick="alert('Если ошибка повторяется, напишите разработчику.')">Нужна помощь?</span>` : '';
+            toast.innerHTML = `<b>${type === 'error' ? '❌ Ошибка' : '✅ Успешно'}</b><br><span style="font-size:0.9rem;">${msg}</span>${supportHTML}`;
+            
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.animation = 'fadeOutToast 0.5s forwards'; setTimeout(() => toast.remove(), 500); }, 5000);
+        }
+
+        window.addEventListener('error', function(e) {
+            console.error(e);
+            if(e.message && e.message.includes("JSON")) showToast("Синтаксическая ошибка в коде расписания. Проверьте кавычки и запятые.", 'error');
+            else showToast(`Системная ошибка: ${e.message}`, 'error');
+        });
+
+        // ==========================================
         // ГАРАНТИРОВАННЫЙ ЗАПУСК
         // ==========================================
         let isAppReady = false; 
@@ -424,7 +429,7 @@
                 }, 500);
             }
         }
-        
+
         // ==========================================
         // 1. КОНФИГУРАЦИЯ FIREBASE
         // ==========================================
@@ -443,7 +448,7 @@
             firebase.initializeApp(firebaseConfig); 
             auth = firebase.auth();
             db = firebase.firestore();
-        } catch(e) { console.error("Ошибка инициализации Firebase:", e); }
+        } catch(e) { showToast("Ошибка инициализации облака.", "error"); }
 
         // ==========================================
         // 2. ДАННЫЕ (ПУСТОЙ ШАБЛОН ДЛЯ НОВИЧКОВ)
@@ -453,7 +458,7 @@
             groups: { "Без группы": { students: [], schedule: { even: { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [] }, odd: { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [] } }, attendance: {}, notesList: [] } }
         };
 
-        let currentUser = null; let userData = emptyDefaultData; let currentExportData = [];
+        let currentUser = null; let userData = JSON.parse(JSON.stringify(emptyDefaultData)); let currentExportData = [];
         function getActiveGroupData() { return userData.groups[userData.currentGroup]; }
 
         // ==========================================
@@ -477,20 +482,20 @@
         function openAuthModal() { document.getElementById('auth-modal').style.display = 'flex'; }
         function toggleAuthMode() {
             isLoginMode = !isLoginMode;
-            document.getElementById('auth-title').innerText = isLoginMode ? "Регистрация" : "Вход в аккаунт";
-            document.getElementById('btn-login').style.display = isLoginMode ? "none" : "block";
-            document.getElementById('btn-register').style.display = isLoginMode ? "block" : "none";
-            document.getElementById('link-toggle').innerText = isLoginMode ? "Уже есть аккаунт? Войти" : "Нет аккаунта? Создать";
+            document.getElementById('auth-title').innerText = isLoginMode ? "Вход в аккаунт" : "Регистрация";
+            document.getElementById('btn-login').style.display = isLoginMode ? "block" : "none";
+            document.getElementById('btn-register').style.display = isLoginMode ? "none" : "block";
+            document.getElementById('link-toggle').innerText = isLoginMode ? "Нет аккаунта? Создать" : "Уже есть аккаунт? Войти";
             document.getElementById('auth-error').style.display = "none";
             document.getElementById('password-hint').style.display = "none";
         }
 
         function handleAuthError(error) {
-            console.error("Firebase Auth Error:", error); let msg = error.message;
-            if (error.code === 'auth/operation-not-allowed') msg = "В Firebase не включен вход по Email! Зайдите в консоль -> Authentication -> Sign-in method и включите Email/Password.";
-            else if (error.code === 'auth/unauthorized-domain') msg = "Добавьте ваш домен в белый список: Консоль Firebase -> Authentication -> Settings -> Authorized domains.";
+            let msg = error.message;
+            if (error.code === 'auth/operation-not-allowed') msg = "В Firebase не включен вход по Email! Зайдите в консоль и включите Email/Password.";
+            else if (error.code === 'auth/unauthorized-domain') msg = "Добавьте домен сайта в белый список Firebase.";
             else if (error.code === 'auth/email-already-in-use') msg = "Эта почта уже занята другим пользователем.";
-            else if (error.code === 'auth/weak-password') msg = "Пароль слишком простой (минимум 6 символов).";
+            else if (error.code === 'auth/weak-password') msg = "Пароль слишком простой (нужно минимум 6 символов).";
             else if (error.code === 'auth/invalid-email') msg = "Неправильный формат почты.";
             else if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') msg = "Неверная почта или пароль.";
 
@@ -518,10 +523,10 @@
                 .catch(err => { btn.innerText = "Зарегистрироваться"; btn.disabled = false; handleAuthError(err); }); 
         }
 
-        function logout(e) { if(e) e.stopPropagation(); if(auth) auth.signOut(); document.getElementById('profile-dropdown').classList.remove('show'); }
-        function forceSync(e) { if(e) e.stopPropagation(); saveToCloud(); alert("Данные успешно синхронизированы с облаком!"); document.getElementById('profile-dropdown').classList.remove('show'); }
+        function logout(e) { if(e) e.stopPropagation(); if(auth) auth.signOut(); document.getElementById('profile-dropdown').classList.remove('show'); showToast("Вы вышли из аккаунта", "success"); }
+        function forceSync(e) { if(e) e.stopPropagation(); saveToCloud(); showToast("Данные успешно синхронизированы с облаком!", "success"); document.getElementById('profile-dropdown').classList.remove('show'); }
 
-        // Инициализация при загрузке
+        // Запуск логики
         if(auth) {
             auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
                 auth.onAuthStateChanged(user => {
@@ -535,48 +540,52 @@
                         
                         db.collection('users').doc(user.uid).get().then(doc => {
                             if (doc.exists) { 
-                                userData = doc.data(); if(!userData.avatar) userData.avatar = "😎";
+                                userData = doc.data(); 
+                                if(!userData.avatar) userData.avatar = "😎";
                             } else { 
                                 let localLegacy = JSON.parse(localStorage.getItem('ss_all_groups'));
-                                if(localLegacy && localLegacy["ИБМ1-51Б"]) { userData = { currentGroup: localStorage.getItem('ss_current_group') || "ИБМ1-51Б", groups: localLegacy, avatar: "😎" }; } 
-                                else { userData = emptyDefaultData; }
+                                if(localLegacy && Object.keys(localLegacy).length > 0) { 
+                                    userData = { currentGroup: localStorage.getItem('ss_current_group') || Object.keys(localLegacy)[0], groups: localLegacy, avatar: "😎" }; 
+                                } else { 
+                                    userData = JSON.parse(JSON.stringify(emptyDefaultData)); 
+                                }
                                 saveToCloud(); 
                             }
-                            initApp(); hideSplashScreen();
-                        }).catch(() => { initLocalApp(); hideSplashScreen(); });
+                            launchApp(); showToast("Успешный вход!", "success");
+                        }).catch(err => { showToast("Ошибка загрузки данных из облака.", "error"); launchApp(true); });
                     } else {
                         currentUser = null; 
                         authContainer.style.display = 'inline-block'; profileContainer.style.display = 'none';
-                        initLocalApp(); hideSplashScreen();
+                        initLocalApp(); launchApp(true);
                     }
                 });
             });
-        } else { initLocalApp(); hideSplashScreen(); }
+        } else { launchApp(true); }
+
+        function launchApp(isLocalFallback = false) {
+            if(!isAppReady) { isAppReady = true; initApp(); hideSplashScreen(); } else { initApp(); }
+        }
 
         function initLocalApp() {
             let localLegacy = JSON.parse(localStorage.getItem('ss_all_groups'));
-            if(localLegacy && localLegacy["ИБМ1-51Б"]) { userData = { currentGroup: localStorage.getItem('ss_current_group') || "ИБМ1-51Б", groups: localLegacy, avatar: localStorage.getItem('ss_avatar') || "😎" }; } 
-            else { userData = emptyDefaultData; }
-            initApp(); 
+            if(localLegacy && Object.keys(localLegacy).length > 0) { 
+                userData = { currentGroup: localStorage.getItem('ss_current_group') || Object.keys(localLegacy)[0], groups: localLegacy, avatar: localStorage.getItem('ss_avatar') || "😎" }; 
+            } else { 
+                userData = JSON.parse(JSON.stringify(emptyDefaultData)); 
+            }
         }
 
         function saveToCloud() {
-            if(currentUser && db) db.collection('users').doc(currentUser.uid).set(userData).catch(err => console.error("Ошибка сохранения:", err));
+            if(currentUser && db) db.collection('users').doc(currentUser.uid).set(userData).catch(err => showToast("Не удалось сохранить в облако", "error"));
             localStorage.setItem('ss_all_groups', JSON.stringify(userData.groups)); localStorage.setItem('ss_current_group', userData.currentGroup); localStorage.setItem('ss_avatar', userData.avatar);
             if(document.getElementById('profile-avatar')) document.getElementById('profile-avatar').innerText = userData.avatar;
         }
 
         // ==========================================
-        // ВЫПАДАЮЩЕЕ МЕНЮ И ТЕМЫ (ИСПРАВЛЕНО ДЛЯ НАДЕЖНОСТИ)
+        // ВЫПАДАЮЩЕЕ МЕНЮ И ТЕМЫ
         // ==========================================
         function toggleDropdown(e) { if(e) e.stopPropagation(); document.getElementById("profile-dropdown").classList.toggle("show"); }
-        
-        window.onclick = function(event) { 
-            if (!event.target.closest('.profile-container')) { 
-                var dropdowns = document.getElementsByClassName("dropdown-menu"); 
-                for (var i = 0; i < dropdowns.length; i++) { if (dropdowns[i].classList.contains('show')) { dropdowns[i].classList.remove('show'); } } 
-            } 
-        }
+        window.onclick = function(event) { if (!event.target.closest('.profile-container')) { var dropdowns = document.getElementsByClassName("dropdown-menu"); for (var i = 0; i < dropdowns.length; i++) { if (dropdowns[i].classList.contains('show')) { dropdowns[i].classList.remove('show'); } } } }
         
         function toggleTheme(e) {
             if(e) e.stopPropagation();
@@ -592,7 +601,7 @@
             avatars.forEach(emoji => { grid.innerHTML += `<div class="avatar-option ${userData.avatar === emoji ? 'selected' : ''}" onclick="selectAvatar('${emoji}')">${emoji}</div>`; });
             document.getElementById('profile-dropdown').classList.remove('show'); document.getElementById('avatar-modal').style.display = 'flex';
         }
-        function selectAvatar(emoji) { userData.avatar = emoji; saveToCloud(); document.getElementById('avatar-modal').style.display = 'none'; initApp(); }
+        function selectAvatar(emoji) { userData.avatar = emoji; saveToCloud(); document.getElementById('avatar-modal').style.display = 'none'; initApp(); showToast("Аватар обновлен!", "success"); }
 
         // ==========================================
         // 4. ИНИЦИАЛИЗАЦИЯ И ИНТЕРФЕЙС
@@ -600,7 +609,7 @@
         function initApp() {
             updateNeonDate();
             document.getElementById('page-title').innerText = `StaroSTATT - ${userData.currentGroup}`;
-            document.getElementById('profile-avatar').innerText = userData.avatar || "😎";
+            if(document.getElementById('profile-avatar')) document.getElementById('profile-avatar').innerText = userData.avatar || "😎";
             
             const selector = document.getElementById('group-selector'); selector.innerHTML = '';
             for(let g in userData.groups) {
@@ -632,16 +641,23 @@
 
         function saveGroup() {
             const newName = document.getElementById('setup-group-name').value.trim();
-            if(!newName) return alert("Введите название группы!");
+            if(!newName) return showToast("Введите название группы!", "error");
             const newStudents = document.getElementById('setup-students').value.split('\n').map(s => s.trim()).filter(s => s);
-            let newSchedule; try { newSchedule = JSON.parse(document.getElementById('setup-schedule').value); } catch (e) { return alert("Ошибка в JSON формате расписания!"); }
+            let newSchedule; 
+            
+            try { 
+                newSchedule = JSON.parse(document.getElementById('setup-schedule').value); 
+            } catch (e) { 
+                return showToast("Ошибка в JSON формате расписания! Убедитесь, что нет лишних запятых и все кавычки закрыты.", "error"); 
+            }
 
             const oldAtt = userData.groups[newName] ? userData.groups[newName].attendance : {};
             const oldNotes = userData.groups[newName] ? userData.groups[newName].notesList : [];
 
             userData.groups[newName] = { students: newStudents, schedule: newSchedule, attendance: oldAtt, notesList: oldNotes };
             userData.currentGroup = newName; saveToCloud();
-            document.getElementById('settings-msg').style.display = 'block'; setTimeout(() => document.getElementById('settings-msg').style.display = 'none', 3000); initApp();
+            showToast("Настройки группы успешно сохранены!", "success");
+            initApp();
         }
 
         function insertScheduleTemplate() {
@@ -669,13 +685,13 @@
 
         function saveNewNote() {
             const t = document.getElementById('note-title-input').value.trim(); const txt = document.getElementById('note-text-input').value.trim();
-            if(!t || !txt) return alert("Заполните все поля");
+            if(!t || !txt) return showToast("Заполните заголовок и текст карточки", "error");
             const activeData = getActiveGroupData(); if(!activeData.notesList) activeData.notesList = [];
-            activeData.notesList.push({ id: Date.now(), title: t, text: txt, isPinned: false }); saveToCloud(); renderNotes(); document.getElementById('note-modal').style.display = 'none';
+            activeData.notesList.push({ id: Date.now(), title: t, text: txt, isPinned: false }); saveToCloud(); renderNotes(); document.getElementById('note-modal').style.display = 'none'; showToast("Карточка добавлена", "success");
         }
 
         function togglePin(id) { const list = getActiveGroupData().notesList; const idx = list.findIndex(n => n.id === id); if(idx > -1) { list[idx].isPinned = !list[idx].isPinned; saveToCloud(); renderNotes(); } }
-        function deleteNote(id) { if(confirm("Удалить карточку?")) { const list = getActiveGroupData().notesList; getActiveGroupData().notesList = list.filter(n => n.id !== id); saveToCloud(); renderNotes(); } }
+        function deleteNote(id) { if(confirm("Удалить карточку?")) { const list = getActiveGroupData().notesList; getActiveGroupData().notesList = list.filter(n => n.id !== id); saveToCloud(); renderNotes(); showToast("Карточка удалена", "success"); } }
 
         function renderNotes() {
             const container = document.getElementById('notes-grid-container'); container.innerHTML = '';
@@ -757,7 +773,8 @@
             const tbody = document.getElementById('students-body'); tbody.innerHTML = '';
             if (lessonSelect.value === 'none') { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 30px;">В этот день занятий нет</td></tr>'; return; }
             const activeData = getActiveGroupData();
-            if(activeData.students.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 30px;">Список студентов пуст. Добавьте студентов в настройках.</td></tr>'; return; }
+            
+            if(!activeData.students || activeData.students.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 30px;">Список студентов пуст</td></tr>'; return; }
 
             activeData.students.forEach((name, i) => {
                 const key = getCurrentStorageKey(i); const data = activeData.attendance[key] || { present: false, answers: 0, notes: "" };
@@ -775,7 +792,7 @@
         function markAllPresent() { 
             if (lessonSelect.value === 'none') return; const activeData = getActiveGroupData();
             activeData.students.forEach((_, i) => { const key = getCurrentStorageKey(i); if (!activeData.attendance[key]) activeData.attendance[key] = { present: false, answers: 0, notes: "" }; activeData.attendance[key].present = true; }); 
-            saveToCloud(); renderTable(); 
+            saveToCloud(); renderTable(); showToast("Все студенты отмечены!", "success");
         }
 
         // ==========================================
@@ -807,13 +824,12 @@
         function openStats() { document.getElementById('stats-modal').style.display = 'flex'; }
         
         // ==========================================
-        // 8. СМОТР КУРАТОРУ (ИСПРАВЛЕНО ДЛЯ НОВЫХ АККАУНТОВ)
+        // 8. СМОТР КУРАТОРУ
         // ==========================================
         function openCuratorModal() {
             const select = document.getElementById('curator-week-select');
             if (select.children.length === 0) { for (let i = 1; i <= 18; i++) { const opt = document.createElement('option'); opt.value = i; opt.textContent = `${i} неделя (${i % 2 !== 0 ? 'Четная' : 'Нечетная'})`; select.appendChild(opt); } }
             
-            // Защита: берем текущую неделю из Журнала или считаем сами
             let currentW = document.getElementById('week') ? document.getElementById('week').value : 1;
             if(!currentW) currentW = getAcademicWeek(new Date());
             select.value = currentW; 
@@ -827,9 +843,8 @@
             const tbody = document.getElementById('curator-tbody'); tbody.innerHTML = '';
             
             if(!activeData.students || activeData.students.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">Список студентов пуст. Добавьте студентов в настройках группы.</td></tr>';
-                document.getElementById('curator-summary').innerHTML = "";
-                return;
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">Список пуст. Добавьте студентов в настройках группы.</td></tr>';
+                document.getElementById('curator-summary').innerHTML = ""; return;
             }
 
             for (let w = 1; w <= targetWeek; w++) {
@@ -867,14 +882,14 @@
         }
 
         function exportCuratorCSV() {
-            if(currentExportData.length === 0) { alert('Нет данных для экспорта'); return; }
+            if(currentExportData.length === 0) { showToast('Нет данных для экспорта', 'error'); return; }
             let csvContent = "\uFEFFОтчет для куратора. Группа: " + userData.currentGroup + "\nРассчитано по неделю: " + document.getElementById('curator-week-select').value + "\n\nСтудент;Семинары (Пары);Семинары (Ак.Часы);Семинары (%);Лекции (Пары);Лекции (Ак.Часы);Лекции (%);Общая Посещаемость (%)\n";
             currentExportData.forEach(row => { csvContent += `${row.name};${row.attSem}/${row.totalSem};${row.attSemHours}/${row.totalSemHours};${row.pSem}%;${row.attLec}/${row.totalLec};${row.attLecHours}/${row.totalLecHours};${row.pLec}%;${row.pTot}%\n`; });
             const link = document.createElement("a"); link.setAttribute("href", URL.createObjectURL(new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }))); link.setAttribute("download", `Смотр_${userData.currentGroup}.csv`); link.click();
         }
 
         // ==========================================
-        // ЗАПУСК 3D ФОНА (С защитой)
+        // ЗАПУСК 3D ФОНА
         // ==========================================
         try {
             const sceneBg = new THREE.Scene(); const cameraBg = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -885,7 +900,7 @@
             const modelBg = new THREE.Mesh(geometryBg, materialBg); sceneBg.add(modelBg); cameraBg.position.z = 30;
             function animateBg() { requestAnimationFrame(animateBg); const scrollY = window.scrollY; modelBg.rotation.x += 0.001; modelBg.rotation.y += 0.002; modelBg.position.y = Math.sin(scrollY * 0.002) * 5; modelBg.rotation.z = scrollY * 0.001; rendererBg.render(sceneBg, cameraBg); }
             animateBg(); window.addEventListener('resize', () => { cameraBg.aspect = window.innerWidth / window.innerHeight; cameraBg.updateProjectionMatrix(); rendererBg.setSize(window.innerWidth, window.innerHeight); });
-        } catch(e) { console.warn("3D фон отключен.", e); }
+        } catch(e) { console.warn("3D фон отключен."); }
     </script>
 </body>
 </html>
