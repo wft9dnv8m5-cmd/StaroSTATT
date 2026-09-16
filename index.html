@@ -46,10 +46,11 @@
         h1, h2, h3, h4, .unbounded { font-family: 'Unbounded', sans-serif; margin: 0; }
         .neon { color: var(--accent); text-shadow: var(--accent-glow); }
 
-        /* ЭКРАН ЗАГРУЗКИ */
+        /* ЭКРАН ЗАГРУЗКИ (ТЕКСТОВЫЙ) */
         #splash-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-color); z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: opacity 1s ease, visibility 1s ease; }
-        .splash-logo-img { height: 180px; filter: drop-shadow(0 0 20px rgba(0,230,118,0.5)); animation: pulseLogo 2s infinite alternate; }
-        @keyframes pulseLogo { from { transform: scale(0.95); filter: drop-shadow(0 0 10px rgba(0,230,118,0.3)); } to { transform: scale(1.05); filter: drop-shadow(0 0 25px rgba(0,230,118,0.8)); } }
+        #splash-oval { position: absolute; width: 350px; height: 350px; background: radial-gradient(ellipse at center, rgba(0, 230, 118, 0.2) 0%, transparent 70%); border-radius: 50%; z-index: 9998; animation: pulseOval 2s infinite alternate; }
+        @keyframes pulseOval { from { transform: scale(0.8); opacity: 0.5; } to { transform: scale(1.2); opacity: 1; } }
+        #splash-logo { font-family: 'Unbounded', sans-serif; font-size: 4rem; color: var(--accent); text-shadow: var(--accent-glow); position: relative; z-index: 10000; letter-spacing: 2px; text-align: center; }
         
         .bg-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at center, rgba(5,10,20,0.1) 0%, rgba(5,10,20,0.8) 100%); z-index: 0; pointer-events: none; }
         body.light-theme .bg-overlay { background: radial-gradient(circle at center, rgba(255,255,255,0.4) 0%, rgba(220,225,230,0.8) 100%); }
@@ -72,6 +73,7 @@
         
         .header-logo-img { height: 60px; cursor: pointer; transition: 0.3s; filter: drop-shadow(0 0 10px rgba(0, 230, 118, 0.4)); }
         .header-logo-img:hover { transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(0, 230, 118, 0.8)); }
+        .active-logo-glow { filter: drop-shadow(0 0 25px rgba(0, 230, 118, 0.9)); transform: scale(1.05); }
 
         /* ВЫПАДАЮЩЕЕ МЕНЮ ПРОФИЛЯ */
         .profile-container { position: relative; display: inline-block; }
@@ -161,13 +163,16 @@
         .close-btn { background: transparent; border: none; color: var(--accent); font-size: 30px; cursor: pointer; }
         .close-btn:hover { text-shadow: var(--accent-glow); transform: scale(1.1); }
         .sub-text { display: block; font-size: 0.8rem; color: var(--text-sec); font-family: 'Roboto'; margin-top: 5px; }
+        
+        .auth-input { margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
-    <!-- Экран загрузки с логотипом -->
+    <!-- Экран загрузки с ТЕКСТОМ -->
     <div id="splash-screen">
-        <img src="image.png" alt="StaroSTATT Logo" class="splash-logo-img">
+        <div id="splash-oval"></div>
+        <div id="splash-logo">StaroSTATT</div>
     </div>
     
     <div class="bg-overlay"></div>
@@ -175,7 +180,7 @@
     <!-- Основное приложение -->
     <div id="app-content">
         
-        <!-- Новая плавающая шапка -->
+        <!-- Плавающая шапка с ЛОГОТИПОМ -->
         <header>
             <div class="header-left">
                 <button class="nav-btn" onclick="switchPage('journal', this)">Журнал</button>
@@ -184,7 +189,7 @@
             </div>
             
             <div class="header-center">
-                <img src="image.png" alt="StaroSTATT Logo" class="header-logo-img" onclick="switchPage('groups', this)">
+                <img src="image.png" alt="StaroSTATT Logo" class="header-logo-img" id="header-logo-btn" onclick="switchPage('groups', this)">
             </div>
             
             <div class="header-right">
@@ -375,10 +380,10 @@
 
     <script>
         // ==========================================
-        // 1. КОНФИГУРАЦИЯ FIREBASE (ВСТАВЬ СВОЙ КЛЮЧ!)
+        // 1. КОНФИГУРАЦИЯ FIREBASE
         // ==========================================
         const firebaseConfig = {
-            apiKey: "ТВОЙ_API_KEY", // ВСТАВЬ СЮДА СВОЙ КЛЮЧ
+            apiKey: "AIzaSyCVgLwa8--Myp1YUPkeGUj_Ik6-r-Qe07U",
             authDomain: "starostat-5252.firebaseapp.com",
             projectId: "starostat-5252",
             storageBucket: "starostat-5252.firebasestorage.app",
@@ -394,8 +399,6 @@
         // ==========================================
         // 2. ДАННЫЕ (ИЗОЛЯЦИЯ: ПУСТОЙ ШАБЛОН ДЛЯ НОВИЧКОВ)
         // ==========================================
-        
-        // Это пустой шаблон, который увидят новые зарегистрированные пользователи
         const emptyDefaultData = {
             currentGroup: "Без группы",
             groups: { 
@@ -413,16 +416,16 @@
         function getActiveGroupData() { return userData.groups[userData.currentGroup]; }
 
         // ==========================================
-        // 3. АВТОРИЗАЦИЯ И МИГРАЦИЯ ТВОИХ ДАННЫХ
+        // 3. АВТОРИЗАЦИЯ И МИГРАЦИЯ
         // ==========================================
         let isLoginMode = true;
         function openAuthModal() { document.getElementById('auth-modal').style.display = 'flex'; }
         function toggleAuthMode() {
             isLoginMode = !isLoginMode;
-            document.getElementById('auth-title').innerText = isLoginMode ? "Вход в аккаунт" : "Регистрация";
+            document.getElementById('auth-title').innerText = isLoginMode ? "Регистрация" : "Вход в аккаунт";
             document.getElementById('btn-login').style.display = isLoginMode ? "block" : "none";
             document.getElementById('btn-register').style.display = isLoginMode ? "none" : "block";
-            document.getElementById('link-toggle').innerText = isLoginMode ? "Нет аккаунта? Создать" : "Уже есть аккаунт? Войти";
+            document.getElementById('link-toggle').innerText = isLoginMode ? "Уже есть аккаунт? Войти" : "Нет аккаунта? Создать";
             document.getElementById('auth-error').style.display = "none";
         }
         function showError(msg) { const err = document.getElementById('auth-error'); err.innerText = msg; err.style.display = "block"; }
@@ -445,9 +448,6 @@
                         if (doc.exists) { 
                             userData = doc.data(); 
                         } else { 
-                            // ВАЖНО: Если ты зайдешь со своего компа первый раз, 
-                            // этот код подхватит твою старую группу ИБМ1-51Б из памяти браузера и сохранит в твое облако!
-                            // Другие пользователи получат пустой шаблон.
                             let localLegacy = JSON.parse(localStorage.getItem('ss_all_groups'));
                             if(localLegacy && localLegacy["ИБМ1-51Б"]) {
                                 userData = { currentGroup: localStorage.getItem('ss_current_group') || "ИБМ1-51Б", groups: localLegacy };
@@ -462,7 +462,6 @@
                     currentUser = null; 
                     authContainer.style.display = 'inline-block'; profileContainer.style.display = 'none';
                     
-                    // Если гость - проверяем локальную память (чтобы у тебя ничего не пропало до входа)
                     let localLegacy = JSON.parse(localStorage.getItem('ss_all_groups'));
                     if(localLegacy && localLegacy["ИБМ1-51Б"]) {
                         userData = { currentGroup: localStorage.getItem('ss_current_group') || "ИБМ1-51Б", groups: localLegacy };
@@ -476,7 +475,6 @@
 
         function saveToCloud() {
             if(currentUser && db) db.collection('users').doc(currentUser.uid).set(userData).catch(err => console.error("Ошибка:", err));
-            // Локальный бэкап на всякий случай
             localStorage.setItem('ss_all_groups', JSON.stringify(userData.groups));
             localStorage.setItem('ss_current_group', userData.currentGroup);
         }
@@ -558,7 +556,15 @@
         function switchPage(pageId, btn) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById('page-' + pageId).classList.add('active');
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); 
-            if (btn && btn.classList.contains('nav-btn')) btn.classList.add('active'); 
+            
+            const logoBtn = document.getElementById('header-logo-btn');
+            if (logoBtn) logoBtn.classList.remove('active-logo-glow');
+            
+            if (btn && btn.classList.contains('nav-btn')) {
+                btn.classList.add('active'); 
+            } else if (pageId === 'groups' && logoBtn) {
+                logoBtn.classList.add('active-logo-glow');
+            }
             if(pageId === 'teacher') initTeacherPanel();
         }
 
@@ -648,7 +654,7 @@
         function updateInterface() {
             const schedule = getActiveGroupData().schedule;
             const weekNum = parseInt(weekSelect.value);
-            const weekType = (weekNum % 2 !== 0) ? 'even' : 'odd'; // 1 неделя = четная (even)
+            const weekType = (weekNum % 2 !== 0) ? 'even' : 'odd'; 
             
             const day = daySelect.value;
             const lessons = schedule[weekType] && schedule[weekType][day] ? schedule[weekType][day] : [];
@@ -729,7 +735,7 @@
             document.getElementById('teacher-table-wrapper').style.display = 'block'; document.getElementById('teacher-subject-title').textContent = subjectName;
             const activeData = getActiveGroupData(); const stats = activeData.students.map(() => ({ attended: 0 })); let totalClasses = 0;
             for (let w = 1; w <= 18; w++) {
-                const wType = (w % 2 !== 0) ? 'even' : 'odd'; // 1 неделя = четная
+                const wType = (w % 2 !== 0) ? 'even' : 'odd'; 
                 for(let day in activeData.schedule[wType]) {
                     activeData.schedule[wType][day].forEach(l => { 
                         if (l.text.includes(subjectName)) { totalClasses++; activeData.students.forEach((_, s) => { const cell = activeData.attendance[getStorageKey(w, day, l.id, s)]; if (cell && cell.present) stats[s].attended++; }); } 
