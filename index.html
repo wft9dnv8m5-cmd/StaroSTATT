@@ -381,11 +381,10 @@
 
     <script>
         // ==========================================
-        // 1. КОНФИГУРАЦИЯ FIREBASE
+        // 1. КОНФИГУРАЦИЯ FIREBASE (С ТВОИМИ КЛЮЧАМИ!)
         // ==========================================
         const firebaseConfig = {
-            // ВСТАВЬ СЮДА СВОИ КЛЮЧИ!
-            apiKey: "ТВОЙ_API_KEY", 
+            apiKey: "AIzaSyCVgLwa8--Myp1YUPkeGUj_Ik6-r-Qe07U",
             authDomain: "starostat-5252.firebaseapp.com",
             projectId: "starostat-5252",
             storageBucket: "starostat-5252.firebasestorage.app",
@@ -394,9 +393,10 @@
             measurementId: "G-33L53BFLNY"
         };
 
-        if(firebaseConfig.apiKey !== "ТВОЙ_API_KEY") { firebase.initializeApp(firebaseConfig); } 
-        const auth = typeof firebase !== 'undefined' && firebase.auth ? firebase.auth() : null;
-        const db = typeof firebase !== 'undefined' && firebase.firestore ? firebase.firestore() : null;
+        // Гарантированная инициализация Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
         // ==========================================
         // 2. ДАННЫЕ (ИЗОЛЯЦИЯ: ПУСТОЙ ШАБЛОН ДЛЯ НОВИЧКОВ)
@@ -435,45 +435,43 @@
         function register() { auth.createUserWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).catch(err => showError(err.message)); }
         function logout() { auth.signOut(); document.getElementById('profile-dropdown').classList.remove('show'); }
 
-        if(auth) {
-            auth.onAuthStateChanged(user => {
-                const authContainer = document.getElementById('auth-controls');
-                const profileContainer = document.getElementById('profile-controls');
+        auth.onAuthStateChanged(user => {
+            const authContainer = document.getElementById('auth-controls');
+            const profileContainer = document.getElementById('profile-controls');
+            
+            if (user) {
+                currentUser = user; 
+                authContainer.style.display = 'none'; profileContainer.style.display = 'inline-block';
+                document.getElementById('profile-avatar').innerText = user.email.charAt(0).toUpperCase();
+                document.getElementById('auth-modal').style.display = 'none';
                 
-                if (user) {
-                    currentUser = user; 
-                    authContainer.style.display = 'none'; profileContainer.style.display = 'inline-block';
-                    document.getElementById('profile-avatar').innerText = user.email.charAt(0).toUpperCase();
-                    document.getElementById('auth-modal').style.display = 'none';
-                    
-                    db.collection('users').doc(user.uid).get().then(doc => {
-                        if (doc.exists) { 
-                            userData = doc.data(); 
-                        } else { 
-                            let localLegacy = JSON.parse(localStorage.getItem('ss_all_groups'));
-                            if(localLegacy && localLegacy["ИБМ1-51Б"]) {
-                                userData = { currentGroup: localStorage.getItem('ss_current_group') || "ИБМ1-51Б", groups: localLegacy };
-                            } else {
-                                userData = emptyDefaultData;
-                            }
-                            saveToCloud(); 
+                db.collection('users').doc(user.uid).get().then(doc => {
+                    if (doc.exists) { 
+                        userData = doc.data(); 
+                    } else { 
+                        let localLegacy = JSON.parse(localStorage.getItem('ss_all_groups'));
+                        if(localLegacy && localLegacy["ИБМ1-51Б"]) {
+                            userData = { currentGroup: localStorage.getItem('ss_current_group') || "ИБМ1-51Б", groups: localLegacy };
+                        } else {
+                            userData = emptyDefaultData;
                         }
-                        initApp();
-                    });
-                } else {
-                    currentUser = null; 
-                    authContainer.style.display = 'inline-block'; profileContainer.style.display = 'none';
-                    
-                    let localLegacy = JSON.parse(localStorage.getItem('ss_all_groups'));
-                    if(localLegacy && localLegacy["ИБМ1-51Б"]) {
-                        userData = { currentGroup: localStorage.getItem('ss_current_group') || "ИБМ1-51Б", groups: localLegacy };
-                    } else {
-                        userData = emptyDefaultData;
+                        saveToCloud(); 
                     }
-                    initApp(); 
+                    initApp();
+                });
+            } else {
+                currentUser = null; 
+                authContainer.style.display = 'inline-block'; profileContainer.style.display = 'none';
+                
+                let localLegacy = JSON.parse(localStorage.getItem('ss_all_groups'));
+                if(localLegacy && localLegacy["ИБМ1-51Б"]) {
+                    userData = { currentGroup: localStorage.getItem('ss_current_group') || "ИБМ1-51Б", groups: localLegacy };
+                } else {
+                    userData = emptyDefaultData;
                 }
-            });
-        }
+                initApp(); 
+            }
+        });
 
         function saveToCloud() {
             if(currentUser && db) db.collection('users').doc(currentUser.uid).set(userData).catch(err => console.error("Ошибка:", err));
@@ -805,7 +803,7 @@
             const link = document.createElement("a"); link.setAttribute("href", URL.createObjectURL(new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }))); link.setAttribute("download", `Смотр_${userData.currentGroup}.csv`); link.click();
         }
 
-        // АНИМАЦИИ И ЗАПУСК (Используем DOMContentLoaded чтобы не ждать загрузки картинки)
+        // АНИМАЦИИ И ЗАПУСК
         document.addEventListener('DOMContentLoaded', () => {
             updateNeonDate();
             setTimeout(() => {
