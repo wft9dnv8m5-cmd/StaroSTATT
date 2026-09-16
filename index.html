@@ -16,6 +16,7 @@
 
     <style>
         :root {
+            /* Темная тема (По умолчанию) */
             --bg-color: #050A14; 
             --accent: #00E676; 
             --accent-glow: 0 0 15px rgba(0, 230, 118, 0.4);
@@ -25,31 +26,50 @@
             --card-border: rgba(255, 255, 255, 0.1);
             --input-bg: rgba(0,0,0,0.5);
             --table-hover: rgba(255,255,255,0.05);
+            --modal-bg: rgba(10, 15, 25, 0.95);
         }
 
+        /* Светлая тема */
         body.light-theme {
-            --bg-color: #f3f4f6; --accent: #00a859; --accent-glow: 0 0 15px rgba(0, 168, 89, 0.3);
-            --text-main: #111827; --text-sec: #4B5563; --card-bg: rgba(255, 255, 255, 0.85);
-            --card-border: rgba(0, 0, 0, 0.1); --input-bg: rgba(255, 255, 255, 0.8); --table-hover: rgba(0,0,0,0.05);
+            --bg-color: #f3f4f6;
+            --accent: #00a859;
+            --accent-glow: 0 0 15px rgba(0, 168, 89, 0.3);
+            --text-main: #111827;
+            --text-sec: #4B5563;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: rgba(0, 0, 0, 0.1);
+            --input-bg: rgba(255, 255, 255, 0.8);
+            --table-hover: rgba(0,0,0,0.05);
+            --modal-bg: rgba(255, 255, 255, 0.95);
         }
 
         body, html { margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-main); font-family: 'Roboto', sans-serif; min-height: 100vh; overflow-x: hidden; scroll-behavior: smooth; transition: background-color 0.3s, color 0.3s; }
         *, *::before, *::after { box-sizing: border-box; }
         h1, h2, h3, h4, .unbounded { font-family: 'Unbounded', sans-serif; margin: 0; }
-        .neon { color: var(--accent); text-shadow: var(--accent-glow); }
+        .neon { color: var(--accent); text-shadow: var(--accent-glow); transition: 0.3s; }
 
+        /* ЭКРАН ЗАГРУЗКИ */
         #splash-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-color); z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: opacity 0.8s ease, visibility 0.8s ease; }
         #splash-oval { position: absolute; width: 350px; height: 350px; background: radial-gradient(ellipse at center, rgba(0, 230, 118, 0.2) 0%, transparent 70%); border-radius: 50%; z-index: 9998; animation: pulseOval 2s infinite alternate; }
         @keyframes pulseOval { from { transform: scale(0.8); opacity: 0.5; } to { transform: scale(1.2); opacity: 1; } }
         #splash-logo { font-family: 'Unbounded', sans-serif; font-size: 4rem; color: var(--accent); text-shadow: var(--accent-glow); position: relative; z-index: 10000; letter-spacing: 2px; text-align: center; }
         
-        .bg-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at center, rgba(5,10,20,0.1) 0%, rgba(5,10,20,0.8) 100%); z-index: 0; pointer-events: none; }
+        .bg-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at center, rgba(5,10,20,0.1) 0%, rgba(5,10,20,0.8) 100%); z-index: 0; pointer-events: none; transition: 0.3s; }
         body.light-theme .bg-overlay { background: radial-gradient(circle at center, rgba(255,255,255,0.4) 0%, rgba(220,225,230,0.8) 100%); }
         
         #app-content { display: none; opacity: 0; transition: opacity 0.5s ease; position: relative; z-index: 1; padding-top: 15px; }
 
-        header { position: sticky; top: 15px; z-index: 100; background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--card-border); border-radius: 16px; margin: 0 2vw 25px 2vw; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; gap: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); overflow-x: auto; scrollbar-width: none; white-space: nowrap; }
+        /* ПЛАВАЮЩАЯ ШАПКА */
+        header { 
+            position: sticky; top: 15px; z-index: 100; 
+            background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
+            border: 1px solid var(--card-border); border-radius: 16px; 
+            margin: 0 2vw 25px 2vw; padding: 10px 20px; 
+            display: flex; justify-content: space-between; align-items: center; gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); overflow-x: auto; scrollbar-width: none; white-space: nowrap; transition: 0.3s;
+        }
         header::-webkit-scrollbar { display: none; }
+        
         .header-left, .header-right { display: flex; gap: 8px; align-items: center; }
         .header-center { display: flex; justify-content: center; min-width: 150px; }
         
@@ -70,11 +90,12 @@
         .btn-action { background: rgba(128, 128, 128, 0.1); border: 1px solid rgba(128, 128, 128, 0.3); color: var(--text-main); padding: 6px 12px; border-radius: 8px; font-family: 'Roboto', sans-serif; cursor: pointer; transition: 0.2s; font-size: 0.85rem;}
         .btn-action:hover { border-color: var(--accent); color: var(--accent); }
 
+        /* ВЫПАДАЮЩЕЕ МЕНЮ ПРОФИЛЯ */
         .profile-container { position: relative; display: inline-block; }
         .profile-avatar { width: 35px; height: 35px; border-radius: 50%; background: var(--accent); color: #000; display: flex; justify-content: center; align-items: center; font-family: 'Unbounded'; font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: var(--accent-glow); transition: 0.3s; }
         .profile-avatar:hover { transform: scale(1.1); }
-        .dropdown-menu { display: none; position: absolute; right: 0; top: 50px; background: rgba(10, 15, 25, 0.95); backdrop-filter: blur(10px); border: 1px solid var(--accent); border-radius: 12px; padding: 10px; width: 220px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); flex-direction: column; gap: 5px; }
-        body.light-theme .dropdown-menu { background: rgba(255, 255, 255, 0.95); border-color: rgba(0,0,0,0.1); }
+        
+        .dropdown-menu { display: none; position: absolute; right: 0; top: 50px; background: var(--modal-bg); backdrop-filter: blur(10px); border: 1px solid var(--accent); border-radius: 12px; padding: 10px; width: 240px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); flex-direction: column; gap: 5px; transition: 0.3s; }
         .dropdown-menu.show { display: flex; animation: fadeIn 0.2s ease; }
         .dropdown-item { background: transparent; border: none; color: var(--text-main); padding: 12px; text-align: left; border-radius: 8px; cursor: pointer; transition: 0.2s; font-family: 'Roboto'; display: flex; align-items: center; gap: 10px; font-size: 0.95rem; }
         .dropdown-item:hover { background: rgba(0, 230, 118, 0.1); color: var(--accent); }
@@ -83,13 +104,15 @@
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* НЕОНОВЫЙ ВИДЖЕТ ДАТЫ И ПРИВЕТСТВИЕ */
         .welcome-section { text-align: center; margin-bottom: 40px; }
         .neon-date-text { font-family: 'Unbounded', sans-serif; font-size: 2.2rem; color: var(--accent); text-shadow: var(--accent-glow); letter-spacing: 2px; transition: 0.3s; margin-bottom: 20px;}
-        .welcome-text { font-family: 'Roboto', sans-serif; font-size: 1.1rem; color: var(--text-sec); line-height: 1.6; max-width: 800px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 16px; backdrop-filter: blur(10px); }
+        .welcome-text { font-family: 'Roboto', sans-serif; font-size: 1.1rem; color: var(--text-sec); line-height: 1.6; max-width: 800px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 16px; backdrop-filter: blur(10px); transition: 0.3s; }
 
         .glass-card { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--card-border); border-radius: 16px; padding: 30px; margin-bottom: 30px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15); transition: 0.3s; }
         .slide-header { margin-bottom: 30px; border-left: 4px solid var(--accent); padding-left: 15px; display: flex; justify-content: space-between; align-items: center;}
         
+        /* ЖУРНАЛ */
         .journal-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px; }
         @media (max-width: 900px) { .journal-layout { grid-template-columns: 1fr; } }
         
@@ -127,9 +150,9 @@
 
         input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--accent); }
         .counter { display: flex; align-items: center; gap: 15px; justify-content: center; }
-        .btn-count { background: var(--input-bg); border: 1px solid var(--card-border); color: var(--text-main); width: 30px; height: 30px; border-radius: 6px; font-family: 'Unbounded', sans-serif; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+        .btn-count { background: var(--input-bg); border: 1px solid var(--card-border); color: var(--text-main); width: 30px; height: 30px; border-radius: 6px; font-family: 'Unbounded', sans-serif; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s; }
         .btn-count:hover { background: rgba(0, 230, 118, 0.2); border-color: var(--accent); color: var(--accent); }
-        .notes-input { background: transparent; border: none; border-bottom: 1px solid var(--card-border); width: 100%; padding: 8px 5px; color: var(--text-main); outline: none;}
+        .notes-input { background: transparent; border: none; border-bottom: 1px solid var(--card-border); width: 100%; padding: 8px 5px; color: var(--text-main); outline: none; transition: 0.3s; }
         .notes-input:focus { border-bottom-color: var(--accent); }
 
         .avatar-grid { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-top: 20px; }
@@ -140,8 +163,9 @@
         .subject-card { background: var(--input-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; text-align: center; font-family: 'Unbounded', sans-serif; font-size: 1rem; color: var(--text-main); min-height: 80px; transition: 0.3s;}
         .subject-card:hover, .subject-card.active { border-color: var(--accent); background: rgba(0, 230, 118, 0.1); color: var(--accent); box-shadow: var(--accent-glow); transform: translateY(-3px); }
 
+        /* МОДАЛЬНЫЕ ОКНА */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); z-index: 10000; justify-content: center; align-items: center; }
-        .modal-content { background: var(--card-bg); border: 1px solid var(--accent); border-radius: 16px; padding: 40px; width: 95%; max-width: 1200px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto; }
+        .modal-content { background: var(--modal-bg); border: 1px solid var(--accent); border-radius: 16px; padding: 40px; width: 95%; max-width: 1200px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto; transition: 0.3s; }
         .modal-small { max-width: 500px; }
         .close-btn { background: transparent; border: none; color: var(--accent); font-size: 30px; cursor: pointer; }
         .close-btn:hover { text-shadow: var(--accent-glow); transform: scale(1.1); }
@@ -150,7 +174,7 @@
 </head>
 <body>
 
-    <!-- ЭКРАН ЗАГРУЗКИ -->
+    <!-- ЭКРАН ЗАГРУЗКИ (Надежный старт) -->
     <div id="splash-screen">
         <div id="splash-oval"></div>
         <div id="splash-logo">StaroSTATT</div>
@@ -161,7 +185,7 @@
     <!-- Основное приложение -->
     <div id="app-content">
         
-        <!-- Шапка -->
+        <!-- Плавающая шапка (В одну строчку) -->
         <header>
             <div class="header-left">
                 <button class="nav-btn" onclick="switchPage('journal', this)">Журнал</button>
@@ -170,6 +194,7 @@
             </div>
             
             <div class="header-center">
+                <!-- Картинка, если нет картинки - запасной текст -->
                 <img src="image.png" alt="StaroSTATT Logo" class="header-logo-img" id="header-logo-btn" onclick="switchPage('groups', this)" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='block';">
                 <div id="fallback-logo" class="fallback-logo-text" onclick="switchPage('groups', this)" style="display:none;">StaroSTATT</div>
             </div>
@@ -178,25 +203,28 @@
                 <button class="btn-stats" style="border-color: #00B0FF; color: #00B0FF;" onclick="openCuratorModal()">Смотр куратору</button>
                 <button class="btn-stats" onclick="openStats()">Статистика группы</button>
                 
+                <!-- Блок авторизации / Профиля -->
                 <div id="auth-controls">
                     <button class="btn-auth" id="header-auth-btn" onclick="openAuthModal()">Войти в аккаунт</button>
                 </div>
 
                 <div class="profile-container" id="profile-controls" style="display: none;">
-                    <div class="profile-avatar" id="profile-avatar" onclick="toggleDropdown()">😎</div>
+                    <div class="profile-avatar" id="profile-avatar" onclick="toggleDropdown(event)">😎</div>
                     <div class="dropdown-menu" id="profile-dropdown">
                         <div style="padding: 10px; color: var(--text-sec); font-size: 0.85rem; border-bottom: 1px solid var(--card-border); margin-bottom: 5px; word-break: break-all;" id="user-email-display">user@mail.com</div>
-                        <button class="dropdown-item" onclick="openAvatarModal()">🎨 Изменить аватар</button>
-                        <button class="dropdown-item" onclick="toggleTheme()">🌓 Сменить тему</button>
-                        <button class="dropdown-item" style="color: #FF5252;" onclick="logout()">🚪 Выйти из аккаунта</button>
+                        <button class="dropdown-item" onclick="openAvatarModal(event)">🎨 Изменить аватар</button>
+                        <button class="dropdown-item" onclick="toggleTheme(event)">🌓 Сменить тему</button>
+                        <button class="dropdown-item" onclick="forceSync(event)">☁️ Синхронизировать</button>
+                        <button class="dropdown-item" style="color: #FF5252;" onclick="logout(event)">🚪 Выйти из аккаунта</button>
                     </div>
                 </div>
             </div>
         </header>
 
-        <!-- Окно 0: Управление группами -->
+        <!-- Окно 0: Управление группами (Главная страница) -->
         <div id="page-groups" class="page active">
             
+            <!-- Приветствие и Дата -->
             <div class="welcome-section">
                 <div class="neon-date-text" id="neon-date-display">ЗАГРУЗКА...</div>
                 <div class="welcome-text">
@@ -265,7 +293,7 @@
             </div>
 
             <div class="glass-card" style="padding: 15px 30px;">
-                <div class="table-container">
+                <div class="table-container" id="students-table-wrapper">
                     <table>
                         <thead><tr><th>№</th><th>Студент</th><th style="text-align: center;">Присутствие</th><th style="text-align: center;">Активность</th><th>Заметки / Долги</th></tr></thead>
                         <tbody id="students-body"></tbody>
@@ -302,7 +330,7 @@
             </div>
         </div>
 
-        <!-- МОДАЛКА АВТОРИЗАЦИИ (С обработкой ошибок) -->
+        <!-- МОДАЛКА АВТОРИЗАЦИИ С ОБРАБОТКОЙ ОШИБОК -->
         <div class="modal" id="auth-modal">
             <div class="modal-content modal-small">
                 <div class="modal-header slide-header" style="margin-bottom: 20px; border-left-color: #00B0FF;">
@@ -351,7 +379,7 @@
             </div>
         </div>
 
-        <!-- МОДАЛКИ СТАТИСТИКИ -->
+        <!-- МОДАЛКИ СТАТИСТИКИ И КУРАТОРА -->
         <div class="modal" id="stats-modal">
             <div class="modal-content">
                 <div class="modal-header slide-header" style="margin-bottom: 0;"><h2 class="neon">Статистика группы</h2><button class="close-btn unbounded" onclick="document.getElementById('stats-modal').style.display='none'">×</button></div>
@@ -381,27 +409,24 @@
 
     <script>
         // ==========================================
-        // ГАРАНТИРОВАННЫЙ ЗАПУСК И СКРЫТИЕ ЭКРАНА ЗАГРУЗКИ
+        // ГАРАНТИРОВАННЫЙ ЗАПУСК
         // ==========================================
+        let isAppReady = false; 
         function hideSplashScreen() {
-            const splash = document.getElementById('splash-screen'); 
-            const app = document.getElementById('app-content');
+            if(isAppReady) return;
+            isAppReady = true;
+            const splash = document.getElementById('splash-screen'); const app = document.getElementById('app-content');
             if (splash) {
                 splash.style.opacity = '0';
                 setTimeout(() => { 
                     splash.style.display = 'none'; 
-                    if(app) {
-                        app.style.display = 'block'; 
-                        setTimeout(() => app.style.opacity = '1', 50); 
-                    }
+                    if(app) { app.style.display = 'block'; setTimeout(() => app.style.opacity = '1', 50); }
                 }, 500);
             }
         }
         
-        setTimeout(hideSplashScreen, 1500);
-
         // ==========================================
-        // 1. КОНФИГУРАЦИЯ FIREBASE (С ТВОИМИ КЛЮЧАМИ)
+        // 1. КОНФИГУРАЦИЯ FIREBASE
         // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyCVgLwa8--Myp1YUPkeGUj_Ik6-r-Qe07U",
@@ -414,28 +439,21 @@
         };
 
         let auth = null; let db = null;
-
         try {
             firebase.initializeApp(firebaseConfig); 
             auth = firebase.auth();
             db = firebase.firestore();
-        } catch(e) {
-            console.error("Ошибка инициализации Firebase:", e);
-        }
+        } catch(e) { console.error("Ошибка инициализации Firebase:", e); }
 
         // ==========================================
-        // 2. ДАННЫЕ (ИЗОЛЯЦИЯ: ПУСТОЙ ШАБЛОН ДЛЯ НОВИЧКОВ)
+        // 2. ДАННЫЕ (ПУСТОЙ ШАБЛОН ДЛЯ НОВИЧКОВ)
         // ==========================================
         const emptyDefaultData = {
             currentGroup: "Без группы", avatar: "😎",
-            groups: { 
-                "Без группы": { students: [], schedule: { even: { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [] }, odd: { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [] } }, attendance: {}, notesList: [] } 
-            }
+            groups: { "Без группы": { students: [], schedule: { even: { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [] }, odd: { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [] } }, attendance: {}, notesList: [] } }
         };
 
         let currentUser = null; let userData = emptyDefaultData; let currentExportData = [];
-        let isAppReady = false; 
-
         function getActiveGroupData() { return userData.groups[userData.currentGroup]; }
 
         // ==========================================
@@ -444,35 +462,31 @@
         let isLoginMode = true;
         
         function togglePassword() {
-            const pwdInput = document.getElementById('password');
-            const toggleIcon = document.querySelector('.toggle-password');
+            const pwdInput = document.getElementById('password'); const toggleIcon = document.querySelector('.toggle-password');
             if (pwdInput.type === 'password') { pwdInput.type = 'text'; toggleIcon.innerText = '🙈'; } 
             else { pwdInput.type = 'password'; toggleIcon.innerText = '👁️'; }
         }
 
         function checkPasswordStrength() {
             if (!isLoginMode) {
-                const pwd = document.getElementById('password').value;
-                const hint = document.getElementById('password-hint');
-                if(pwd.length > 0 && pwd.length < 6) { hint.style.display = 'block'; } 
-                else { hint.style.display = 'none'; }
+                const pwd = document.getElementById('password').value; const hint = document.getElementById('password-hint');
+                if(pwd.length > 0 && pwd.length < 6) { hint.style.display = 'block'; } else { hint.style.display = 'none'; }
             }
         }
 
         function openAuthModal() { document.getElementById('auth-modal').style.display = 'flex'; }
         function toggleAuthMode() {
             isLoginMode = !isLoginMode;
-            document.getElementById('auth-title').innerText = isLoginMode ? "Вход в аккаунт" : "Регистрация";
-            document.getElementById('btn-login').style.display = isLoginMode ? "block" : "none";
-            document.getElementById('btn-register').style.display = isLoginMode ? "none" : "block";
-            document.getElementById('link-toggle').innerText = isLoginMode ? "Нет аккаунта? Создать" : "Уже есть аккаунт? Войти";
+            document.getElementById('auth-title').innerText = isLoginMode ? "Регистрация" : "Вход в аккаунт";
+            document.getElementById('btn-login').style.display = isLoginMode ? "none" : "block";
+            document.getElementById('btn-register').style.display = isLoginMode ? "block" : "none";
+            document.getElementById('link-toggle').innerText = isLoginMode ? "Уже есть аккаунт? Войти" : "Нет аккаунта? Создать";
             document.getElementById('auth-error').style.display = "none";
             document.getElementById('password-hint').style.display = "none";
         }
 
         function handleAuthError(error) {
-            console.error("Firebase Auth Error:", error);
-            let msg = error.message;
+            console.error("Firebase Auth Error:", error); let msg = error.message;
             if (error.code === 'auth/operation-not-allowed') msg = "В Firebase не включен вход по Email! Зайдите в консоль -> Authentication -> Sign-in method и включите Email/Password.";
             else if (error.code === 'auth/unauthorized-domain') msg = "Добавьте ваш домен в белый список: Консоль Firebase -> Authentication -> Settings -> Authorized domains.";
             else if (error.code === 'auth/email-already-in-use') msg = "Эта почта уже занята другим пользователем.";
@@ -480,18 +494,13 @@
             else if (error.code === 'auth/invalid-email') msg = "Неправильный формат почты.";
             else if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') msg = "Неверная почта или пароль.";
 
-            const errDiv = document.getElementById('auth-error');
-            errDiv.innerText = msg;
-            errDiv.style.display = "block";
+            const errDiv = document.getElementById('auth-error'); errDiv.innerText = msg; errDiv.style.display = "block";
         }
         
         function login() { 
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
+            const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value;
             if(!email || !password) return handleAuthError({code: '', message: 'Введите почту и пароль'});
-            
-            const btn = document.getElementById('btn-login');
-            btn.innerText = "Вход..."; btn.disabled = true;
+            const btn = document.getElementById('btn-login'); btn.innerText = "Вход..."; btn.disabled = true;
             
             if(auth) auth.signInWithEmailAndPassword(email, password)
                 .then(() => { btn.innerText = "Войти"; btn.disabled = false; })
@@ -499,90 +508,91 @@
         }
 
         function register() { 
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
+            const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value;
             if(!email || !password) return handleAuthError({code: '', message: 'Введите почту и пароль'});
             if(password.length < 6) return handleAuthError({code: 'auth/weak-password', message: ''});
-            
-            const btn = document.getElementById('btn-register');
-            btn.innerText = "Регистрация..."; btn.disabled = true;
+            const btn = document.getElementById('btn-register'); btn.innerText = "Регистрация..."; btn.disabled = true;
 
             if(auth) auth.createUserWithEmailAndPassword(email, password)
                 .then(() => { btn.innerText = "Зарегистрироваться"; btn.disabled = false; })
                 .catch(err => { btn.innerText = "Зарегистрироваться"; btn.disabled = false; handleAuthError(err); }); 
         }
 
-        function logout() { if(auth) auth.signOut(); document.getElementById('profile-dropdown').classList.remove('show'); }
+        function logout(e) { if(e) e.stopPropagation(); if(auth) auth.signOut(); document.getElementById('profile-dropdown').classList.remove('show'); }
+        function forceSync(e) { if(e) e.stopPropagation(); saveToCloud(); alert("Данные успешно синхронизированы с облаком!"); document.getElementById('profile-dropdown').classList.remove('show'); }
 
+        // Инициализация при загрузке
         if(auth) {
-            auth.onAuthStateChanged(user => {
-                const authContainer = document.getElementById('auth-controls');
-                const profileContainer = document.getElementById('profile-controls');
-                
-                if (user) {
-                    currentUser = user; 
-                    authContainer.style.display = 'none'; profileContainer.style.display = 'inline-block';
-                    document.getElementById('profile-avatar').innerText = user.email.charAt(0).toUpperCase();
-                    document.getElementById('user-email-display').innerText = user.email;
-                    document.getElementById('auth-modal').style.display = 'none';
+            auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
+                auth.onAuthStateChanged(user => {
+                    const authContainer = document.getElementById('auth-controls'); const profileContainer = document.getElementById('profile-controls');
                     
-                    db.collection('users').doc(user.uid).get().then(doc => {
-                        if (doc.exists) { 
-                            userData = doc.data(); 
-                            if(!userData.avatar) userData.avatar = "😎";
-                        } else { 
-                            let localLegacy = JSON.parse(localStorage.getItem('ss_all_groups'));
-                            if(localLegacy && localLegacy["ИБМ1-51Б"]) { userData = { currentGroup: localStorage.getItem('ss_current_group') || "ИБМ1-51Б", groups: localLegacy, avatar: "😎" }; } 
-                            else { userData = emptyDefaultData; }
-                            saveToCloud(); 
-                        }
-                        launchApp();
-                    }).catch(err => { console.error("Ошибка загрузки данных:", err); launchApp(); });
-                } else {
-                    currentUser = null; 
-                    authContainer.style.display = 'inline-block'; profileContainer.style.display = 'none';
-                    
-                    let localLegacy = JSON.parse(localStorage.getItem('ss_all_groups'));
-                    if(localLegacy && localLegacy["ИБМ1-51Б"]) { userData = { currentGroup: localStorage.getItem('ss_current_group') || "ИБМ1-51Б", groups: localLegacy, avatar: localStorage.getItem('ss_avatar') || "😎" }; } 
-                    else { userData = emptyDefaultData; }
-                    launchApp(); 
-                }
+                    if (user) {
+                        currentUser = user; 
+                        authContainer.style.display = 'none'; profileContainer.style.display = 'inline-block';
+                        document.getElementById('user-email-display').innerText = user.email;
+                        document.getElementById('auth-modal').style.display = 'none';
+                        
+                        db.collection('users').doc(user.uid).get().then(doc => {
+                            if (doc.exists) { 
+                                userData = doc.data(); if(!userData.avatar) userData.avatar = "😎";
+                            } else { 
+                                let localLegacy = JSON.parse(localStorage.getItem('ss_all_groups'));
+                                if(localLegacy && localLegacy["ИБМ1-51Б"]) { userData = { currentGroup: localStorage.getItem('ss_current_group') || "ИБМ1-51Б", groups: localLegacy, avatar: "😎" }; } 
+                                else { userData = emptyDefaultData; }
+                                saveToCloud(); 
+                            }
+                            initApp(); hideSplashScreen();
+                        }).catch(() => { initLocalApp(); hideSplashScreen(); });
+                    } else {
+                        currentUser = null; 
+                        authContainer.style.display = 'inline-block'; profileContainer.style.display = 'none';
+                        initLocalApp(); hideSplashScreen();
+                    }
+                });
             });
-        } else { launchApp(); }
+        } else { initLocalApp(); hideSplashScreen(); }
 
-        function launchApp() {
-            if(!isAppReady) {
-                isAppReady = true; initApp(); hideSplashScreen();
-            } else {
-                initApp(); 
-            }
+        function initLocalApp() {
+            let localLegacy = JSON.parse(localStorage.getItem('ss_all_groups'));
+            if(localLegacy && localLegacy["ИБМ1-51Б"]) { userData = { currentGroup: localStorage.getItem('ss_current_group') || "ИБМ1-51Б", groups: localLegacy, avatar: localStorage.getItem('ss_avatar') || "😎" }; } 
+            else { userData = emptyDefaultData; }
+            initApp(); 
         }
 
         function saveToCloud() {
             if(currentUser && db) db.collection('users').doc(currentUser.uid).set(userData).catch(err => console.error("Ошибка сохранения:", err));
             localStorage.setItem('ss_all_groups', JSON.stringify(userData.groups)); localStorage.setItem('ss_current_group', userData.currentGroup); localStorage.setItem('ss_avatar', userData.avatar);
-            document.getElementById('profile-avatar').innerText = userData.avatar;
+            if(document.getElementById('profile-avatar')) document.getElementById('profile-avatar').innerText = userData.avatar;
         }
 
         // ==========================================
-        // ВЫПАДАЮЩЕЕ МЕНЮ И ТЕМЫ
+        // ВЫПАДАЮЩЕЕ МЕНЮ И ТЕМЫ (ИСПРАВЛЕНО ДЛЯ НАДЕЖНОСТИ)
         // ==========================================
-        function toggleDropdown() { document.getElementById("profile-dropdown").classList.toggle("show"); }
-        window.onclick = function(event) { if (!event.target.matches('.profile-avatar')) { var dropdowns = document.getElementsByClassName("dropdown-menu"); for (var i = 0; i < dropdowns.length; i++) { if (dropdowns[i].classList.contains('show')) { dropdowns[i].classList.remove('show'); } } } }
+        function toggleDropdown(e) { if(e) e.stopPropagation(); document.getElementById("profile-dropdown").classList.toggle("show"); }
         
-        function toggleTheme() {
+        window.onclick = function(event) { 
+            if (!event.target.closest('.profile-container')) { 
+                var dropdowns = document.getElementsByClassName("dropdown-menu"); 
+                for (var i = 0; i < dropdowns.length; i++) { if (dropdowns[i].classList.contains('show')) { dropdowns[i].classList.remove('show'); } } 
+            } 
+        }
+        
+        function toggleTheme(e) {
+            if(e) e.stopPropagation();
             document.body.classList.toggle('light-theme'); const isLight = document.body.classList.contains('light-theme');
             localStorage.setItem('ss_theme', isLight ? 'light' : 'dark'); document.getElementById('profile-dropdown').classList.remove('show');
         }
         if(localStorage.getItem('ss_theme') === 'light') { document.body.classList.add('light-theme'); }
 
         const avatars = ["😎", "🎓", "👑", "🦊", "👽", "🚀", "💻", "🔥", "🦄", "☕️", "👨‍💻", "👩‍💻"];
-        function openAvatarModal() {
+        function openAvatarModal(e) {
+            if(e) e.stopPropagation();
             const grid = document.getElementById('avatar-grid'); grid.innerHTML = '';
             avatars.forEach(emoji => { grid.innerHTML += `<div class="avatar-option ${userData.avatar === emoji ? 'selected' : ''}" onclick="selectAvatar('${emoji}')">${emoji}</div>`; });
             document.getElementById('profile-dropdown').classList.remove('show'); document.getElementById('avatar-modal').style.display = 'flex';
         }
-        function selectAvatar(emoji) { userData.avatar = emoji; saveToCloud(); document.getElementById('avatar-modal').style.display = 'none'; }
+        function selectAvatar(emoji) { userData.avatar = emoji; saveToCloud(); document.getElementById('avatar-modal').style.display = 'none'; initApp(); }
 
         // ==========================================
         // 4. ИНИЦИАЛИЗАЦИЯ И ИНТЕРФЕЙС
@@ -747,7 +757,7 @@
             const tbody = document.getElementById('students-body'); tbody.innerHTML = '';
             if (lessonSelect.value === 'none') { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 30px;">В этот день занятий нет</td></tr>'; return; }
             const activeData = getActiveGroupData();
-            if(activeData.students.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 30px;">Список студентов пуст</td></tr>'; return; }
+            if(activeData.students.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 30px;">Список студентов пуст. Добавьте студентов в настройках.</td></tr>'; return; }
 
             activeData.students.forEach((name, i) => {
                 const key = getCurrentStorageKey(i); const data = activeData.attendance[key] || { present: false, answers: 0, notes: "" };
@@ -797,18 +807,31 @@
         function openStats() { document.getElementById('stats-modal').style.display = 'flex'; }
         
         // ==========================================
-        // 8. СМОТР КУРАТОРУ
+        // 8. СМОТР КУРАТОРУ (ИСПРАВЛЕНО ДЛЯ НОВЫХ АККАУНТОВ)
         // ==========================================
         function openCuratorModal() {
             const select = document.getElementById('curator-week-select');
             if (select.children.length === 0) { for (let i = 1; i <= 18; i++) { const opt = document.createElement('option'); opt.value = i; opt.textContent = `${i} неделя (${i % 2 !== 0 ? 'Четная' : 'Нечетная'})`; select.appendChild(opt); } }
-            select.value = weekSelect.value; renderCuratorTable(); document.getElementById('curator-modal').style.display = 'flex';
+            
+            // Защита: берем текущую неделю из Журнала или считаем сами
+            let currentW = document.getElementById('week') ? document.getElementById('week').value : 1;
+            if(!currentW) currentW = getAcademicWeek(new Date());
+            select.value = currentW; 
+            
+            renderCuratorTable(); document.getElementById('curator-modal').style.display = 'flex';
         }
 
         function renderCuratorTable() {
-            const targetWeek = parseInt(document.getElementById('curator-week-select').value);
+            const targetWeek = parseInt(document.getElementById('curator-week-select').value) || 1;
             let totalLec = 0, totalSem = 0; currentExportData = []; const activeData = getActiveGroupData();
+            const tbody = document.getElementById('curator-tbody'); tbody.innerHTML = '';
             
+            if(!activeData.students || activeData.students.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">Список студентов пуст. Добавьте студентов в настройках группы.</td></tr>';
+                document.getElementById('curator-summary').innerHTML = "";
+                return;
+            }
+
             for (let w = 1; w <= targetWeek; w++) {
                 const wType = (w % 2 !== 0) ? 'even' : 'odd'; 
                 for(let day in activeData.schedule[wType]) {
@@ -817,7 +840,6 @@
                 }
             }
             
-            const tbody = document.getElementById('curator-tbody'); tbody.innerHTML = '';
             let totalSemHours = totalSem * 2; let totalLecHours = totalLec * 2;
             document.getElementById('curator-summary').innerHTML = `С 1-й по ${targetWeek}-ю неделю включительно. <br>Семинаров: <b>${totalSem} пар (${totalSemHours} ак.ч.)</b>, Лекций: <b>${totalLec} пар (${totalLecHours} ак.ч.)</b>.`;
 
