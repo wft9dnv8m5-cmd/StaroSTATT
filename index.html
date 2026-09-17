@@ -16,7 +16,6 @@
 
     <style>
         :root {
-            /* Темная тема (По умолчанию) */
             --bg-color: #050A14; 
             --accent: #00E676; 
             --accent-glow: 0 0 15px rgba(0, 230, 118, 0.4);
@@ -29,7 +28,6 @@
             --modal-bg: rgba(10, 15, 25, 0.95);
         }
 
-        /* Светлая тема */
         body.light-theme {
             --bg-color: #f3f4f6; --accent: #00a859; --accent-glow: 0 0 15px rgba(0, 168, 89, 0.3);
             --text-main: #111827; --text-sec: #4B5563; --card-bg: rgba(255, 255, 255, 0.85);
@@ -52,9 +50,6 @@
         
         #app-content { display: none; opacity: 0; transition: opacity 0.5s ease; position: relative; z-index: 1; padding-top: 60px; padding-bottom: 40px;}
 
-        /* ============================ */
-        /* БОКОВОЕ МЕНЮ (САЙДБАР)      */
-        /* ============================ */
         #sidebar-trigger { position: fixed; left: 0; top: 0; width: 30px; height: 100vh; z-index: 999; }
         .sidebar-hint { position: fixed; left: 0; top: 50%; transform: translateY(-50%); width: 5px; height: 60px; background: var(--accent); border-radius: 0 5px 5px 0; box-shadow: var(--accent-glow); z-index: 998; transition: 0.3s; pointer-events: none; opacity: 0.5;}
         
@@ -78,7 +73,6 @@
         .sidebar-section { border-bottom: 1px solid var(--card-border); padding-bottom: 20px; }
         .sidebar-section:last-child { border-bottom: none; }
 
-        /* Авторизация в сайдбаре */
         .profile-container { width: 100%; display: flex; flex-direction: column; }
         .profile-card { display: flex; align-items: center; gap: 12px; background: var(--input-bg); padding: 12px; border-radius: 12px; border: 1px solid var(--card-border); cursor: pointer; transition: 0.3s; }
         .profile-card:hover { border-color: var(--accent); box-shadow: 0 0 10px rgba(0,230,118,0.1); }
@@ -90,13 +84,11 @@
         .dropdown-item { background: transparent; border: none; color: var(--text-main); padding: 10px; text-align: left; border-radius: 8px; cursor: pointer; transition: 0.2s; font-family: 'Roboto'; font-size: 0.9rem; }
         .dropdown-item:hover { background: rgba(0, 230, 118, 0.1); color: var(--accent); }
 
-        /* Логотип в сайдбаре */
         .sidebar-logo-container { display: flex; justify-content: center; align-items: center; padding: 10px 0; cursor: pointer; }
         .header-logo-img { max-width: 100%; height: 70px; transition: 0.3s; filter: drop-shadow(0 0 10px rgba(0, 230, 118, 0.4)); }
         .header-logo-img:hover { transform: scale(1.05); filter: drop-shadow(0 0 20px rgba(0, 230, 118, 0.8)); }
         .fallback-logo-text { font-family: 'Unbounded', sans-serif; font-size: 2rem; font-weight: 700; color: var(--accent); text-shadow: var(--accent-glow); text-align: center; }
 
-        /* Кнопки навигации в сайдбаре */
         .sidebar-btn { width: 100%; text-align: left; background: transparent; border: 1px solid transparent; color: var(--text-sec); padding: 12px 15px; border-radius: 10px; font-family: 'Unbounded', sans-serif; font-size: 0.85rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; margin-bottom: 5px;}
         .sidebar-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
         .sidebar-btn.active { color: var(--accent); background: rgba(0, 230, 118, 0.05); border-color: rgba(0, 230, 118, 0.3); }
@@ -111,9 +103,6 @@
         .btn-action { background: rgba(128, 128, 128, 0.1); border: 1px solid rgba(128, 128, 128, 0.3); color: var(--text-main); padding: 8px 16px; border-radius: 8px; font-family: 'Roboto', sans-serif; cursor: pointer; transition: 0.2s; font-size: 0.85rem;}
         .btn-action:hover { border-color: var(--accent); color: var(--accent); }
 
-        /* ============================ */
-        /* ОСНОВНОЙ КОНТЕНТ             */
-        /* ============================ */
         .page { display: none; padding: 0 3vw; position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; animation: fadeIn 0.4s ease-out; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -458,6 +447,9 @@
                 setTimeout(() => { splash.style.display = 'none'; if(app) { app.style.display = 'block'; setTimeout(() => app.style.opacity = '1', 50); } }, 400);
             }
         }
+        
+        // Fail-safe: Принудительное отключение сплеш-экрана через 2.5 секунды
+        setTimeout(launchApp, 2500);
 
         // 1. КОНФИГУРАЦИЯ FIREBASE
         const firebaseConfig = {
@@ -509,7 +501,12 @@
         };
 
         let currentUser = null; let userData = JSON.parse(JSON.stringify(defaultData)); let currentExportData = [];
-        function getActiveGroupData() { return userData.groups[userData.currentGroup]; }
+        function getActiveGroupData() { 
+            if(!userData || !userData.groups || !userData.groups[userData.currentGroup]) {
+                userData = JSON.parse(JSON.stringify(defaultData)); // Защита от сбоя при отсутствии группы
+            }
+            return userData.groups[userData.currentGroup]; 
+        }
 
         // 3. АВТОРИЗАЦИЯ И МИГРАЦИЯ
         let isLoginMode = true;
@@ -542,7 +539,10 @@
                         currentUser = user; authContainer.style.display = 'none'; profileContainer.style.display = 'block';
                         document.getElementById('user-email-display').innerText = user.email; document.getElementById('auth-modal').style.display = 'none';
                         db.collection('users').doc(user.uid).get().then(doc => {
-                            if (doc.exists) { userData = doc.data(); if(!userData.avatar) userData.avatar = "😎"; } 
+                            if (doc.exists) { 
+                                userData = doc.data(); 
+                                if(!userData.avatar) userData.avatar = "😎"; 
+                            } 
                             else { loadLocalData(); saveToCloud(); }
                             launchApp();
                         }).catch(err => { console.error(err); loadLocalData(); launchApp(); });
@@ -551,17 +551,28 @@
                         loadLocalData(); launchApp(); 
                     }
                 });
+            }).catch(err => {
+                // ИСПРАВЛЕНИЕ: Добавлен блок catch для setPersistence, предотвращающий зависание
+                console.error("Firebase persistence error:", err);
+                loadLocalData(); 
+                launchApp();
             });
         } else { loadLocalData(); launchApp(); }
 
         function launchApp() { initApp(); hideSplashScreen(); }
 
         function loadLocalData() {
-            let localLegacy = JSON.parse(localStorage.getItem('ss_all_groups'));
-            if(localLegacy && Object.keys(localLegacy).length > 0) { 
-                userData = { currentGroup: localStorage.getItem('ss_current_group') || Object.keys(localLegacy)[0], groups: localLegacy, avatar: localStorage.getItem('ss_avatar') || "😎" }; 
-            } else { 
-                userData = JSON.parse(JSON.stringify(defaultData)); 
+            try {
+                let localLegacy = JSON.parse(localStorage.getItem('ss_all_groups'));
+                if(localLegacy && Object.keys(localLegacy).length > 0) { 
+                    userData = { currentGroup: localStorage.getItem('ss_current_group') || Object.keys(localLegacy)[0], groups: localLegacy, avatar: localStorage.getItem('ss_avatar') || "😎" }; 
+                } else { 
+                    userData = JSON.parse(JSON.stringify(defaultData)); 
+                }
+            } catch(e) {
+                // ИСПРАВЛЕНИЕ: Защита от поврежденных данных в памяти
+                console.error("Local data parse error", e);
+                userData = JSON.parse(JSON.stringify(defaultData));
             }
         }
 
