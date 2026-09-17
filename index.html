@@ -191,8 +191,29 @@
     <!-- БОКОВОЕ МЕНЮ (САЙДБАР) -->
     <nav id="sidebar">
         
-        <!-- 1. Блок авторизации / Профиля -->
+        <!-- 1. Логотип -->
+        <div class="sidebar-section sidebar-logo-container" onclick="switchPage('groups', this)" style="padding-top: 0;">
+            <img src="image.png" alt="StaroSTATT Logo" class="header-logo-img" id="header-logo-btn" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='block';">
+            <div id="fallback-logo" class="fallback-logo-text" style="display:none;">StaroSTATT</div>
+        </div>
+
+        <!-- 2. Навигация (Меню) -->
         <div class="sidebar-section">
+            <div class="sidebar-title">Страницы</div>
+            <button class="sidebar-btn nav-btn active" onclick="switchPage('groups', this)">🏠 Моя группа</button>
+            <button class="sidebar-btn nav-btn" onclick="switchPage('journal', this)">📖 Журнал</button>
+            <button class="sidebar-btn nav-btn" onclick="switchPage('notes', this)">📌 Важная информация</button>
+            <button class="sidebar-btn nav-btn" onclick="switchPage('teacher', this)">🎓 Для преподавателей</button>
+            
+            <div class="sidebar-title" style="margin-top: 20px;">Отчеты</div>
+            <button class="sidebar-btn" style="color: #00B0FF; border: 1px solid rgba(0, 176, 255, 0.3);" onclick="openCuratorModal()">📊 Смотр куратору</button>
+            <button class="sidebar-btn" style="color: var(--accent); border: 1px solid rgba(0, 230, 118, 0.3); margin-top: 5px;" onclick="openStats()">📈 Статистика группы</button>
+        </div>
+
+        <!-- 3. Блок авторизации / Профиля -->
+        <div class="sidebar-section" style="border-bottom: none; padding-bottom: 0; margin-top: auto;">
+            <div class="sidebar-title">Аккаунт</div>
+            
             <div id="auth-controls">
                 <button class="btn-auth" id="header-auth-btn" onclick="openAuthModal()">Войти в аккаунт</button>
             </div>
@@ -212,25 +233,6 @@
                     <button class="dropdown-item" style="color: #FF5252;" onclick="logout(event)">🚪 Выйти из аккаунта</button>
                 </div>
             </div>
-        </div>
-
-        <!-- 2. Логотип -->
-        <div class="sidebar-section sidebar-logo-container" onclick="switchPage('groups', this)">
-            <img src="image.png" alt="StaroSTATT Logo" class="header-logo-img" id="header-logo-btn" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='block';">
-            <div id="fallback-logo" class="fallback-logo-text" style="display:none;">StaroSTATT</div>
-        </div>
-
-        <!-- 3. Навигация -->
-        <div class="sidebar-section" style="border-bottom: none; padding-bottom: 0;">
-            <div class="sidebar-title">Страницы</div>
-            <button class="sidebar-btn nav-btn active" onclick="switchPage('groups', this)">🏠 Моя группа</button>
-            <button class="sidebar-btn nav-btn" onclick="switchPage('journal', this)">📖 Журнал</button>
-            <button class="sidebar-btn nav-btn" onclick="switchPage('notes', this)">📌 Важная информация</button>
-            <button class="sidebar-btn nav-btn" onclick="switchPage('teacher', this)">🎓 Для преподавателей</button>
-            
-            <div class="sidebar-title" style="margin-top: 20px;">Отчеты</div>
-            <button class="sidebar-btn" style="color: #00B0FF; border: 1px solid rgba(0, 176, 255, 0.3);" onclick="openCuratorModal()">📊 Смотр куратору</button>
-            <button class="sidebar-btn" style="color: var(--accent); border: 1px solid rgba(0, 230, 118, 0.3); margin-top: 5px;" onclick="openStats()">📈 Статистика группы</button>
         </div>
 
     </nav>
@@ -436,7 +438,7 @@
         // САЙДБАР (МОБИЛЬНАЯ ВЕРСИЯ)
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
-        // ГАРАНТИРОВАННЫЙ ЗАПУСК
+        // ГАРАНТИРОВАННЫЙ ЗАПУСК - Прячем заставку самым первым делом
         let isAppReady = false; 
         function hideSplashScreen() {
             if(isAppReady) return;
@@ -444,13 +446,10 @@
             const splash = document.getElementById('splash-screen'); const app = document.getElementById('app-content');
             if (splash) {
                 splash.style.opacity = '0';
-                setTimeout(() => { splash.style.display = 'none'; if(app) { app.style.display = 'block'; setTimeout(() => app.style.opacity = '1', 50); } }, 400);
+                setTimeout(() => { splash.style.display = 'none'; if(app) { app.style.display = 'block'; setTimeout(() => app.style.opacity = '1', 50); } }, 200);
             }
         }
         
-        // Fail-safe: Принудительное отключение сплеш-экрана через 2.5 секунды
-        setTimeout(launchApp, 2500);
-
         // 1. КОНФИГУРАЦИЯ FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyCVgLwa8--Myp1YUPkeGUj_Ik6-r-Qe07U",
@@ -466,9 +465,9 @@
         try {
             firebase.initializeApp(firebaseConfig); 
             auth = firebase.auth(); db = firebase.firestore();
-        } catch(e) { console.error("Firebase init failed"); }
+        } catch(e) { console.error("Firebase init failed", e); }
 
-        // 2. ДАННЫЕ ПО УМОЛЧАНИЮ (ИБМ1-32Б)
+        // 2. ДАННЫЕ ПО УМОЛЧАНИЮ
         const defaultData = {
             currentGroup: "ИБМ1-32Б", avatar: "😎",
             groups: { 
@@ -501,11 +500,29 @@
         };
 
         let currentUser = null; let userData = JSON.parse(JSON.stringify(defaultData)); let currentExportData = [];
+        
+        // ЖЕСТКАЯ ЗАЩИТА ДАННЫХ
         function getActiveGroupData() { 
-            if(!userData || !userData.groups || !userData.groups[userData.currentGroup]) {
-                userData = JSON.parse(JSON.stringify(defaultData)); // Защита от сбоя при отсутствии группы
+            if(!userData) userData = JSON.parse(JSON.stringify(defaultData));
+            if(!userData.groups) userData.groups = { "Новая группа": { students: [], schedule: { even: {}, odd: {} }, attendance: {}, notesList: [] } };
+            
+            if(!userData.currentGroup || !userData.groups[userData.currentGroup]) {
+                userData.currentGroup = Object.keys(userData.groups)[0] || "Новая группа";
             }
-            return userData.groups[userData.currentGroup]; 
+            
+            let group = userData.groups[userData.currentGroup];
+            
+            if (!group) group = { students: [], schedule: { even: {}, odd: {} }, attendance: {}, notesList: [] };
+            if (!group.schedule) group.schedule = { even: {}, odd: {} };
+            if (!group.schedule.even) group.schedule.even = {};
+            if (!group.schedule.odd) group.schedule.odd = {};
+            if (!group.students) group.students = [];
+            if (!group.attendance) group.attendance = {};
+            if (!group.notesList) group.notesList = [];
+            
+            userData.groups[userData.currentGroup] = group;
+
+            return group; 
         }
 
         // 3. АВТОРИЗАЦИЯ И МИГРАЦИЯ
@@ -531,9 +548,28 @@
         function logout(e) { if(e) e.stopPropagation(); if(auth) auth.signOut(); document.getElementById('profile-dropdown').classList.remove('show'); showToast("Вы вышли из аккаунта", "success"); }
         function forceSync(e) { if(e) e.stopPropagation(); saveToCloud(); document.getElementById('profile-dropdown').classList.remove('show'); }
 
+        // БЕЗОПАСНЫЙ ЗАПУСК
+        function launchApp() { 
+            hideSplashScreen(); 
+            try {
+                initApp();      
+            } catch(e) {
+                console.error("Критическая ошибка отрисовки:", e);
+                userData = JSON.parse(JSON.stringify(defaultData));
+                try { initApp(); showToast("Восстановлены стандартные настройки из-за ошибки данных", "error"); } catch(e2) {}
+            }
+        }
+
+        let forceLaunchTimeout = setTimeout(() => {
+            console.log("Таймаут Firebase, запускаем локально...");
+            loadLocalData();
+            launchApp();
+        }, 1500);
+
         if(auth) {
             auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
                 auth.onAuthStateChanged(user => {
+                    clearTimeout(forceLaunchTimeout); 
                     const authContainer = document.getElementById('auth-controls'); const profileContainer = document.getElementById('profile-controls');
                     if (user) {
                         currentUser = user; authContainer.style.display = 'none'; profileContainer.style.display = 'block';
@@ -542,8 +578,9 @@
                             if (doc.exists) { 
                                 userData = doc.data(); 
                                 if(!userData.avatar) userData.avatar = "😎"; 
-                            } 
-                            else { loadLocalData(); saveToCloud(); }
+                            } else { 
+                                loadLocalData(); saveToCloud(); 
+                            }
                             launchApp();
                         }).catch(err => { console.error(err); loadLocalData(); launchApp(); });
                     } else {
@@ -552,14 +589,16 @@
                     }
                 });
             }).catch(err => {
-                // ИСПРАВЛЕНИЕ: Добавлен блок catch для setPersistence, предотвращающий зависание
                 console.error("Firebase persistence error:", err);
+                clearTimeout(forceLaunchTimeout);
                 loadLocalData(); 
                 launchApp();
             });
-        } else { loadLocalData(); launchApp(); }
-
-        function launchApp() { initApp(); hideSplashScreen(); }
+        } else { 
+            clearTimeout(forceLaunchTimeout);
+            loadLocalData(); 
+            launchApp(); 
+        }
 
         function loadLocalData() {
             try {
@@ -570,8 +609,7 @@
                     userData = JSON.parse(JSON.stringify(defaultData)); 
                 }
             } catch(e) {
-                // ИСПРАВЛЕНИЕ: Защита от поврежденных данных в памяти
-                console.error("Local data parse error", e);
+                console.error("Local data is corrupted", e);
                 userData = JSON.parse(JSON.stringify(defaultData));
             }
         }
@@ -594,14 +632,32 @@
 
         // 4. ИНИЦИАЛИЗАЦИЯ И ИНТЕРФЕЙС
         function initApp() {
-            updateNeonDate(); document.getElementById('page-title').innerText = `StaroSTATT - ${userData.currentGroup}`;
+            updateNeonDate(); 
+            document.getElementById('page-title').innerText = `StaroSTATT - ${userData.currentGroup || '...'}`;
             if(document.getElementById('profile-avatar')) document.getElementById('profile-avatar').innerText = userData.avatar || "😎";
+            
             const selector = document.getElementById('group-selector'); selector.innerHTML = '';
-            for(let g in userData.groups) { let opt = document.createElement('option'); opt.value = g; opt.textContent = g; if(g === userData.currentGroup) opt.selected = true; selector.appendChild(opt); }
+            for(let g in userData.groups) { 
+                let opt = document.createElement('option'); opt.value = g; opt.textContent = g; 
+                if(g === userData.currentGroup) opt.selected = true; 
+                selector.appendChild(opt); 
+            }
+            
             const activeData = getActiveGroupData();
-            document.getElementById('current-group-display').textContent = userData.currentGroup; document.getElementById('current-group-stats').textContent = `Студентов: ${activeData.students.length}`;
-            document.getElementById('setup-group-name').value = userData.currentGroup; document.getElementById('setup-students').value = activeData.students.join('\n'); document.getElementById('setup-schedule').value = JSON.stringify(activeData.schedule, null, 4);
-            initWeekSelects(); const dp = document.getElementById('date-picker'); if(dp && !dp.value) dp.valueAsDate = new Date(); syncDateToDay(); renderNotes();
+            const safeStudents = activeData.students || [];
+            const safeSchedule = activeData.schedule || {};
+
+            document.getElementById('current-group-display').textContent = userData.currentGroup || 'Нет группы'; 
+            document.getElementById('current-group-stats').textContent = `Студентов: ${safeStudents.length}`;
+            document.getElementById('setup-group-name').value = userData.currentGroup || ''; 
+            document.getElementById('setup-students').value = safeStudents.join('\n'); 
+            document.getElementById('setup-schedule').value = JSON.stringify(safeSchedule, null, 4);
+            
+            initWeekSelects(); 
+            const dp = document.getElementById('date-picker'); 
+            if(dp && !dp.value) dp.valueAsDate = new Date(); 
+            syncDateToDay(); 
+            renderNotes();
         }
 
         function updateNeonDate() { const now = new Date(); const days = ['ВОСКРЕСЕНЬЕ', 'ПОНЕДЕЛЬНИК', 'ВТОРНИК', 'СРЕДА', 'ЧЕТВЕРГ', 'ПЯТНИЦА', 'СУББОТА']; const months = ['ЯНВАРЯ', 'ФЕВРАЛЯ', 'МАРТА', 'АПРЕЛЯ', 'МАЯ', 'ИЮНЯ', 'ИЮЛЯ', 'АВГУСТА', 'СЕНТЯБРЯ', 'ОКТЯБРЯ', 'НОЯБРЯ', 'ДЕКАБРЯ']; document.getElementById('neon-date-display').textContent = `${now.getDate()} ${months[now.getMonth()]}, ${days[now.getDay()]}`; }
@@ -632,19 +688,19 @@
         function initWeekSelects() { weekSelect.innerHTML = ''; for (let i = 1; i <= 18; i++) { const opt = document.createElement('option'); opt.value = i; opt.textContent = `${i} неделя (${i % 2 !== 0 ? 'Четная' : 'Нечетная'})`; weekSelect.appendChild(opt); } }
         function getAcademicWeek(dateObj) { const year = dateObj.getMonth() >= 7 ? dateObj.getFullYear() : dateObj.getFullYear() - 1; let start = new Date(year, 8, 1); let day = start.getDay(); let diff = start.getDate() - day + (day === 0 ? -6 : 1); let firstMonday = new Date(start.setDate(diff)); let daysPast = Math.floor((dateObj - firstMonday) / (24 * 60 * 60 * 1000)); let weekNo = Math.floor(daysPast / 7) + 1; return weekNo > 0 && weekNo <= 18 ? weekNo : 1; }
         function syncDateToDay() { const d = new Date(datePicker.value); const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']; const dayCode = days[d.getDay()]; let calculatedWeek = getAcademicWeek(d); if(document.querySelector(`#day option[value="${dayCode}"]`)) daySelect.value = dayCode; weekSelect.value = calculatedWeek; updateInterface(); }
-        function updateInterface() { const schedule = getActiveGroupData().schedule; const weekNum = parseInt(weekSelect.value); const weekType = (weekNum % 2 !== 0) ? 'even' : 'odd'; const day = daySelect.value; const lessons = schedule[weekType] && schedule[weekType][day] ? schedule[weekType][day] : []; const dayNames = { mon: 'Понедельник', tue: 'Вторник', wed: 'Среда', thu: 'Четверг', fri: 'Пятница', sat: 'Суббота' }; document.getElementById('card-title').innerHTML = `${dayNames[day]} <span style="font-size: 1.1rem; color: var(--text-sec);">/ ${weekSelect.value} неделя</span>`; const scheduleCards = document.getElementById('schedule-display-cards'); scheduleCards.innerHTML = ''; lessonSelect.innerHTML = ''; if (lessons.length === 0) { scheduleCards.innerHTML = '<div class="schedule-card-item" style="border-left-color: #FF5252;"><span class="schedule-card-name">🎉 Занятий нет</span></div>'; lessonSelect.innerHTML = '<option value="none">Нет пар</option>'; } else { lessons.forEach(l => { const parts = l.text.split(' - '); const time = parts[0]; const name = parts.slice(1).join(' - '); scheduleCards.innerHTML += `<div class="schedule-card-item"><span class="schedule-card-time">${time}</span><span class="schedule-card-name">${name}</span></div>`; const opt = document.createElement('option'); opt.value = l.id; opt.textContent = l.text; lessonSelect.appendChild(opt); }); } renderTable(); }
+        function updateInterface() { const schedule = getActiveGroupData().schedule || {even:{}, odd:{}}; const weekNum = parseInt(weekSelect.value); const weekType = (weekNum % 2 !== 0) ? 'even' : 'odd'; const day = daySelect.value; const lessons = schedule[weekType] && schedule[weekType][day] ? schedule[weekType][day] : []; const dayNames = { mon: 'Понедельник', tue: 'Вторник', wed: 'Среда', thu: 'Четверг', fri: 'Пятница', sat: 'Суббота' }; document.getElementById('card-title').innerHTML = `${dayNames[day]} <span style="font-size: 1.1rem; color: var(--text-sec);">/ ${weekSelect.value} неделя</span>`; const scheduleCards = document.getElementById('schedule-display-cards'); scheduleCards.innerHTML = ''; lessonSelect.innerHTML = ''; if (lessons.length === 0) { scheduleCards.innerHTML = '<div class="schedule-card-item" style="border-left-color: #FF5252;"><span class="schedule-card-name">🎉 Занятий нет</span></div>'; lessonSelect.innerHTML = '<option value="none">Нет пар</option>'; } else { lessons.forEach(l => { const parts = l.text.split(' - '); const time = parts[0]; const name = parts.slice(1).join(' - '); scheduleCards.innerHTML += `<div class="schedule-card-item"><span class="schedule-card-time">${time}</span><span class="schedule-card-name">${name}</span></div>`; const opt = document.createElement('option'); opt.value = l.id; opt.textContent = l.text; lessonSelect.appendChild(opt); }); } renderTable(); }
         function getStorageKey(w, d, l, s) { return `w${w}_d${d}_l${l}_s${s}`; } function getCurrentStorageKey(studentIdx) { return getStorageKey(weekSelect.value, daySelect.value, lessonSelect.value, studentIdx); }
-        function saveData(idx, field, value) { if (lessonSelect.value === 'none') return; const key = getCurrentStorageKey(idx); const attendance = getActiveGroupData().attendance; if (!attendance[key]) attendance[key] = { present: false, answers: 0, notes: "" }; attendance[key][field] = value; saveToCloud(); }
+        function saveData(idx, field, value) { if (lessonSelect.value === 'none') return; const key = getCurrentStorageKey(idx); const attendance = getActiveGroupData().attendance || {}; if (!attendance[key]) attendance[key] = { present: false, answers: 0, notes: "" }; attendance[key][field] = value; getActiveGroupData().attendance = attendance; saveToCloud(); }
         function updateCount(btn, change, idx) { const span = btn.parentElement.querySelector('.count-val'); let newVal = Math.max(0, parseInt(span.innerText) + change); span.innerText = newVal; saveData(idx, 'answers', newVal); }
-        function renderTable() { const tbody = document.getElementById('students-body'); tbody.innerHTML = ''; if (lessonSelect.value === 'none') { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 30px;">В этот день занятий нет</td></tr>'; return; } const activeData = getActiveGroupData(); if(!activeData.students || activeData.students.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 30px;">Список пуст. Добавьте студентов в настройках.</td></tr>'; return; } activeData.students.forEach((name, i) => { const key = getCurrentStorageKey(i); const data = activeData.attendance[key] || { present: false, answers: 0, notes: "" }; tbody.innerHTML += `<tr><td style="color: var(--accent); font-family: 'Unbounded';">${i + 1}</td><td style="font-weight: 500;">${name}</td><td style="text-align: center;"><input type="checkbox" id="check-${i}" ${data.present ? 'checked' : ''} onchange="saveData(${i}, 'present', this.checked)"></td><td style="text-align: center;"><div class="counter"><button class="btn-count" onclick="updateCount(this, -1, ${i})">-</button><span class="count-val">${data.answers}</span><button class="btn-count" onclick="updateCount(this, 1, ${i})">+</button></div></td><td><input type="text" class="notes-input" placeholder="Добавить..." value="${data.notes}" oninput="saveData(${i}, 'notes', this.value)"></td></tr>`; }); }
-        function markAllPresent() { if (lessonSelect.value === 'none') return; const activeData = getActiveGroupData(); activeData.students.forEach((_, i) => { const key = getCurrentStorageKey(i); if (!activeData.attendance[key]) activeData.attendance[key] = { present: false, answers: 0, notes: "" }; activeData.attendance[key].present = true; }); saveToCloud(); renderTable(); showToast("Все студенты отмечены!", "success"); }
+        function renderTable() { const tbody = document.getElementById('students-body'); tbody.innerHTML = ''; if (lessonSelect.value === 'none') { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 30px;">В этот день занятий нет</td></tr>'; return; } const activeData = getActiveGroupData(); if(!activeData.students || activeData.students.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 30px;">Список пуст. Добавьте студентов в настройках.</td></tr>'; return; } activeData.students.forEach((name, i) => { const att = activeData.attendance || {}; const key = getCurrentStorageKey(i); const data = att[key] || { present: false, answers: 0, notes: "" }; tbody.innerHTML += `<tr><td style="color: var(--accent); font-family: 'Unbounded';">${i + 1}</td><td style="font-weight: 500;">${name}</td><td style="text-align: center;"><input type="checkbox" id="check-${i}" ${data.present ? 'checked' : ''} onchange="saveData(${i}, 'present', this.checked)"></td><td style="text-align: center;"><div class="counter"><button class="btn-count" onclick="updateCount(this, -1, ${i})">-</button><span class="count-val">${data.answers}</span><button class="btn-count" onclick="updateCount(this, 1, ${i})">+</button></div></td><td><input type="text" class="notes-input" placeholder="Добавить..." value="${data.notes}" oninput="saveData(${i}, 'notes', this.value)"></td></tr>`; }); }
+        function markAllPresent() { if (lessonSelect.value === 'none') return; const activeData = getActiveGroupData(); if(!activeData.attendance) activeData.attendance = {}; activeData.students.forEach((_, i) => { const key = getCurrentStorageKey(i); if (!activeData.attendance[key]) activeData.attendance[key] = { present: false, answers: 0, notes: "" }; activeData.attendance[key].present = true; }); saveToCloud(); renderTable(); showToast("Все студенты отмечены!", "success"); }
 
-        function initTeacherPanel() { const schedule = getActiveGroupData().schedule; const grid = document.getElementById('subject-grid'); grid.innerHTML = ''; const foundSubjects = new Set(); ['even', 'odd'].forEach(w => { for(let day in schedule[w]) { schedule[w][day].forEach(l => { let cleanName = l.text.split(' - ')[1].replace(/\(Л\)|\(С\)/g, '').trim(); foundSubjects.add(cleanName); }); }}); foundSubjects.forEach(subject => { const card = document.createElement('div'); card.className = 'subject-card'; card.textContent = subject; card.onclick = () => { document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('active')); card.classList.add('active'); buildTeacherStats(subject); }; grid.appendChild(card); }); }
-        function buildTeacherStats(subjectName) { document.getElementById('teacher-table-wrapper').style.display = 'block'; document.getElementById('teacher-subject-title').textContent = subjectName; const activeData = getActiveGroupData(); const stats = activeData.students.map(() => ({ attended: 0 })); let totalClasses = 0; for (let w = 1; w <= 18; w++) { const wType = (w % 2 !== 0) ? 'even' : 'odd'; for(let day in activeData.schedule[wType]) { activeData.schedule[wType][day].forEach(l => { if (l.text.includes(subjectName)) { totalClasses++; activeData.students.forEach((_, s) => { const cell = activeData.attendance[getStorageKey(w, day, l.id, s)]; if (cell && cell.present) stats[s].attended++; }); } }); } } const tbody = document.getElementById('teacher-tbody'); tbody.innerHTML = ''; activeData.students.forEach((name, i) => { const percent = totalClasses > 0 ? Math.round((stats[i].attended / totalClasses) * 100) : 0; tbody.innerHTML += `<tr><td>${name}</td><td style="text-align:center; font-family: 'Unbounded';">${stats[i].attended}</td><td style="text-align:center; font-family: 'Unbounded';">${totalClasses}</td><td style="text-align:center; font-family: 'Unbounded';">${percent}%</td></tr>`; }); }
+        function initTeacherPanel() { const schedule = getActiveGroupData().schedule || {even:{},odd:{}}; const grid = document.getElementById('subject-grid'); grid.innerHTML = ''; const foundSubjects = new Set(); ['even', 'odd'].forEach(w => { for(let day in schedule[w]) { schedule[w][day].forEach(l => { let cleanName = l.text.split(' - ')[1].replace(/\(Л\)|\(С\)/g, '').trim(); foundSubjects.add(cleanName); }); }}); foundSubjects.forEach(subject => { const card = document.createElement('div'); card.className = 'subject-card'; card.textContent = subject; card.onclick = () => { document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('active')); card.classList.add('active'); buildTeacherStats(subject); }; grid.appendChild(card); }); }
+        function buildTeacherStats(subjectName) { document.getElementById('teacher-table-wrapper').style.display = 'block'; document.getElementById('teacher-subject-title').textContent = subjectName; const activeData = getActiveGroupData(); const att = activeData.attendance || {}; const stats = (activeData.students || []).map(() => ({ attended: 0 })); let totalClasses = 0; for (let w = 1; w <= 18; w++) { const wType = (w % 2 !== 0) ? 'even' : 'odd'; for(let day in activeData.schedule[wType]) { activeData.schedule[wType][day].forEach(l => { if (l.text.includes(subjectName)) { totalClasses++; (activeData.students || []).forEach((_, s) => { const cell = att[getStorageKey(w, day, l.id, s)]; if (cell && cell.present) stats[s].attended++; }); } }); } } const tbody = document.getElementById('teacher-tbody'); tbody.innerHTML = ''; (activeData.students || []).forEach((name, i) => { const percent = totalClasses > 0 ? Math.round((stats[i].attended / totalClasses) * 100) : 0; tbody.innerHTML += `<tr><td>${name}</td><td style="text-align:center; font-family: 'Unbounded';">${stats[i].attended}</td><td style="text-align:center; font-family: 'Unbounded';">${totalClasses}</td><td style="text-align:center; font-family: 'Unbounded';">${percent}%</td></tr>`; }); }
         function openStats() { document.getElementById('stats-modal').style.display = 'flex'; if(window.innerWidth <= 1100) toggleSidebar(); }
         
         function openCuratorModal() { const select = document.getElementById('curator-week-select'); if (select.children.length === 0) { for (let i = 1; i <= 18; i++) { const opt = document.createElement('option'); opt.value = i; opt.textContent = `${i} неделя (${i % 2 !== 0 ? 'Четная' : 'Нечетная'})`; select.appendChild(opt); } } let currentW = document.getElementById('week') ? document.getElementById('week').value : 1; if(!currentW) currentW = getAcademicWeek(new Date()); select.value = currentW; renderCuratorTable(); document.getElementById('curator-modal').style.display = 'flex'; if(window.innerWidth <= 1100) toggleSidebar(); }
-        function renderCuratorTable() { const targetWeek = parseInt(document.getElementById('curator-week-select').value) || 1; let totalLec = 0, totalSem = 0; currentExportData = []; const activeData = getActiveGroupData(); const tbody = document.getElementById('curator-tbody'); tbody.innerHTML = ''; if(!activeData.students || activeData.students.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">Список пуст. Добавьте студентов в настройках группы.</td></tr>'; document.getElementById('curator-summary').innerHTML = ""; return; } for (let w = 1; w <= targetWeek; w++) { const wType = (w % 2 !== 0) ? 'even' : 'odd'; for(let day in activeData.schedule[wType]) { if(!activeData.schedule[wType][day]) continue; activeData.schedule[wType][day].forEach(l => { if (l.text.includes('(Л)')) totalLec++; if (l.text.includes('(С)')) totalSem++; }); } } let totalSemHours = totalSem * 2; let totalLecHours = totalLec * 2; document.getElementById('curator-summary').innerHTML = `С 1-й по ${targetWeek}-ю неделю включительно. <br>Семинаров: <b>${totalSem} пар (${totalSemHours} ак.ч.)</b>, Лекций: <b>${totalLec} пар (${totalLecHours} ак.ч.)</b>.`; activeData.students.forEach((name, s) => { let attLec = 0, attSem = 0; for (let w = 1; w <= targetWeek; w++) { const wType = (w % 2 !== 0) ? 'even' : 'odd'; for(let day in activeData.schedule[wType]) { if(!activeData.schedule[wType][day]) continue; activeData.schedule[wType][day].forEach(l => { const cell = activeData.attendance[getStorageKey(w, day, l.id, s)]; if (cell && cell.present) { if (l.text.includes('(Л)')) attLec++; if (l.text.includes('(С)')) attSem++; } }); } } let attSemHours = attSem * 2; let attLecHours = attLec * 2; let pSem = totalSem > 0 ? Math.round((attSem / totalSem) * 100) : 0; let pLec = totalLec > 0 ? Math.round((attLec / totalLec) * 100) : 0; let pTot = (totalLec + totalSem) > 0 ? Math.round(((attLec + attSem) / (totalLec + totalSem)) * 100) : 0; currentExportData.push({ name, attSem, totalSem, attSemHours, totalSemHours, pSem, attLec, totalLec, attLecHours, totalLecHours, pLec, pTot }); tbody.innerHTML += `<tr><td>${name}</td><td style="text-align:center;"><span style="font-family: 'Unbounded';">${attSem}/${totalSem}</span><span class="sub-text">${attSemHours}/${totalSemHours} ак.ч.</span><span style="color: ${pSem >= 80 ? 'var(--accent)' : (pSem < 50 ? '#FF5252' : 'var(--text-main)')}; font-size: 0.9rem;">(${pSem}%)</span></td><td style="text-align:center;"><span style="font-family: 'Unbounded';">${attLec}/${totalLec}</span><span class="sub-text">${attLecHours}/${totalLecHours} ак.ч.</span><span style="color: ${pLec >= 80 ? 'var(--accent)' : (pLec < 50 ? '#FF5252' : 'var(--text-main)')}; font-size: 0.9rem;">(${pLec}%)</span></td><td style="text-align:center; font-family: 'Unbounded'; color: ${pTot >= 80 ? 'var(--accent)' : (pTot < 50 ? '#FF5252' : 'var(--text-main)')};">${pTot}%</td></tr>`; }); }
+        function renderCuratorTable() { const targetWeek = parseInt(document.getElementById('curator-week-select').value) || 1; let totalLec = 0, totalSem = 0; currentExportData = []; const activeData = getActiveGroupData(); const tbody = document.getElementById('curator-tbody'); tbody.innerHTML = ''; if(!activeData.students || activeData.students.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 20px;">Список пуст. Добавьте студентов в настройках группы.</td></tr>'; document.getElementById('curator-summary').innerHTML = ""; return; } for (let w = 1; w <= targetWeek; w++) { const wType = (w % 2 !== 0) ? 'even' : 'odd'; for(let day in activeData.schedule[wType]) { if(!activeData.schedule[wType][day]) continue; activeData.schedule[wType][day].forEach(l => { if (l.text.includes('(Л)')) totalLec++; if (l.text.includes('(С)')) totalSem++; }); } } let totalSemHours = totalSem * 2; let totalLecHours = totalLec * 2; document.getElementById('curator-summary').innerHTML = `С 1-й по ${targetWeek}-ю неделю включительно. <br>Семинаров: <b>${totalSem} пар (${totalSemHours} ак.ч.)</b>, Лекций: <b>${totalLec} пар (${totalLecHours} ак.ч.)</b>.`; activeData.students.forEach((name, s) => { let attLec = 0, attSem = 0; const att = activeData.attendance || {}; for (let w = 1; w <= targetWeek; w++) { const wType = (w % 2 !== 0) ? 'even' : 'odd'; for(let day in activeData.schedule[wType]) { if(!activeData.schedule[wType][day]) continue; activeData.schedule[wType][day].forEach(l => { const cell = att[getStorageKey(w, day, l.id, s)]; if (cell && cell.present) { if (l.text.includes('(Л)')) attLec++; if (l.text.includes('(С)')) attSem++; } }); } } let attSemHours = attSem * 2; let attLecHours = attLec * 2; let pSem = totalSem > 0 ? Math.round((attSem / totalSem) * 100) : 0; let pLec = totalLec > 0 ? Math.round((attLec / totalLec) * 100) : 0; let pTot = (totalLec + totalSem) > 0 ? Math.round(((attLec + attSem) / (totalLec + totalSem)) * 100) : 0; currentExportData.push({ name, attSem, totalSem, attSemHours, totalSemHours, pSem, attLec, totalLec, attLecHours, totalLecHours, pLec, pTot }); tbody.innerHTML += `<tr><td>${name}</td><td style="text-align:center;"><span style="font-family: 'Unbounded';">${attSem}/${totalSem}</span><span class="sub-text">${attSemHours}/${totalSemHours} ак.ч.</span><span style="color: ${pSem >= 80 ? 'var(--accent)' : (pSem < 50 ? '#FF5252' : 'var(--text-main)')}; font-size: 0.9rem;">(${pSem}%)</span></td><td style="text-align:center;"><span style="font-family: 'Unbounded';">${attLec}/${totalLec}</span><span class="sub-text">${attLecHours}/${totalLecHours} ак.ч.</span><span style="color: ${pLec >= 80 ? 'var(--accent)' : (pLec < 50 ? '#FF5252' : 'var(--text-main)')}; font-size: 0.9rem;">(${pLec}%)</span></td><td style="text-align:center; font-family: 'Unbounded'; color: ${pTot >= 80 ? 'var(--accent)' : (pTot < 50 ? '#FF5252' : 'var(--text-main)')};">${pTot}%</td></tr>`; }); }
         function exportCuratorCSV() { if(currentExportData.length === 0) { showToast('Нет данных для экспорта', 'error'); return; } let csvContent = "\uFEFFОтчет для куратора. Группа: " + userData.currentGroup + "\nРассчитано по неделю: " + document.getElementById('curator-week-select').value + "\n\nСтудент;Семинары (Пары);Семинары (Ак.Часы);Семинары (%);Лекции (Пары);Лекции (Ак.Часы);Лекции (%);Общая Посещаемость (%)\n"; currentExportData.forEach(row => { csvContent += `${row.name};${row.attSem}/${row.totalSem};${row.attSemHours}/${row.totalSemHours};${row.pSem}%;${row.attLec}/${row.totalLec};${row.attLecHours}/${row.totalLecHours};${row.pLec}%;${row.pTot}%\n`; }); const link = document.createElement("a"); link.setAttribute("href", URL.createObjectURL(new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }))); link.setAttribute("download", `Смотр_${userData.currentGroup}.csv`); link.click(); }
 
         try { const sceneBg = new THREE.Scene(); const cameraBg = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); const rendererBg = new THREE.WebGLRenderer({ alpha: true, antialias: true }); rendererBg.setSize(window.innerWidth, window.innerHeight); rendererBg.domElement.style.position = 'fixed'; rendererBg.domElement.style.top = '0'; rendererBg.domElement.style.left = '0'; rendererBg.domElement.style.zIndex = '-1'; document.body.prepend(rendererBg.domElement); const geometryBg = new THREE.IcosahedronGeometry(12, 1); const materialBg = new THREE.MeshBasicMaterial({ color: 0x00E676, wireframe: true, transparent: true, opacity: 0.15 }); const modelBg = new THREE.Mesh(geometryBg, materialBg); sceneBg.add(modelBg); cameraBg.position.z = 30; function animateBg() { requestAnimationFrame(animateBg); const scrollY = window.scrollY; modelBg.rotation.x += 0.001; modelBg.rotation.y += 0.002; modelBg.position.y = Math.sin(scrollY * 0.002) * 5; modelBg.rotation.z = scrollY * 0.001; rendererBg.render(sceneBg, cameraBg); } animateBg(); window.addEventListener('resize', () => { cameraBg.aspect = window.innerWidth / window.innerHeight; cameraBg.updateProjectionMatrix(); rendererBg.setSize(window.innerWidth, window.innerHeight); }); } catch(e) {}
