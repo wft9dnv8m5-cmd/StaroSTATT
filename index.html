@@ -170,6 +170,60 @@
         .toast.success { border-left-color: var(--accent); }
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes fadeOutToast { to { opacity: 0; } }
+
+        /* AI Chat Widget Styles */
+        #ai-chat-toggle {
+            position: fixed; bottom: 25px; right: 25px; z-index: 10001;
+            width: 60px; height: 60px; border-radius: 50%;
+            background: var(--modal-bg); border: 2px solid var(--accent);
+            color: var(--accent); font-size: 24px; cursor: pointer;
+            box-shadow: var(--accent-glow); transition: 0.3s;
+            display: flex; justify-content: center; align-items: center;
+        }
+        #ai-chat-toggle:hover { transform: scale(1.1); background: var(--accent); color: #000; }
+
+        #ai-chat-widget {
+            position: fixed; bottom: 95px; right: 25px; z-index: 10000;
+            width: 320px; height: 450px; background: var(--modal-bg);
+            border: 1px solid var(--accent); border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5); backdrop-filter: blur(15px);
+            display: flex; flex-direction: column; overflow: hidden;
+            transform: translateY(20px); opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        #ai-chat-widget.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+
+        #ai-chat-header {
+            background: rgba(0, 230, 118, 0.1); border-bottom: 1px solid var(--accent);
+            padding: 15px; font-family: 'Unbounded', sans-serif; color: var(--accent);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        #ai-chat-header span { cursor: pointer; font-size: 20px; transition: 0.2s; }
+        #ai-chat-header span:hover { color: #FF5252; }
+
+        #ai-chat-messages {
+            flex-grow: 1; padding: 15px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .ai-msg, .user-msg {
+            padding: 10px 15px; border-radius: 12px; font-size: 0.9rem; max-width: 85%;
+            line-height: 1.4; word-wrap: break-word;
+        }
+        .ai-msg { background: rgba(255,255,255,0.05); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 2px; }
+        .user-msg { background: rgba(0, 230, 118, 0.15); color: var(--accent); border: 1px solid rgba(0,230,118,0.3); align-self: flex-end; border-bottom-right-radius: 2px; }
+
+        #ai-chat-input-area {
+            display: flex; padding: 10px; border-top: 1px solid var(--card-border);
+            background: rgba(0,0,0,0.2);
+        }
+        #ai-chat-input {
+            flex-grow: 1; background: transparent; border: none;
+            color: var(--text-main); outline: none; padding: 8px; font-family: 'Roboto';
+        }
+        #ai-chat-input-area button {
+            background: transparent; border: none; color: var(--accent);
+            font-size: 1.2rem; cursor: pointer; transition: 0.2s;
+        }
+        #ai-chat-input-area button:hover { transform: scale(1.1); text-shadow: var(--accent-glow); }
     </style>
 </head>
 <body>
@@ -418,6 +472,19 @@
         </div>
     </div>
 
+    <!-- ИИ Помощник (StaroBot) -->
+    <button id="ai-chat-toggle" onclick="toggleAiChat()">🤖</button>
+    <div id="ai-chat-widget">
+        <div id="ai-chat-header">StaroBot AI <span onclick="toggleAiChat()">×</span></div>
+        <div id="ai-chat-messages" id="ai-messages-container">
+            <div class="ai-msg">Привет! Я твой локальный ИИ-помощник. Спроси меня про расписание, статистику или студентов.</div>
+        </div>
+        <div id="ai-chat-input-area">
+            <input type="text" id="ai-chat-input" placeholder="Напиши сообщение..." onkeypress="handleAiEnter(event)">
+            <button onclick="sendAiMessage()">➤</button>
+        </div>
+    </div>
+
     <script>
         // СИСТЕМА УВЕДОМЛЕНИЙ (TOASTS)
         function showToast(msg, type = 'error') {
@@ -438,7 +505,7 @@
         // САЙДБАР (МОБИЛЬНАЯ ВЕРСИЯ)
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
-        // ГАРАНТИРОВАННЫЙ ЗАПУСК - Прячем заставку самым первым делом
+        // ГАРАНТИРОВАННЫЙ ЗАПУСК
         let isAppReady = false; 
         function hideSplashScreen() {
             if(isAppReady) return;
@@ -704,6 +771,78 @@
         function exportCuratorCSV() { if(currentExportData.length === 0) { showToast('Нет данных для экспорта', 'error'); return; } let csvContent = "\uFEFFОтчет для куратора. Группа: " + userData.currentGroup + "\nРассчитано по неделю: " + document.getElementById('curator-week-select').value + "\n\nСтудент;Семинары (Пары);Семинары (Ак.Часы);Семинары (%);Лекции (Пары);Лекции (Ак.Часы);Лекции (%);Общая Посещаемость (%)\n"; currentExportData.forEach(row => { csvContent += `${row.name};${row.attSem}/${row.totalSem};${row.attSemHours}/${row.totalSemHours};${row.pSem}%;${row.attLec}/${row.totalLec};${row.attLecHours}/${row.totalLecHours};${row.pLec}%;${row.pTot}%\n`; }); const link = document.createElement("a"); link.setAttribute("href", URL.createObjectURL(new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }))); link.setAttribute("download", `Смотр_${userData.currentGroup}.csv`); link.click(); }
 
         try { const sceneBg = new THREE.Scene(); const cameraBg = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); const rendererBg = new THREE.WebGLRenderer({ alpha: true, antialias: true }); rendererBg.setSize(window.innerWidth, window.innerHeight); rendererBg.domElement.style.position = 'fixed'; rendererBg.domElement.style.top = '0'; rendererBg.domElement.style.left = '0'; rendererBg.domElement.style.zIndex = '-1'; document.body.prepend(rendererBg.domElement); const geometryBg = new THREE.IcosahedronGeometry(12, 1); const materialBg = new THREE.MeshBasicMaterial({ color: 0x00E676, wireframe: true, transparent: true, opacity: 0.15 }); const modelBg = new THREE.Mesh(geometryBg, materialBg); sceneBg.add(modelBg); cameraBg.position.z = 30; function animateBg() { requestAnimationFrame(animateBg); const scrollY = window.scrollY; modelBg.rotation.x += 0.001; modelBg.rotation.y += 0.002; modelBg.position.y = Math.sin(scrollY * 0.002) * 5; modelBg.rotation.z = scrollY * 0.001; rendererBg.render(sceneBg, cameraBg); } animateBg(); window.addEventListener('resize', () => { cameraBg.aspect = window.innerWidth / window.innerHeight; cameraBg.updateProjectionMatrix(); rendererBg.setSize(window.innerWidth, window.innerHeight); }); } catch(e) {}
+        
+        // --- ИИ ПОМОЩНИК (ЛОКАЛЬНАЯ ЛОГИКА) ---
+        function toggleAiChat() {
+            document.getElementById('ai-chat-widget').classList.toggle('open');
+        }
+
+        function handleAiEnter(e) {
+            if (e.key === 'Enter') sendAiMessage();
+        }
+
+        function sendAiMessage() {
+            const input = document.getElementById('ai-chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            appendMessage(text, 'user-msg');
+            input.value = '';
+            
+            setTimeout(() => {
+                const response = processAiQuery(text.toLowerCase());
+                appendMessage(response, 'ai-msg');
+            }, 500);
+        }
+
+        function appendMessage(text, className) {
+            const container = document.getElementById('ai-chat-messages');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = className;
+            msgDiv.innerText = text;
+            container.appendChild(msgDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function processAiQuery(query) {
+            const activeData = getActiveGroupData();
+            
+            if (query.includes('привет') || query.includes('здравствуй')) {
+                return `Привет! Я готов помочь с управлением группой ${userData.currentGroup || ''}.`;
+            }
+            
+            if (query.includes('сколько') && query.includes('студент')) {
+                const count = activeData.students ? activeData.students.length : 0;
+                return `В текущей группе ${count} студентов.`;
+            }
+            
+            if (query.includes('расписание') || query.includes('пары')) {
+                const d = new Date();
+                const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+                const dayCode = days[d.getDay()];
+                
+                if (dayCode === 'sun') return "Сегодня воскресенье, пар нет! Отдыхай.";
+                
+                const weekNum = getAcademicWeek(d);
+                const weekType = (weekNum % 2 !== 0) ? 'even' : 'odd';
+                const todayLessons = (activeData.schedule && activeData.schedule[weekType] && activeData.schedule[weekType][dayCode]) 
+                    ? activeData.schedule[weekType][dayCode] 
+                    : [];
+                    
+                if (todayLessons.length === 0) return "На сегодня занятий в базе не найдено.";
+                
+                let reply = "Расписание на сегодня:\n";
+                todayLessons.forEach(l => reply += `- ${l.text}\n`);
+                return reply;
+            }
+            
+            if (query.includes('куратор') || query.includes('отчет')) {
+                openCuratorModal();
+                return "Открываю смотр для куратора...";
+            }
+            
+            return "Пока я понимаю только простые команды. Спроси меня: 'сколько студентов', 'расписание на сегодня' или 'открой отчет куратора'.";
+        }
     </script>
 </body>
 </html>
