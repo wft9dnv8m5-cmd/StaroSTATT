@@ -47,7 +47,7 @@ body{
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
   min-height:100vh;min-height:100dvh;
 }
-body.landing-mode{overflow:hidden;height:100vh;height:100dvh}
+body.landing-mode{overflow-x:hidden}
 body.app-mode{overflow-x:hidden;overflow-y:auto}
 body.menu-open{overflow:hidden}
 img{max-width:100%}
@@ -147,9 +147,24 @@ main{position:relative;z-index:1}
 .view{display:none}
 .view.active{display:block}
 .app-view{max-width:1150px;margin:0 auto;padding:clamp(96px,14vh,132px) clamp(14px,3vw,32px) 70px}
-.landing.active{display:flex;flex-direction:column;align-items:center;
-  height:100vh;height:100dvh;overflow:hidden;
+.landing.active{display:block}
+.landing-screen{display:flex;flex-direction:column;align-items:center;position:relative;
+  min-height:100vh;min-height:100dvh;
   padding:clamp(84px,12vh,120px) clamp(14px,3vw,32px) clamp(16px,2.4vh,28px)}
+ 
+.scroll-cue{position:absolute;left:50%;bottom:clamp(10px,1.6vh,18px);transform:translateX(-50%);
+  width:22px;height:34px;border:1.5px solid rgba(255,255,255,.35);border-radius:14px;
+  opacity:0;animation:cueIn .6s ease forwards;animation-delay:1s}
+.scroll-cue span{position:absolute;left:50%;top:6px;width:3px;height:7px;border-radius:2px;background:#fff;
+  transform:translateX(-50%);animation:cueDrop 1.8s ease infinite}
+@keyframes cueIn{to{opacity:.55}}
+@keyframes cueDrop{0%{transform:translate(-50%,0);opacity:1}70%{opacity:0}100%{transform:translate(-50%,10px);opacity:0}}
+ 
+.landing-footer{position:relative;z-index:1;padding:22px clamp(14px,3vw,32px) 30px;text-align:center}
+.landing-footer p{margin:0;color:var(--muted);font-size:12.5px;letter-spacing:.01em}
+.landing-footer a{color:#fff;font-weight:500;border-bottom:1px solid rgba(255,255,255,.3);
+  transition:border-color .2s ease,opacity .2s ease}
+.landing-footer a:hover{border-color:#fff;opacity:.85}
  
 .view.leaving{animation:viewOut .22s cubic-bezier(.4,0,1,1) forwards}
 .view.entering{animation:viewIn .52s cubic-bezier(.22,1,.36,1) forwards}
@@ -369,11 +384,6 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   .subhead{font-size:calc(14px + 1pt)}
   .stats{grid-template-columns:1fr 1fr;gap:18px 10px}
   table{min-width:460px}
-  /* Защита: если браузер (особенно встроенный в мессенджеры) неверно
-     посчитает высоту экрана, контент не запирается — можно прокрутить,
-     а не остаться без доступа к кнопке. */
-  body.landing-mode{overflow-y:auto}
-  .landing.active{height:auto;min-height:100vh;min-height:100dvh;overflow:visible}
 }
 @media (max-width:420px){
   .trust{--trust-size:34px}
@@ -381,7 +391,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   .headline{letter-spacing:-.09em;line-height:1.04}
 }
 @media (max-height:700px){
-  .landing.active{padding-top:84px}
+  .landing-screen{padding-top:84px}
   .subhead{margin-top:10px}
   .cta{margin-top:16px}
 }
@@ -451,47 +461,55 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
  
 <!-- ГЛАВНАЯ -->
 <section class="view landing active" id="page-landing">
-  <div class="hero">
-    <div class="trust anim" style="--d:.05s">
-      <div class="avatar-ring"><span><i class="fa-solid fa-user-check"></i></span></div>
-      <div class="avatar-ring"><span><i class="fa-solid fa-calendar-check"></i></span></div>
-      <div class="avatar-ring"><span><i class="fa-solid fa-chart-column"></i></span></div>
-      <div class="trust-pill">Журнал, дедлайны и смотр куратору</div>
+  <div class="landing-screen">
+    <div class="hero">
+      <div class="trust anim" style="--d:.05s">
+        <div class="avatar-ring"><span><i class="fa-solid fa-user-check"></i></span></div>
+        <div class="avatar-ring"><span><i class="fa-solid fa-calendar-check"></i></span></div>
+        <div class="avatar-ring"><span><i class="fa-solid fa-chart-column"></i></span></div>
+        <div class="trust-pill">Журнал, дедлайны и смотр куратору</div>
+      </div>
+ 
+      <h1 class="headline"><span>StaroSTATT</span><span>Attendance Evolved</span></h1>
+ 
+      <p class="subhead anim" style="--d:.28s">
+        Рабочее место старосты. Отмечайте пару в один клик, держите дедлайны группы на виду
+        и собирайте смотр для куратора по академическим часам — без бумажных ведомостей и ручных таблиц.
+      </p>
+ 
+      <button class="cta" style="--d:.4s" onclick="switchPage('group')">Попробовать</button>
+      <p class="cta-note anim" style="--d:.5s">Без регистрации — данные останутся в этом браузере</p>
     </div>
  
-    <h1 class="headline"><span>StaroSTATT</span><span>Attendance Evolved</span></h1>
+    <div class="stats">
+      <div class="anim" style="--d:.5s">
+        <div class="stat-icon">&lt;</div>
+        <div class="stat-value" data-target="30" data-suffix=" с" data-dec="0">0</div>
+        <div class="stat-label">Отметить всю группу</div>
+      </div>
+      <div class="anim" style="--d:.58s">
+        <div class="stat-icon">%</div>
+        <div class="stat-value" data-target="100" data-suffix="%" data-dec="0">0</div>
+        <div class="stat-label">Расчёт часов без ошибок</div>
+      </div>
+      <div class="anim" style="--d:.66s">
+        <div class="stat-icon">*</div>
+        <div class="stat-value" data-target="18" data-suffix=" нед" data-dec="0">0</div>
+        <div class="stat-label">Семестр целиком</div>
+      </div>
+      <div class="anim" style="--d:.74s">
+        <div class="stat-icon">#</div>
+        <div class="stat-value" data-target="1" data-suffix=" клик" data-dec="0">0</div>
+        <div class="stat-label">Выгрузка смотра</div>
+      </div>
+    </div>
  
-    <p class="subhead anim" style="--d:.28s">
-      Рабочее место старосты. Отмечайте пару в один клик, держите дедлайны группы на виду
-      и собирайте смотр для куратора по академическим часам — без бумажных ведомостей и ручных таблиц.
-    </p>
- 
-    <button class="cta" style="--d:.4s" onclick="switchPage('group')">Попробовать</button>
-    <p class="cta-note anim" style="--d:.5s">Без регистрации — данные останутся в этом браузере</p>
+    <div class="scroll-cue" aria-hidden="true"><span></span></div>
   </div>
  
-  <div class="stats">
-    <div class="anim" style="--d:.5s">
-      <div class="stat-icon">&lt;</div>
-      <div class="stat-value" data-target="30" data-suffix=" с" data-dec="0">0</div>
-      <div class="stat-label">Отметить всю группу</div>
-    </div>
-    <div class="anim" style="--d:.58s">
-      <div class="stat-icon">%</div>
-      <div class="stat-value" data-target="100" data-suffix="%" data-dec="0">0</div>
-      <div class="stat-label">Расчёт часов без ошибок</div>
-    </div>
-    <div class="anim" style="--d:.66s">
-      <div class="stat-icon">*</div>
-      <div class="stat-value" data-target="18" data-suffix=" нед" data-dec="0">0</div>
-      <div class="stat-label">Семестр целиком</div>
-    </div>
-    <div class="anim" style="--d:.74s">
-      <div class="stat-icon">#</div>
-      <div class="stat-value" data-target="1" data-suffix=" клик" data-dec="0">0</div>
-      <div class="stat-label">Выгрузка смотра</div>
-    </div>
-  </div>
+  <footer class="landing-footer">
+    <p>Сделал Эмиль Исиев · По всем вопросам и багам — <a href="https://t.me/qwerlode" target="_blank" rel="noopener">@qwerlode</a></p>
+  </footer>
 </section>
  
 <!-- ГРУППА -->
