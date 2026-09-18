@@ -696,6 +696,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     <div class="modal-head"><h2>Новая карточка</h2><button class="x" onclick="closeModal('note-modal')">×</button></div>
     <label class="field"><span>Заголовок</span><input type="text" id="note-title-input" placeholder="Дедлайн по БЖД"></label>
     <label class="field"><span>Текст</span><textarea id="note-text-input" rows="5" placeholder="Сдать реферат до пятницы, тема на выбор"></textarea></label>
+    <label class="field"><span>Дата события (для календаря)</span><input type="date" id="note-date-input"></label>
     <button class="btn btn-primary" style="width:100%" onclick="saveNewNote()">Добавить карточку</button>
   </div>
 </div>
@@ -711,7 +712,9 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 <button id="bot-toggle" onclick="toggleBot()" aria-label="Помощник">✦</button>
 <div id="bot">
   <header>StaroBot<button onclick="toggleBot()" aria-label="Закрыть">×</button></header>
-  <div id="bot-log"><div class="msg bot">Привет! Спросите «расписание на сегодня», «сколько студентов» или «открой отчёт куратора».</div></div>
+  <div id="bot-log">
+    <div class="msg bot">Привет! Я ваш помощник StaroBot ✦<br><br>Вот что я умею:<br>• Показывать <b>«расписание на сегодня»</b><br>• Подсказывать <b>«какая неделя»</b><br>• Напоминать <b>«дедлайны»</b><br>• Считать <b>«сколько студентов»</b> в группе<br>• Находить тех, у кого есть <b>«долги»</b> в журнале<br>• Открывать <b>«журнал»</b> или <b>«отчёт»</b><br><br>Чем могу помочь?</div>
+  </div>
   <form id="bot-form" onsubmit="sendBot(event)">
     <input id="bot-input" placeholder="Сообщение…" autocomplete="off">
     <button type="submit" aria-label="Отправить">↑</button>
@@ -1194,29 +1197,47 @@ function markAllPresent(){
   saveToCloud(true); renderTable(); showToast('Вся группа отмечена', 'success');
 }
  
-/* ======================= КАРТОЧКИ ======================= */
+/* ======================= КАРТОЧКИ И КАЛЕНДАРЬ ======================= */
 function openNoteModal(){
   document.getElementById('note-title-input').value = '';
   document.getElementById('note-text-input').value = '';
+  document.getElementById('note-date-input').value = '';
   openModal('note-modal');
 }
+
+function exportToCal(title, text, dateStr){
+  const t = decodeURIComponent(title);
+  const x = decodeURIComponent(text);
+  const d = new Date(dateStr);
+  if (isNaN(d)) return;
+  const start = d.toISOString().split('T')[0].replace(/-/g, '');
+  d.setDate(d.getDate() + 1);
+  const end = d.toISOString().split('T')[0].replace(/-/g, '');
+  const url = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(t) + '&details=' + encodeURIComponent(x) + '&dates=' + start + '/' + end;
+  window.open(url, '_blank');
+}
+
 function saveNewNote(){
   const t = document.getElementById('note-title-input').value.trim();
   const x = document.getElementById('note-text-input').value.trim();
+  const d = document.getElementById('note-date-input').value;
   if (!t || !x) return showToast('Заполните заголовок и текст карточки.');
-  getActiveGroupData().notesList.push({ id: Date.now(), title: t, text: x, isPinned: false });
+  getActiveGroupData().notesList.push({ id: Date.now(), title: t, text: x, eventDate: d, isPinned: false });
   saveToCloud(true); renderNotes(); closeModal('note-modal'); showToast('Карточка добавлена', 'success');
 }
+
 function togglePin(id){
   const list = getActiveGroupData().notesList;
   const n = list.find(n => n.id === id); if (n) n.isPinned = !n.isPinned;
   saveToCloud(true); renderNotes();
 }
+
 function deleteNote(id){
   const g = getActiveGroupData();
   g.notesList = g.notesList.filter(n => n.id !== id);
   saveToCloud(true); renderNotes(); showToast('Карточка удалена', 'success');
 }
+
 function renderNotes(){
   const box = document.getElementById('notes-grid-container'); box.innerHTML = '';
   const list = (getActiveGroupData().notesList || []).slice()
@@ -1228,9 +1249,16 @@ function renderNotes(){
   list.forEach(n => {
     const el = document.createElement('article');
     el.className = 'note' + (n.isPinned ? ' pinned' : '');
+    
+    let dateHtml = '<span>' + new Date(n.id).toLocaleDateString('ru-RU') + '</span>';
+    if (n.eventDate) {
+       dateHtml = '<span>📅 ' + new Date(n.eventDate).toLocaleDateString('ru-RU') + '</span>' + 
+                  '<button class="btn-ghost" style="padding:4px 8px;font-size:11px;margin-left:8px;border-radius:6px;" onclick="exportToCal(\'' + encodeURIComponent(n.title) + '\', \'' + encodeURIComponent(n.text) + '\', \'' + n.eventDate + '\')">В календарь</button>';
+    }
+
     el.innerHTML = '<button class="pin" title="Закрепить" onclick="togglePin(' + n.id + ')">📌</button>' +
       '<h4>' + n.title + '</h4><p>' + n.text + '</p>' +
-      '<footer><span>' + new Date(n.id).toLocaleDateString('ru-RU') + '</span>' +
+      '<footer><div style="display:flex;align-items:center">' + dateHtml + '</div>' +
       '<button class="btn-danger" onclick="deleteNote(' + n.id + ')">Удалить</button></footer>';
     box.appendChild(el);
   });
@@ -1403,24 +1431,72 @@ function sendBot(e){
 }
 function addMsg(text, cls){
   const log = document.getElementById('bot-log');
-  const d = document.createElement('div'); d.className = 'msg ' + cls; d.textContent = text;
+  const d = document.createElement('div'); d.className = 'msg ' + cls; 
+  // Поддержка переносов строк в ответах бота
+  d.innerHTML = text.replace(/\n/g, '<br>');
   log.appendChild(d); log.scrollTop = log.scrollHeight;
 }
 function answer(q){
   const g = getActiveGroupData();
-  if (q.includes('привет')) return 'Привет! Помогу с группой ' + (userData.currentGroup || '') + '.';
-  if (q.includes('студент')) return 'В группе ' + g.students.length + ' человек.';
+  
+  // Приветствие / Помощь
+  if (q.includes('привет') || q.includes('помощь') || q.includes('умеешь') || q.includes('функции')) {
+    return 'Я умею:\n• Показывать <b>«расписание»</b> на сегодня\n• Подсказывать <b>«какая неделя»</b>\n• Выводить все <b>«дедлайны»</b> и карточки\n• Считать <b>«сколько студентов»</b>\n• Находить тех, у кого есть <b>«долги»</b>\n• Напоминать какая <b>«группа»</b> выбрана\n• Быстро открывать <b>«журнал»</b> или <b>«отчёт»</b>.';
+  }
+  
+  // Неделя
+  if (q.includes('недел')) {
+    const d = new Date();
+    const w = getAcademicWeek(d);
+    const type = (w % 2 !== 0) ? 'нечётная (знаменатель)' : 'чётная (числитель)';
+    return 'Сейчас ' + w + '-я учебная неделя, ' + type + '.';
+  }
+
+  // Студенты / Группа
+  if (q.includes('студент')) return 'В текущей группе ' + g.students.length + ' человек.';
+  if (q.includes('групп')) return 'Сейчас выбрана группа: ' + userData.currentGroup + '.';
+
+  // Долги / Заметки по студентам
+  if (q.includes('долг') || q.includes('заметк')) {
+    let debts = [];
+    g.students.forEach((name, i) => {
+      let studentNotes = [];
+      for (let k in g.attendance) {
+        if (k.endsWith('_s' + i) && g.attendance[k].notes) {
+          studentNotes.push(g.attendance[k].notes);
+        }
+      }
+      if (studentNotes.length > 0) {
+        debts.push('• ' + name + ': ' + [...new Set(studentNotes)].join(', '));
+      }
+    });
+    if (debts.length === 0) return 'Никаких долгов и пометок в журнале пока нет. Группа молодец!';
+    return 'Вот что я нашёл в журнале:\n' + debts.join('\n');
+  }
+
+  // Дедлайны / Инфо
+  if (q.includes('дедлайн') || q.includes('карточк') || q.includes('инфо')) {
+    if (!g.notesList || g.notesList.length === 0) return 'У вас пока нет карточек и дедлайнов на доске.';
+    const notes = g.notesList.map(n => '• ' + n.title + (n.eventDate ? ' (до ' + new Date(n.eventDate).toLocaleDateString('ru-RU') + ')' : '')).join('\n');
+    return 'Ваши записи на доске:\n' + notes;
+  }
+
+  // Расписание
   if (q.includes('расписан') || q.includes('пары')){
     const d = new Date(), codes = ['sun','mon','tue','wed','thu','fri','sat'], code = codes[d.getDay()];
-    if (code === 'sun') return 'Сегодня воскресенье — пар нет.';
+    if (code === 'sun') return 'Сегодня воскресенье — пар нет. Можно отдыхать!';
     const wt = (getAcademicWeek(d) % 2 !== 0) ? 'even' : 'odd';
     const lessons = (g.schedule[wt] && g.schedule[wt][code]) || [];
     if (!lessons.length) return 'На сегодня пар в расписании нет.';
-    return 'Сегодня:\n' + lessons.map(l => '· ' + l.text).join('\n');
+    return 'Сегодня по расписанию:\n' + lessons.map(l => '· ' + l.text).join('\n');
   }
+
+  // Навигация
   if (q.includes('куратор') || q.includes('отчет') || q.includes('отчёт')){ switchPage('reports'); return 'Открываю отчёты.'; }
   if (q.includes('журнал')){ switchPage('journal'); return 'Открываю журнал.'; }
-  return 'Понимаю простые команды: «сколько студентов», «расписание на сегодня», «открой журнал», «отчёт куратора».';
+
+  // Fallback
+  return 'Я пока не знаю такой команды. Спросите меня про «расписание», «дедлайны», «неделю», «долги» студентов или попросите открыть нужный раздел.';
 }
 </script>
 </body>
