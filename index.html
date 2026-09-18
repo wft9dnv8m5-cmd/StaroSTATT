@@ -1,10 +1,13 @@
+
+
+Index · HTML
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">StaroSTATT — журнал старосты</title>
-
+ 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -12,11 +15,11 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
       integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
       crossorigin="anonymous" referrerpolicy="no-referrer">
-
+ 
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
+ 
 <style>
 :root{
   --bg:#000000;
@@ -51,7 +54,7 @@ img{max-width:100%}
 button,input,select,textarea{font-family:inherit}
 a{color:inherit;text-decoration:none}
 :focus-visible{outline:2px solid #fff;outline-offset:3px;border-radius:6px}
-
+ 
 /* ---------- фон ---------- */
 .bg{position:fixed;inset:0;background:#000;overflow:hidden;z-index:0}
 .bg-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
@@ -60,7 +63,7 @@ a{color:inherit;text-decoration:none}
 body.app-mode .scrim{background:rgba(0,0,0,.74);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
   animation:scrimBreathe 12s ease-in-out infinite}
 @keyframes scrimBreathe{0%,100%{backdrop-filter:blur(7px)}50%{backdrop-filter:blur(9px)}}
-
+ 
 /* ---------- шапка ---------- */
 .site-header{position:fixed;top:0;left:0;right:0;z-index:40;
   padding:clamp(14px,2.2vh,24px) clamp(14px,3vw,32px);
@@ -68,14 +71,14 @@ body.app-mode .scrim{background:rgba(0,0,0,.74);backdrop-filter:blur(7px);-webki
 .header-inner{display:flex;align-items:center;justify-content:center;gap:clamp(18px,2.8vw,28px);
   max-width:720px;margin:0 auto}
 @keyframes slideDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:none}}
-
+ 
 .logo{width:clamp(40px,4.4vw,46px);height:clamp(40px,4.4vw,46px);flex:0 0 auto;border:none;
   border-radius:50%;background:#fff;box-shadow:var(--nav-shadow);cursor:pointer;padding:0;
   display:grid;place-items:center;transition:transform .25s ease}
 .logo:hover{transform:scale(1.04)}
 .logo img{width:72%;height:72%;object-fit:contain}
 .logo-fallback{display:none;font-family:var(--font-display);font-size:18px;color:#111;line-height:1}
-
+ 
 .nav-pill{display:flex;align-items:center;justify-content:space-between;flex:1;max-width:430px;
   height:clamp(44px,5.2vw,48px);padding:4px 8px;background:#fff;border-radius:999px;box-shadow:var(--nav-shadow)}
 .nav-link{position:relative;padding:8px 10px;cursor:pointer;color:var(--nav-text);opacity:.5;
@@ -88,12 +91,12 @@ body.app-mode .scrim{background:rgba(0,0,0,.74);backdrop-filter:blur(7px);-webki
   transition:transform .25s cubic-bezier(.22,1,.36,1)}
 .nav-link.active{opacity:1}
 .nav-link.active::after{transform:translateX(-50%) scale(1)}
-
+ 
 .signin{height:clamp(44px,5.2vw,48px);padding:0 clamp(16px,2vw,22px);border:none;border-radius:999px;
   background:var(--pill-dark);color:var(--sign-in-text);box-shadow:var(--nav-shadow);cursor:pointer;
   font-size:clamp(12.5px,1.4vw,14px);font-weight:500;white-space:nowrap;transition:.25s ease}
 .signin:hover{background:#323234;color:#fff;transform:translateY(-1px)}
-
+ 
 .profile{position:relative;flex:0 0 auto}
 .profile-pill{display:flex;align-items:center;gap:9px;height:clamp(44px,5.2vw,48px);padding:0 16px 0 6px;
   border:none;border-radius:999px;background:var(--pill-dark);color:var(--sign-in-text);
@@ -110,7 +113,7 @@ body.app-mode .scrim{background:rgba(0,0,0,.74);backdrop-filter:blur(7px);-webki
   padding:11px 12px;border-radius:10px;cursor:pointer;font-size:13.5px}
 .dropdown button:hover{background:rgba(255,255,255,.08)}
 .dropdown button.danger{color:var(--bad)}
-
+ 
 .burger{display:none;width:48px;height:48px;border:none;border-radius:50%;background:var(--pill-dark);
   box-shadow:var(--nav-shadow);cursor:pointer;position:relative;flex:0 0 auto}
 .burger span{position:absolute;left:50%;width:18px;height:1.5px;background:#fff;border-radius:2px;
@@ -123,7 +126,7 @@ body.app-mode .scrim{background:rgba(0,0,0,.74);backdrop-filter:blur(7px);-webki
 .burger[aria-expanded="true"] span:nth-child(1){transform:translateX(-50%) rotate(45deg)}
 .burger[aria-expanded="true"] span:nth-child(2){opacity:0}
 .burger[aria-expanded="true"] span:nth-child(3){transform:translateX(-50%) rotate(-45deg)}
-
+ 
 .menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(6px);z-index:38;
   animation:overlayIn .28s ease}
 @keyframes overlayIn{from{opacity:0}to{opacity:1}}
@@ -138,7 +141,7 @@ body.app-mode .scrim{background:rgba(0,0,0,.74);backdrop-filter:blur(7px);-webki
 @keyframes linkIn{from{opacity:0;transform:translateY(8px)}}
 .menu-sheet .menu-cta{display:block;width:100%;margin-top:10px;padding:15px;border:none;border-radius:999px;
   background:var(--pill-dark);color:#fff;font-size:15px;font-weight:500;cursor:pointer}
-
+ 
 /* ---------- страницы и переходы ---------- */
 main{position:relative;z-index:1}
 .view{display:none}
@@ -147,7 +150,7 @@ main{position:relative;z-index:1}
 .landing.active{display:flex;flex-direction:column;align-items:center;
   height:100vh;height:100dvh;overflow:hidden;
   padding:clamp(84px,12vh,120px) clamp(14px,3vw,32px) clamp(16px,2.4vh,28px)}
-
+ 
 .view.leaving{animation:viewOut .22s cubic-bezier(.4,0,1,1) forwards}
 .view.entering{animation:viewIn .52s cubic-bezier(.22,1,.36,1) forwards}
 @keyframes viewOut{to{opacity:0;transform:translateY(-12px) scale(.99)}}
@@ -159,14 +162,14 @@ main{position:relative;z-index:1}
 .view.entering .card:nth-of-type(4){animation-delay:.24s}
 .view.entering .grid-auto>.card,.view.entering .grid-2>.card{animation:cardIn .5s cubic-bezier(.22,1,.36,1) both}
 @keyframes cardIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-
+ 
 /* ---------- лендинг ---------- */
 .hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
   text-align:center;max-width:900px;width:100%}
 .anim{opacity:0;transform:translateY(22px) scale(.98);filter:blur(6px);
   animation:reveal .85s cubic-bezier(.22,1,.36,1) forwards;animation-delay:var(--d,0s)}
 @keyframes reveal{to{opacity:1;transform:none;filter:none}}
-
+ 
 .trust{--trust-size:clamp(36px,4.5vw,42px);display:inline-flex;align-items:center;
   margin-bottom:clamp(16px,2.5vh,26px)}
 .avatar-ring{width:var(--trust-size);height:var(--trust-size);border-radius:50%;background:var(--trust-bg);
@@ -183,7 +186,7 @@ main{position:relative;z-index:1}
   border:1px solid var(--trust-border);border-radius:999px;color:var(--trust-text);font-weight:500;
   font-size:clamp(12px,1.4vw,13.5px);margin-left:calc(var(--trust-size)*-.42);
   padding-left:calc(var(--trust-size)*.58);padding-right:16px;z-index:3}
-
+ 
 .headline{margin:0;font-family:var(--font-display);font-weight:400;color:#fff;
   font-size:clamp(28px,6.2vw,80px);letter-spacing:-.04em;line-height:1.12;overflow:hidden}
 .headline span{display:block;white-space:nowrap;opacity:0;transform:translateY(14px);
@@ -191,7 +194,7 @@ main{position:relative;z-index:1}
 .headline span:nth-child(1){animation-delay:.12s}
 .headline span:nth-child(2){animation-delay:.3s}
 @keyframes headlineFade{to{opacity:1;transform:none}}
-
+ 
 .subhead{max-width:min(560px,92%);margin:clamp(14px,2vh,20px) 0 0;color:#d0d0d0;opacity:.8;
   font-size:clamp(calc(13.5px + 2pt),calc(1.55vw + 2pt),calc(16.5px + 2pt));line-height:1.55;font-weight:400}
 .cta{margin-top:clamp(18px,3vh,28px);border:none;border-radius:999px;background:#fff;color:#000;
@@ -205,20 +208,20 @@ main{position:relative;z-index:1}
 .cta:hover{transform:translateY(-2px) scale(1.02);
   box-shadow:0 0 0 1px rgba(255,255,255,.25),0 0 30px rgba(255,255,255,.45),0 0 60px rgba(255,255,255,.2)}
 .cta-note{margin-top:12px;color:var(--muted);font-size:12.5px}
-
+ 
 .stats{flex:0 0 auto;width:100%;max-width:920px;display:grid;grid-template-columns:repeat(4,1fr);
   gap:clamp(10px,2vw,24px);text-align:center}
 .stat-icon{font-family:var(--font-display);color:#fff;font-size:clamp(22px,3vw,33px);line-height:1}
 .stat-value{margin-top:6px;color:#fff;font-size:clamp(18px,2.2vw,26px);font-weight:500;letter-spacing:-.025em;
   font-variant-numeric:tabular-nums}
 .stat-label{margin-top:2px;color:var(--muted);font-size:clamp(11px,1.2vw,12.5px)}
-
+ 
 /* ---------- элементы приложения ---------- */
 .page-head{margin-bottom:26px}
 .page-head h1{margin:0;font-family:var(--font-display);font-weight:400;letter-spacing:-.04em;
   font-size:clamp(26px,4vw,44px);line-height:1.1}
 .page-head p{margin:10px 0 0;color:var(--muted);font-size:14.5px;max-width:62ch;line-height:1.55}
-
+ 
 .card{background:var(--card);border:1px solid var(--card-border);border-radius:22px;padding:clamp(18px,2.4vw,28px);
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);margin-bottom:22px;
   transition:border-color .3s ease,transform .3s ease,box-shadow .3s ease}
@@ -229,7 +232,7 @@ main{position:relative;z-index:1}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
 .grid-auto{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px}
 .hint{color:var(--muted);font-size:13px;line-height:1.55}
-
+ 
 .btn{border:none;border-radius:999px;cursor:pointer;font-weight:500;font-size:13.5px;padding:11px 20px;transition:.22s ease}
 .btn:active{transform:scale(.96)}
 .btn-primary{background:#fff;color:#000;box-shadow:0 0 0 1px rgba(255,255,255,.15),0 0 18px rgba(255,255,255,.18)}
@@ -239,7 +242,7 @@ main{position:relative;z-index:1}
 .btn-ghost:hover{background:rgba(255,255,255,.14);transform:translateY(-1px)}
 .btn-danger{background:none;border:none;color:var(--bad);cursor:pointer;font-size:13px;padding:0;transition:opacity .2s ease}
 .btn-danger:hover{opacity:.7}
-
+ 
 label.field{display:block;margin-bottom:14px}
 label.field>span{display:block;margin-bottom:7px;color:var(--muted);font-size:12.5px}
 input[type=text],input[type=email],input[type=password],input[type=date],select,textarea{
@@ -251,7 +254,7 @@ select option{background:#111}
 ::placeholder{color:#6a6a6a}
 input[type=date]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.6;cursor:pointer}
 input[type=checkbox]{width:19px;height:19px;accent-color:#fff;cursor:pointer}
-
+ 
 .table-wrap{overflow-x:auto;margin:0 -6px}
 table{width:100%;border-collapse:collapse;min-width:520px}
 th{padding:12px 14px;text-align:left;color:var(--muted);font-size:11.5px;font-weight:600;letter-spacing:.02em;
@@ -263,7 +266,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .sub{display:block;color:var(--muted);font-size:11px;margin-top:3px}
 .center{text-align:center}
 .mono-num{font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-
+ 
 .counter{display:inline-flex;align-items:center;gap:10px}
 .btn-count{width:28px;height:28px;border-radius:9px;border:1px solid var(--card-border);background:rgba(255,255,255,.05);
   color:#fff;cursor:pointer;line-height:1;font-size:14px;transition:.2s ease}
@@ -273,14 +276,14 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   transition:transform .18s ease}
 .notes-input{background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.14);border-radius:0;padding:7px 2px;font-size:13.5px}
 .notes-input:focus{border-color:#fff}
-
+ 
 .lesson-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;
   background:rgba(255,255,255,.04);border:1px solid var(--card-border);border-radius:14px;margin-bottom:10px;
   transition:background .25s ease,border-color .25s ease}
 .lesson-row:hover{background:rgba(255,255,255,.075);border-color:rgba(255,255,255,.22)}
 .lesson-time{font-family:var(--font-display);font-size:15px;letter-spacing:-.04em;color:#fff}
 .lesson-name{color:#d6d6d6;font-size:14px;text-align:right}
-
+ 
 .notes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
 .note{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--card-border);
   border-radius:20px;padding:22px}
@@ -292,15 +295,15 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .pin{position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;font-size:16px;
   filter:grayscale(1);opacity:.5;transition:.2s}
 .note.pinned .pin{filter:none;opacity:1}
-
+ 
 .chips{display:flex;flex-wrap:wrap;gap:10px}
 .chip{padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--card-border);
   color:#ddd;font-size:13.5px;cursor:pointer;transition:.2s}
 .chip:hover{background:rgba(255,255,255,.14);color:#fff}
 .chip.active{background:#fff;color:#000;border-color:#fff}
-
+ 
 .empty{padding:26px;text-align:center;color:var(--muted);font-size:13.5px}
-
+ 
 /* ---------- модалки ---------- */
 .modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:18px;
   background:rgba(0,0,0,.72);backdrop-filter:blur(10px)}
@@ -323,7 +326,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .avatar-opt{width:52px;height:52px;display:grid;place-items:center;font-size:24px;border-radius:50%;cursor:pointer;
   border:1px solid transparent;background:rgba(255,255,255,.05);transition:.2s}
 .avatar-opt:hover,.avatar-opt.selected{border-color:#fff;background:rgba(255,255,255,.14);transform:scale(1.06)}
-
+ 
 /* ---------- тосты ---------- */
 #toasts{position:fixed;bottom:22px;left:22px;z-index:200;display:flex;flex-direction:column;gap:10px;max-width:330px}
 .toast{padding:14px 16px;border-radius:16px;background:rgba(18,18,20,.96);border:1px solid var(--card-border);
@@ -333,7 +336,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .toast b{display:block;margin-bottom:3px;font-weight:600}
 @keyframes toastIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
 @keyframes toastOut{to{opacity:0}}
-
+ 
 /* ---------- бот ---------- */
 #bot-toggle{position:fixed;right:22px;bottom:22px;z-index:90;width:54px;height:54px;border-radius:50%;border:none;
   background:#fff;color:#000;font-size:20px;cursor:pointer;box-shadow:0 0 0 1px rgba(255,255,255,.2),0 0 26px rgba(255,255,255,.25);
@@ -354,7 +357,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 #bot-form{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid var(--card-border)}
 #bot-input{background:transparent;border:none;padding:8px 4px;font-size:13.5px}
 #bot-form button{background:none;border:none;color:#fff;font-size:16px;cursor:pointer}
-
+ 
 /* ---------- адаптив ---------- */
 @media (max-width:900px){.grid-2{grid-template-columns:1fr}}
 @media (max-width:720px){
@@ -385,7 +388,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 </style>
 </head>
 <body class="landing-mode">
-
+ 
 <div class="bg">
   <video class="bg-video" autoplay muted loop playsinline>
     <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260809_012548_ef22562c-c0ae-4816-ad9d-f8922af4e6a7.mp4" type="video/mp4">
@@ -393,14 +396,14 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 </div>
 <div class="scrim"></div>
 <div id="toasts"></div>
-
+ 
 <header class="site-header">
   <div class="header-inner">
     <button class="logo" onclick="switchPage('landing')" aria-label="На главную">
       <img src="image.png" alt="" width="52" height="52" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
       <span class="logo-fallback">S</span>
     </button>
-
+ 
     <nav class="nav-pill" aria-label="Основная навигация">
       <span class="nav-link active" data-page="landing" onclick="switchPage('landing')">Главная</span>
       <span class="nav-link" data-page="group" onclick="switchPage('group')">Группа</span>
@@ -408,9 +411,9 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
       <span class="nav-link" data-page="notes" onclick="switchPage('notes')">Инфо</span>
       <span class="nav-link" data-page="reports" onclick="switchPage('reports')">Отчёты</span>
     </nav>
-
+ 
     <button class="signin" id="signin-btn" onclick="openAuthModal()">Войти</button>
-
+ 
     <div class="profile" id="profile-block" hidden>
       <button class="profile-pill" onclick="toggleDropdown(event)">
         <span class="profile-avatar" id="profile-avatar">😎</span>
@@ -422,13 +425,13 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
         <button class="danger" onclick="logout(event)">Выйти</button>
       </div>
     </div>
-
+ 
     <button class="burger" id="burger" aria-expanded="false" aria-label="Меню" onclick="toggleMenu()">
       <span></span><span></span><span></span>
     </button>
   </div>
 </header>
-
+ 
 <div class="menu-overlay" id="menu-overlay" hidden onclick="closeMenu()"></div>
 <div class="menu-sheet" id="menu-sheet" hidden>
   <a class="active" data-page="landing" style="animation-delay:.04s" onclick="switchPage('landing')">Главная</a>
@@ -438,9 +441,9 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   <a data-page="reports" style="animation-delay:.2s" onclick="switchPage('reports')">Отчёты</a>
   <button class="menu-cta" id="menu-auth-btn" onclick="openAuthModal()">Войти</button>
 </div>
-
+ 
 <main>
-
+ 
 <!-- ГЛАВНАЯ -->
 <section class="view landing active" id="page-landing">
   <div class="hero">
@@ -450,18 +453,18 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
       <div class="avatar-ring"><span><i class="fa-solid fa-chart-column"></i></span></div>
       <div class="trust-pill">Журнал, дедлайны и смотр куратору</div>
     </div>
-
+ 
     <h1 class="headline"><span>StaroSTATT</span><span>Attendance Evolved</span></h1>
-
+ 
     <p class="subhead anim" style="--d:.28s">
       Рабочее место старосты. Отмечайте пару в один клик, держите дедлайны группы на виду
       и собирайте смотр для куратора по академическим часам — без бумажных ведомостей и ручных таблиц.
     </p>
-
+ 
     <button class="cta" style="--d:.4s" onclick="switchPage('group')">Попробовать</button>
     <p class="cta-note anim" style="--d:.5s">Без регистрации — данные останутся в этом браузере</p>
   </div>
-
+ 
   <div class="stats">
     <div class="anim" style="--d:.5s">
       <div class="stat-icon">&lt;</div>
@@ -485,7 +488,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     </div>
   </div>
 </section>
-
+ 
 <!-- ГРУППА -->
 <section class="view app-view" id="page-group">
   <div class="page-head">
@@ -493,7 +496,15 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     <p>Соберите состав группы и расписание на чётную и нечётную неделю — дальше журнал и все отчёты
        построятся автоматически.</p>
   </div>
-
+ 
+  <div class="card" id="account-banner" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+    <div>
+      <h3 style="margin-bottom:6px" id="account-banner-title">Вы работаете без аккаунта</h3>
+      <p class="hint" style="margin:0" id="account-banner-text">Список и расписание сохраняются только в этом браузере. Войдите, чтобы забрать группу с собой на любое устройство.</p>
+    </div>
+    <button class="btn btn-primary" id="account-banner-btn" onclick="openAuthModal()">Войти</button>
+  </div>
+ 
   <div class="grid-auto" style="margin-bottom:22px">
     <div class="card" style="margin:0">
       <h3>Текущая группа</h3>
@@ -507,7 +518,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
       <button class="btn btn-ghost" style="margin-top:14px;width:100%" onclick="startNewGroup()">Добавить группу</button>
     </div>
   </div>
-
+ 
   <div class="card" id="group-editor">
     <div class="card-head"><h2>Список и расписание</h2>
       <button class="btn btn-ghost" onclick="insertScheduleTemplate()">Вставить шаблон расписания</button>
@@ -519,14 +530,14 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     <button class="btn btn-primary" onclick="saveGroup()">Сохранить группу</button>
   </div>
 </section>
-
+ 
 <!-- ЖУРНАЛ -->
 <section class="view app-view" id="page-journal">
   <div class="page-head">
     <h1>Journal</h1>
     <p>Выберите дату — неделя, день и список пар подставятся сами. Отметки сохраняются сразу.</p>
   </div>
-
+ 
   <div class="grid-2" style="margin-bottom:22px">
     <div class="card" style="margin:0">
       <div class="card-head" style="margin-bottom:14px"><h2 id="card-title">Расписание</h2></div>
@@ -545,7 +556,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
       <button class="btn btn-primary" onclick="markAllPresent()">Отметить всех</button>
     </div>
   </div>
-
+ 
   <div class="card">
     <div class="table-wrap">
       <table>
@@ -555,7 +566,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     </div>
   </div>
 </section>
-
+ 
 <!-- ИНФО -->
 <section class="view app-view" id="page-notes">
   <div class="page-head">
@@ -568,14 +579,14 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   </div>
   <div class="notes-grid" id="notes-grid-container"></div>
 </section>
-
+ 
 <!-- ОТЧЁТЫ -->
 <section class="view app-view" id="page-reports">
   <div class="page-head">
     <h1>Reports</h1>
     <p>Три среза по одним и тем же отметкам: смотр для куратора, общая статистика группы и посещаемость по предмету.</p>
   </div>
-
+ 
   <div class="card">
     <div class="card-head">
       <h2>Смотр для куратора</h2>
@@ -592,7 +603,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
       </table>
     </div>
   </div>
-
+ 
   <div class="card">
     <div class="card-head"><h2>Статистика группы за семестр</h2></div>
     <div class="table-wrap">
@@ -603,7 +614,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
       </table>
     </div>
   </div>
-
+ 
   <div class="card">
     <div class="card-head"><h2>Посещаемость по предмету</h2></div>
     <div class="chips" id="subject-grid"></div>
@@ -618,9 +629,9 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     </div>
   </div>
 </section>
-
+ 
 </main>
-
+ 
 <!-- МОДАЛКИ -->
 <div class="modal" id="auth-modal">
   <div class="modal-box">
@@ -636,7 +647,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     <p class="link-line" id="link-toggle" onclick="toggleAuthMode()">Нет аккаунта? Создать</p>
   </div>
 </div>
-
+ 
 <div class="modal" id="note-modal">
   <div class="modal-box">
     <div class="modal-head"><h2>Новая карточка</h2><button class="x" onclick="closeModal('note-modal')">×</button></div>
@@ -645,14 +656,14 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     <button class="btn btn-primary" style="width:100%" onclick="saveNewNote()">Добавить карточку</button>
   </div>
 </div>
-
+ 
 <div class="modal" id="avatar-modal">
   <div class="modal-box">
     <div class="modal-head"><h2>Аватар</h2><button class="x" onclick="closeModal('avatar-modal')">×</button></div>
     <div class="avatar-grid" id="avatar-grid"></div>
   </div>
 </div>
-
+ 
 <!-- БОТ -->
 <button id="bot-toggle" onclick="toggleBot()" aria-label="Помощник">✦</button>
 <div id="bot">
@@ -663,7 +674,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     <button type="submit" aria-label="Отправить">↑</button>
   </form>
 </div>
-
+ 
 <script>
 /* ======================= ССЫЛКИ НА ЭЛЕМЕНТЫ ======================= */
 /* Объявлены здесь, до любого вызова initApp(), чтобы initApp() не мог
@@ -672,7 +683,7 @@ const weekSelect = document.getElementById('week');
 const daySelect = document.getElementById('day');
 const lessonSelect = document.getElementById('lesson');
 const datePicker = document.getElementById('date-picker');
-
+ 
 /* ======================= УВЕДОМЛЕНИЯ ======================= */
 function showToast(msg, type){
   const box = document.getElementById('toasts');
@@ -682,13 +693,13 @@ function showToast(msg, type){
   box.appendChild(t);
   setTimeout(() => { t.style.animation = 'toastOut .4s forwards'; setTimeout(() => t.remove(), 400); }, 4500);
 }
-
+ 
 /* ======================= НАВИГАЦИЯ ======================= */
 function switchPage(page){
   const current = document.querySelector('.view.active');
   const target = document.getElementById('page-' + page);
   if (!target || target === current){ closeMenu(); return; }
-
+ 
   function enterTarget(){
     if (current){ current.classList.remove('active', 'leaving'); }
     target.classList.add('active', 'entering');
@@ -703,7 +714,7 @@ function switchPage(page){
     if (page === 'reports') renderReports();
     window.scrollTo(0, 0);
   }
-
+ 
   if (current){
     current.classList.add('leaving');
     current.addEventListener('animationend', function done(e){
@@ -734,11 +745,11 @@ function closeMenu(){
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape'){ closeMenu(); document.querySelectorAll('.modal.open').forEach(m => m.classList.remove('open')); }});
 window.addEventListener('resize', () => { if (window.innerWidth > 720) closeMenu(); });
-
+ 
 function openModal(id){ document.getElementById(id).classList.add('open'); }
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }));
-
+ 
 /* ======================= СЧЁТЧИКИ НА ГЛАВНОЙ ======================= */
 (function countUp(){
   document.querySelectorAll('.stat-value').forEach((el, i) => {
@@ -753,7 +764,7 @@ document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e =
     requestAnimationFrame(frame);
   });
 })();
-
+ 
 /* ======================= FIREBASE ======================= */
 const firebaseConfig = {
   apiKey: "AIzaSyCVgLwa8--Myp1YUPkeGUj_Ik6-r-Qe07U",
@@ -771,43 +782,26 @@ if (typeof firebase !== 'undefined'){
 } else {
   console.warn('Firebase SDK не загрузился (например, заблокирован сетью) — работаем в гостевом режиме, данные хранятся в браузере.');
 }
-
+ 
 /* ======================= ДАННЫЕ ======================= */
 const defaultData = {
-  currentGroup: "ИБМ1-32Б", avatar: "😎",
+  currentGroup: "Моя группа", avatar: "😎",
   groups: {
-    "ИБМ1-32Б": {
-      students: [
-        "Бенсон Александр Дейвисович","Былков Григорий Олегович","Жиденко Кристина Михайловна",
-        "Исиев Эмиль Хайдарович (староста)","Князев Александр Максимович","Котова Анастасия Юрьевна",
-        "Логинов Егор Денисович","Максимов Данил Александрович","Раткогло Арина Юрьевна",
-        "Рыбин Илья Гарриевич","Сомов Антон Иванович","Стародубцева Ангелина Алексеевна",
-        "Сукманюк Михаил Андреевич","Халин Александр Сергеевич","Шавырин Иван Вадимович",
-        "Ярошенко Сергей Сергеевич","Яцко Варвара Александровна"
-      ],
+    "Моя группа": {
+      students: [],
       schedule: {
-        "even": {
-          "mon":[{"id":"1","text":"8:30 - Рынок Ценных Бумаг (Л)"},{"id":"2","text":"10:10 - БЖД (Л)"},{"id":"3","text":"12:25 - Налогообложение (С)"},{"id":"4","text":"14:05 - Фин. институты (С)"}],
-          "wed":[{"id":"1","text":"10:10 - БЖД (С)"},{"id":"2","text":"11:50 - Фин. институты (Л)"},{"id":"3","text":"14:05 - Налогообложение (Л)"}],
-          "thu":[{"id":"1","text":"8:30 - Гос. и муниц. упр. (С)"},{"id":"2","text":"10:10 - Основы венч. бизнеса (С)"},{"id":"3","text":"12:25 - Основы венч. бизнеса (Л)"}],
-          "sat":[{"id":"1","text":"8:30 - Англ (С)"},{"id":"2","text":"10:10 - Экономика Труда (С)"}]
-        },
-        "odd": {
-          "mon":[{"id":"1","text":"10:10 - Рынок ценных бумаг (С)"},{"id":"2","text":"11:50 - Налогообложение (С)"},{"id":"3","text":"14:05 - Фин. институты (С)"}],
-          "wed":[{"id":"1","text":"10:10 - Электронный бизнес (Л)"},{"id":"2","text":"11:50 - Электронный бизнес (С)"},{"id":"3","text":"14:05 - Основы бизнеса (С)"},{"id":"4","text":"15:55 - Основы бизнеса (Л)"}],
-          "thu":[{"id":"1","text":"8:30 - Гос. и муниц. упр. (С)"},{"id":"2","text":"10:10 - Основы венч. бизнеса (С)"},{"id":"3","text":"11:50 - Гос. и муниц. упр. (Л)"}],
-          "sat":[{"id":"1","text":"8:30 - Английский (С)"},{"id":"2","text":"10:10 - Экономика труда (С)"},{"id":"3","text":"12:25 - Экономика труда (Л)"}]
-        }
+        "even": { "mon":[], "tue":[], "wed":[], "thu":[], "fri":[], "sat":[] },
+        "odd":  { "mon":[], "tue":[], "wed":[], "thu":[], "fri":[], "sat":[] }
       },
       attendance: {}, notesList: []
     }
   }
 };
-
+ 
 let currentUser = null;
 let userData = JSON.parse(JSON.stringify(defaultData));
 let currentExportData = [];
-
+ 
 function getActiveGroupData(){
   if (!userData) userData = JSON.parse(JSON.stringify(defaultData));
   if (!userData.groups) userData.groups = { "Новая группа": { students: [], schedule:{even:{},odd:{}}, attendance:{}, notesList:[] } };
@@ -824,7 +818,7 @@ function getActiveGroupData(){
   userData.groups[userData.currentGroup] = g;
   return g;
 }
-
+ 
 function loadLocalData(){
   try{
     const legacy = JSON.parse(localStorage.getItem('ss_all_groups'));
@@ -834,7 +828,7 @@ function loadLocalData(){
     } else { userData = JSON.parse(JSON.stringify(defaultData)); }
   } catch(e){ userData = JSON.parse(JSON.stringify(defaultData)); }
 }
-
+ 
 function saveToCloud(silent){
   if (currentUser && db){
     db.collection('users').doc(currentUser.uid).set(userData)
@@ -849,7 +843,7 @@ function saveToCloud(silent){
   const av = document.getElementById('profile-avatar');
   if (av) av.textContent = userData.avatar || "😎";
 }
-
+ 
 /* ======================= АВТОРИЗАЦИЯ ======================= */
 let isLoginMode = true;
 function openAuthModal(){ openModal('auth-modal'); closeMenu(); }
@@ -904,22 +898,31 @@ function logout(e){ if (e) e.stopPropagation(); auth && auth.signOut(); document
 function forceSync(e){ if (e) e.stopPropagation(); saveToCloud(); document.getElementById('dropdown').classList.remove('show'); }
 function toggleDropdown(e){ if (e) e.stopPropagation(); document.getElementById('dropdown').classList.toggle('show'); }
 document.addEventListener('click', e => { if (!e.target.closest('.profile')) document.getElementById('dropdown').classList.remove('show'); });
-
+ 
 function setAuthUI(user){
   const signin = document.getElementById('signin-btn'), profile = document.getElementById('profile-block'),
         menuBtn = document.getElementById('menu-auth-btn');
+  const bannerTitle = document.getElementById('account-banner-title'),
+        bannerText = document.getElementById('account-banner-text'),
+        bannerBtn = document.getElementById('account-banner-btn');
   if (user){
     signin.hidden = true; profile.hidden = false;
     document.getElementById('profile-name').textContent = user.email.split('@')[0];
     menuBtn.textContent = 'Выйти'; menuBtn.onclick = logout;
     closeModal('auth-modal');
+    bannerTitle.textContent = 'Вы вошли как ' + user.email;
+    bannerText.textContent = 'Эта группа сохраняется за вашим аккаунтом и откроется на любом устройстве после входа.';
+    bannerBtn.textContent = 'Выйти'; bannerBtn.onclick = logout;
   } else {
     signin.hidden = false; profile.hidden = true;
     menuBtn.textContent = 'Войти'; menuBtn.onclick = openAuthModal;
+    bannerTitle.textContent = 'Вы работаете без аккаунта';
+    bannerText.textContent = 'Список и расписание сохраняются только в этом браузере. Войдите, чтобы забрать группу с собой на любое устройство.';
+    bannerBtn.textContent = 'Войти'; bannerBtn.onclick = openAuthModal;
   }
 }
-
-let bootTimer = setTimeout(() => { loadLocalData(); initApp(); }, 1500);
+ 
+let bootTimer = setTimeout(() => { loadLocalData(); setAuthUI(null); initApp(); }, 1500);
 if (auth){
   auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
     auth.onAuthStateChanged(user => {
@@ -934,9 +937,9 @@ if (auth){
         }).catch(() => { loadLocalData(); initApp(); });
       } else { currentUser = null; loadLocalData(); initApp(); }
     });
-  }).catch(() => { clearTimeout(bootTimer); loadLocalData(); initApp(); });
-} else { clearTimeout(bootTimer); loadLocalData(); initApp(); }
-
+  }).catch(() => { clearTimeout(bootTimer); loadLocalData(); setAuthUI(null); initApp(); });
+} else { clearTimeout(bootTimer); loadLocalData(); setAuthUI(null); initApp(); }
+ 
 /* ======================= АВАТАР ======================= */
 const avatars = ["😎","🎓","👑","🦊","👽","🚀","💻","🔥","🦄","☕️","🐼","🌙"];
 function openAvatarModal(e){
@@ -952,26 +955,26 @@ function openAvatarModal(e){
   openModal('avatar-modal');
 }
 function selectAvatar(a){ userData.avatar = a; saveToCloud(true); closeModal('avatar-modal'); initApp(); }
-
+ 
 /* ======================= ИНИЦИАЛИЗАЦИЯ ======================= */
 function initApp(){
   try{
     const g = getActiveGroupData();
     document.getElementById('page-title').textContent = 'StaroSTATT — ' + (userData.currentGroup || '');
     document.getElementById('profile-avatar').textContent = userData.avatar || "😎";
-
+ 
     const sel = document.getElementById('group-selector'); sel.innerHTML = '';
     Object.keys(userData.groups).forEach(name => {
       const o = document.createElement('option'); o.value = name; o.textContent = name;
       if (name === userData.currentGroup) o.selected = true; sel.appendChild(o);
     });
-
+ 
     document.getElementById('current-group-display').textContent = userData.currentGroup || 'Нет группы';
     document.getElementById('current-group-stats').textContent = 'Студентов: ' + g.students.length;
     document.getElementById('setup-group-name').value = userData.currentGroup || '';
     document.getElementById('setup-students').value = g.students.join('\n');
     document.getElementById('setup-schedule').value = JSON.stringify(g.schedule, null, 2);
-
+ 
     initWeekSelects();
     if (!datePicker.value) datePicker.valueAsDate = new Date();
     syncDateToDay();
@@ -983,7 +986,7 @@ function initApp(){
     showToast('Данные были повреждены — вернули настройки по умолчанию.');
   }
 }
-
+ 
 function initWeekSelects(){
   if (weekSelect.children.length) return;
   for (let i = 1; i <= 18; i++){
@@ -994,7 +997,7 @@ function initWeekSelects(){
     document.getElementById('curator-week-select').appendChild(o2);
   }
 }
-
+ 
 function changeActiveGroup(){ userData.currentGroup = document.getElementById('group-selector').value; saveToCloud(true); initApp(); }
 function startNewGroup(){
   document.getElementById('setup-group-name').value = 'Новая группа';
@@ -1021,7 +1024,7 @@ function saveGroup(){
   initApp();
   showToast('Группа сохранена', 'success');
 }
-
+ 
 /* ======================= ЖУРНАЛ ======================= */
 function getAcademicWeek(d){
   const year = d.getMonth() >= 7 ? d.getFullYear() : d.getFullYear() - 1;
@@ -1046,7 +1049,7 @@ function updateInterface(){
   const dayNames = { mon:'Понедельник', tue:'Вторник', wed:'Среда', thu:'Четверг', fri:'Пятница', sat:'Суббота' };
   document.getElementById('card-title').innerHTML = dayNames[daySelect.value] +
     ' <span style="color:var(--muted);font-weight:400">· ' + weekSelect.value + ' неделя</span>';
-
+ 
   const list = document.getElementById('schedule-display-cards'); list.innerHTML = '';
   lessonSelect.innerHTML = '';
   if (!lessons.length){
@@ -1066,7 +1069,7 @@ function updateInterface(){
 }
 function key(w, d, l, s){ return 'w' + w + '_d' + d + '_l' + l + '_s' + s; }
 function currentKey(i){ return key(weekSelect.value, daySelect.value, lessonSelect.value, i); }
-
+ 
 function renderTable(){
   const tbody = document.getElementById('students-body'); tbody.innerHTML = '';
   const g = getActiveGroupData();
@@ -1112,7 +1115,7 @@ function markAllPresent(){
   });
   saveToCloud(true); renderTable(); showToast('Вся группа отмечена', 'success');
 }
-
+ 
 /* ======================= КАРТОЧКИ ======================= */
 function openNoteModal(){
   document.getElementById('note-title-input').value = '';
@@ -1154,12 +1157,12 @@ function renderNotes(){
     box.appendChild(el);
   });
 }
-
+ 
 /* ======================= ОТЧЁТЫ ======================= */
 function renderReports(){ renderCuratorTable(); renderGroupStats(); initSubjects(); }
-
+ 
 function tone(p){ return p >= 80 ? 'var(--ok)' : (p < 50 ? 'var(--bad)' : '#fff'); }
-
+ 
 function renderCuratorTable(){
   const g = getActiveGroupData();
   const target = parseInt(document.getElementById('curator-week-select').value) || 1;
@@ -1182,7 +1185,7 @@ function renderCuratorTable(){
   document.getElementById('curator-summary').innerHTML =
     'С первой по ' + target + '-ю неделю: семинаров ' + totalSem + ' пар (' + totalSem * 2 + ' ак. ч.), лекций ' +
     totalLec + ' пар (' + totalLec * 2 + ' ак. ч.).';
-
+ 
   g.students.forEach((name, s) => {
     let attLec = 0, attSem = 0;
     for (let w = 1; w <= target; w++){
@@ -1211,7 +1214,7 @@ function renderCuratorTable(){
     tbody.appendChild(tr);
   });
 }
-
+ 
 function renderGroupStats(){
   const g = getActiveGroupData();
   const tbody = document.getElementById('stats-body'); tbody.innerHTML = '';
@@ -1247,7 +1250,7 @@ function renderGroupStats(){
     tbody.appendChild(tr);
   });
 }
-
+ 
 function initSubjects(){
   const g = getActiveGroupData();
   const grid = document.getElementById('subject-grid'); grid.innerHTML = '';
@@ -1295,7 +1298,7 @@ function buildSubjectStats(subject){
     tbody.appendChild(tr);
   });
 }
-
+ 
 function exportCuratorCSV(){
   if (!currentExportData.length) return showToast('Нечего выгружать — сначала заполните журнал.');
   let csv = '\uFEFFСмотр группы ' + userData.currentGroup + '\nПо неделю: ' +
@@ -1310,7 +1313,7 @@ function exportCuratorCSV(){
   a.download = 'Смотр_' + userData.currentGroup + '.csv';
   a.click();
 }
-
+ 
 /* ======================= БОТ ======================= */
 function toggleBot(){ document.getElementById('bot').classList.toggle('open'); }
 function sendBot(e){
@@ -1344,3 +1347,4 @@ function answer(q){
 </script>
 </body>
 </html>
+ 
