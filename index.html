@@ -369,6 +369,11 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   .subhead{font-size:calc(14px + 1pt)}
   .stats{grid-template-columns:1fr 1fr;gap:18px 10px}
   table{min-width:460px}
+  /* Защита: если браузер (особенно встроенный в мессенджеры) неверно
+     посчитает высоту экрана, контент не запирается — можно прокрутить,
+     а не остаться без доступа к кнопке. */
+  body.landing-mode{overflow-y:auto}
+  .landing.active{height:auto;min-height:100vh;min-height:100dvh;overflow:visible}
 }
 @media (max-width:420px){
   .trust{--trust-size:34px}
