@@ -76,7 +76,7 @@ body.app-mode .scrim{background:rgba(0,0,0,.74);backdrop-filter:blur(7px);-webki
 .logo img{width:72%;height:72%;object-fit:contain}
 .logo-fallback{display:none;font-family:var(--font-display);font-size:18px;color:#111;line-height:1}
  
-.nav-pill{display:flex;align-items:center;justify-content:space-between;flex:1;max-width:430px;
+.nav-pill{display:flex;align-items:center;justify-content:space-between;flex:1;max-width:480px;
   height:clamp(44px,5.2vw,48px);padding:4px 8px;background:#fff;border-radius:999px;box-shadow:var(--nav-shadow)}
 .nav-link{position:relative;padding:8px 10px;cursor:pointer;color:var(--nav-text);opacity:.5;
   font-weight:500;font-size:clamp(12px,1.35vw,14.5px);letter-spacing:-.01em;
@@ -422,6 +422,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
       <span class="nav-link" data-page="journal" onclick="switchPage('journal')">Журнал</span>
       <span class="nav-link" data-page="notes" onclick="switchPage('notes')">Инфо</span>
       <span class="nav-link" data-page="reports" onclick="switchPage('reports')">Отчёты</span>
+      <span class="nav-link" data-page="reviews" onclick="switchPage('reviews')">Отзывы</span>
     </nav>
  
     <button class="signin" id="signin-btn" onclick="openAuthModal()">Войти</button>
@@ -451,6 +452,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   <a data-page="journal" style="animation-delay:.12s" onclick="switchPage('journal')">Журнал</a>
   <a data-page="notes" style="animation-delay:.16s" onclick="switchPage('notes')">Инфо</a>
   <a data-page="reports" style="animation-delay:.2s" onclick="switchPage('reports')">Отчёты</a>
+  <a data-page="reviews" style="animation-delay:.24s" onclick="switchPage('reviews')">Отзывы</a>
   <button class="menu-cta" id="menu-auth-btn" onclick="openAuthModal()">Войти</button>
 </div>
  
@@ -672,6 +674,30 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     </div>
   </div>
 </section>
+
+<!-- ОТЗЫВЫ -->
+<section class="view app-view" id="page-reviews">
+  <div class="page-head">
+    <h1>Reviews</h1>
+    <p>Оставьте свой отзыв, пожелание или сообщите о баге. Ваши идеи помогают делать журнал лучше.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>Написать отзыв</h2></div>
+    <label class="field"><span>Ваше имя</span>
+      <input type="text" id="review-name" placeholder="Иван Иванов">
+    </label>
+    <label class="field"><span>Текст отзыва</span>
+      <textarea id="review-text" rows="4" placeholder="Всё отлично, но хотелось бы добавить функцию..."></textarea>
+    </label>
+    <button class="btn btn-primary" onclick="submitReview()">Отправить отзыв</button>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>Оставленные отзывы</h2></div>
+    <div id="reviews-list" class="notes-grid"></div>
+  </div>
+</section>
  
 </main>
  
@@ -756,6 +782,7 @@ function switchPage(page){
     document.body.classList.toggle('app-mode', page !== 'landing');
     document.querySelectorAll('[data-page]').forEach(l => l.classList.toggle('active', l.dataset.page === page));
     if (page === 'reports') renderReports();
+    if (page === 'reviews') renderReviews();
     window.scrollTo(0, 0);
   }
  
@@ -829,7 +856,7 @@ if (typeof firebase !== 'undefined'){
  
 /* ======================= ДАННЫЕ ======================= */
 const defaultData = {
-  currentGroup: "Моя группа", avatar: "😎",
+  currentGroup: "Моя группа", avatar: "😎", reviews: [],
   groups: {
     "Моя группа": {
       students: [],
@@ -867,8 +894,12 @@ function loadLocalData(){
   try{
     const legacy = JSON.parse(localStorage.getItem('ss_all_groups'));
     if (legacy && Object.keys(legacy).length){
-      userData = { currentGroup: localStorage.getItem('ss_current_group') || Object.keys(legacy)[0],
-                   groups: legacy, avatar: localStorage.getItem('ss_avatar') || "😎" };
+      userData = { 
+        currentGroup: localStorage.getItem('ss_current_group') || Object.keys(legacy)[0],
+        groups: legacy, 
+        avatar: localStorage.getItem('ss_avatar') || "😎",
+        reviews: JSON.parse(localStorage.getItem('ss_reviews') || '[]')
+      };
     } else { userData = JSON.parse(JSON.stringify(defaultData)); }
   } catch(e){ userData = JSON.parse(JSON.stringify(defaultData)); }
 }
@@ -883,6 +914,7 @@ function saveToCloud(silent){
     localStorage.setItem('ss_all_groups', JSON.stringify(userData.groups));
     localStorage.setItem('ss_current_group', userData.currentGroup);
     localStorage.setItem('ss_avatar', userData.avatar || "😎");
+    localStorage.setItem('ss_reviews', JSON.stringify(userData.reviews || []));
   } catch(e){}
   const av = document.getElementById('profile-avatar');
   if (av) av.textContent = userData.avatar || "😎";
@@ -976,7 +1008,11 @@ if (auth){
       if (user){
         currentUser = user;
         db.collection('users').doc(user.uid).get().then(doc => {
-          if (doc.exists){ userData = doc.data(); if (!userData.avatar) userData.avatar = "😎"; }
+          if (doc.exists){ 
+            userData = doc.data(); 
+            if (!userData.avatar) userData.avatar = "😎"; 
+            if (!userData.reviews) userData.reviews = [];
+          }
           else { loadLocalData(); saveToCloud(true); }
           initApp();
         }).catch(() => { loadLocalData(); initApp(); });
@@ -1034,6 +1070,7 @@ function initApp(){
     syncDateToDay();
     renderNotes();
     if (document.getElementById('page-reports').classList.contains('active')) renderReports();
+    renderReviews(); // Инициализация отрисовки отзывов
   } catch(err){
     console.error(err);
     userData = JSON.parse(JSON.stringify(defaultData));
@@ -1497,6 +1534,71 @@ function answer(q){
 
   // Fallback
   return 'Я пока не знаю такой команды. Спросите меня про «расписание», «дедлайны», «неделю», «долги» студентов или попросите открыть нужный раздел.';
+}
+
+/* ======================= ОТЗЫВЫ ======================= */
+function submitReview() {
+  const nameInput = document.getElementById('review-name');
+  const textInput = document.getElementById('review-text');
+  const name = nameInput.value.trim();
+  const text = textInput.value.trim();
+
+  if (!name || !text) return showToast('Пожалуйста, заполните имя и текст отзыва.');
+
+  if (!userData.reviews) userData.reviews = [];
+
+  userData.reviews.push({
+    id: Date.now(),
+    name: name,
+    text: text,
+    date: new Date().toISOString()
+  });
+
+  nameInput.value = '';
+  textInput.value = '';
+
+  saveToCloud(true);
+  renderReviews();
+  showToast('Отзыв успешно добавлен', 'success');
+}
+
+function renderReviews() {
+  const box = document.getElementById('reviews-list');
+  if (!box) return;
+  box.innerHTML = '';
+  
+  const list = userData.reviews || [];
+  
+  if (!list.length) {
+    box.innerHTML = '<div class="card" style="grid-column:1/-1; margin:0;"><div class="empty">Пока нет ни одного отзыва. Будьте первыми!</div></div>';
+    return;
+  }
+
+  const sortedList = list.slice().sort((a, b) => b.id - a.id);
+
+  sortedList.forEach(r => {
+    const el = document.createElement('article');
+    el.className = 'note'; 
+    el.innerHTML = `
+      <h4>${r.name}</h4>
+      <p>${r.text}</p>
+      <footer>
+        <div style="display:flex;align-items:center">
+          <span>${new Date(r.date).toLocaleDateString('ru-RU')}</span>
+        </div>
+        <button class="btn-danger" onclick="deleteReview(${r.id})">Удалить</button>
+      </footer>
+    `;
+    box.appendChild(el);
+  });
+}
+
+function deleteReview(id) {
+  if (!confirm('Точно удалить этот отзыв?')) return;
+  userData.reviews = userData.reviews.filter(r => r.id !== id);
+  saveToCloud(true);
+  renderReviews();
+  showToast('Отзыв удален', 'success');
 }
 </script>
 </body>
