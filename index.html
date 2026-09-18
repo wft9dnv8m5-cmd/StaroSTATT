@@ -355,7 +355,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .msg.bot{background:rgba(255,255,255,.07);border-bottom-left-radius:4px;align-self:flex-start}
 .msg.me{background:#fff;color:#000;border-bottom-right-radius:4px;align-self:flex-end}
 #bot-form{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid var(--card-border)}
-#bot-input{background:transparent;border:none;padding:8px 4px;font-size:13.5px}
+#bot-input{background:transparent;border:none;padding:8px 4px;font-size:13.5px;color:#fff}
 #bot-form button{background:none;border:none;color:#fff;font-size:16px;cursor:pointer}
  
 /* ---------- адаптив ---------- */
@@ -869,6 +869,7 @@ function handleAuthError(error){
   let msg = error.message || 'Что-то пошло не так.';
   const c = error.code;
   if (c === 'auth/operation-not-allowed') msg = 'В Firebase не включён вход по email — включите Email/Password в консоли.';
+  else if (c === 'auth/admin-restricted-operation') msg = 'Регистрация новых пользователей отключена в настройках проекта. Попросите владельца сайта включить «Enable create (sign-up)» в Firebase → Authentication → Settings.';
   else if (c === 'auth/unauthorized-domain') msg = 'Домен сайта не добавлен в белый список Firebase.';
   else if (c === 'auth/email-already-in-use') msg = 'Эта почта уже занята.';
   else if (c === 'auth/weak-password') msg = 'Нужен пароль минимум из шести символов.';
