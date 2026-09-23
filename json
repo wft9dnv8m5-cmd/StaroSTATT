@@ -1,0 +1,16 @@
+{
+  "name": "StaroSTATT — журнал старосты",
+  "short_name": "StaroSTATT",
+  "description": "Журнал посещаемости, дедлайны и смотр для куратора — рабочее место старосты.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "lang": "ru",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
