@@ -1,6 +1,3 @@
-
-
-Starostatt · HTML
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -382,11 +379,35 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 @keyframes toastOut{to{opacity:0}}
  
 /* ---------- бот ---------- */
-#bot-toggle{position:fixed;right:22px;bottom:22px;z-index:90;width:54px;height:54px;border-radius:50%;border:none;
-  background:#fff;color:#000;font-size:20px;cursor:pointer;box-shadow:0 0 0 1px rgba(255,255,255,.2),0 0 26px rgba(255,255,255,.25);
+#bot-toggle-wrap{position:fixed;right:22px;bottom:22px;z-index:90;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.bot-tip{position:relative;max-width:190px;padding:10px 14px;border-radius:14px 14px 4px 14px;
+  background:#fff;color:#111;font-size:12.5px;line-height:1.4;font-weight:500;box-shadow:0 10px 26px rgba(0,0,0,.35);
+  opacity:0;transform:translateY(6px) scale(.94);pointer-events:none;
+  transition:opacity .3s cubic-bezier(.22,1,.36,1),transform .3s cubic-bezier(.22,1,.36,1)}
+.bot-tip.show{opacity:1;transform:none;pointer-events:auto}
+#bot-toggle{width:60px;height:60px;border-radius:20px;border:none;cursor:pointer;padding:0;position:relative;
+  background:linear-gradient(160deg,#f2efe9,#cfc8be);
+  box-shadow:0 0 0 1px rgba(255,255,255,.2),0 10px 26px rgba(0,0,0,.4);
   transition:transform .25s ease}
-#bot-toggle:hover{transform:scale(1.07)}
-#bot{position:fixed;right:22px;bottom:88px;z-index:90;width:330px;max-width:calc(100vw - 36px);height:430px;
+#bot-toggle:hover{transform:scale(1.06)}
+.bot-robot{position:relative;width:100%;height:100%}
+.bot-antenna{position:absolute;top:2px;left:50%;width:4px;height:9px;border-radius:2px;background:#8b8377;transform:translateX(-50%)}
+.bot-antenna::before{content:"";position:absolute;top:-5px;left:50%;width:6px;height:6px;border-radius:50%;
+  background:#ff6b6b;transform:translateX(-50%);box-shadow:0 0 8px rgba(255,107,107,.7);
+  animation:antennaBlink 1.8s ease-in-out infinite}
+@keyframes antennaBlink{0%,100%{opacity:1}50%{opacity:.35}}
+.bot-head{position:absolute;top:16px;left:50%;transform:translateX(-50%);width:34px;height:26px;border-radius:9px;
+  background:#181818;display:flex;align-items:center;justify-content:center;gap:7px}
+.bot-eye{width:8px;height:8px;border-radius:50%;background:#fff;display:grid;place-items:center;transition:transform .1s ease}
+.bot-pupil{width:3.5px;height:3.5px;border-radius:50%;background:#181818;transition:transform .08s linear}
+.bot-arm{position:absolute;top:26px;width:9px;height:16px;border-radius:6px;background:#a8a096;
+  transform-origin:top center;animation:armWave 2.4s ease-in-out infinite}
+.bot-arm-l{left:2px;transform:rotate(14deg);animation-delay:0s}
+.bot-arm-r{right:2px;transform:rotate(-14deg);animation-delay:.35s}
+@keyframes armWave{0%,100%{transform:rotate(14deg)}50%{transform:rotate(26deg)}}
+.bot-arm-r{animation-name:armWaveR}
+@keyframes armWaveR{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(-26deg)}}
+#bot{position:fixed;right:22px;bottom:96px;z-index:90;width:330px;max-width:calc(100vw - 36px);height:430px;
   display:flex;flex-direction:column;overflow:hidden;background:rgba(16,16,18,.96);border:1px solid var(--card-border);
   border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,.55);backdrop-filter:blur(18px);
   opacity:0;transform:translateY(14px);pointer-events:none;transition:.28s cubic-bezier(.22,1,.36,1)}
@@ -706,14 +727,14 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     </div>
   </div>
 </section>
- 
+
 <!-- ОТЗЫВЫ -->
 <section class="view app-view" id="page-reviews">
   <div class="page-head">
     <h1>Reviews</h1>
     <p>Оставьте свой отзыв, пожелание или сообщите о баге. Ваши идеи помогают делать журнал лучше.</p>
   </div>
- 
+
   <div class="card">
     <div class="card-head"><h2>Написать отзыв</h2></div>
     <label class="field"><span>Ваше имя</span>
@@ -724,7 +745,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     </label>
     <button class="btn btn-primary" onclick="submitReview()">Отправить отзыв</button>
   </div>
- 
+
   <div class="card">
     <div class="card-head"><h2>Оставленные отзывы</h2></div>
     <div id="reviews-list" class="notes-grid"></div>
@@ -738,14 +759,14 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   <div class="modal-box">
     <div class="modal-head"><h2 id="auth-title">Вход в аккаунт</h2><button class="x" onclick="closeModal('auth-modal')">×</button></div>
     <p class="hint" style="margin:-8px 0 18px">Аккаунт нужен, чтобы журнал синхронизировался между устройствами.</p>
- 
+
     <div class="watchers" id="auth-watchers">
       <div class="watcher"><div class="w-eyes"><span class="w-eye"><span class="w-pupil"></span></span><span class="w-eye"><span class="w-pupil"></span></span></div><span class="w-hand w-hand-l"></span><span class="w-hand w-hand-r"></span></div>
       <div class="watcher"><div class="w-eyes"><span class="w-eye"><span class="w-pupil"></span></span><span class="w-eye"><span class="w-pupil"></span></span></div><span class="w-hand w-hand-l"></span><span class="w-hand w-hand-r"></span></div>
       <div class="watcher"><div class="w-eyes"><span class="w-eye"><span class="w-pupil"></span></span><span class="w-eye"><span class="w-pupil"></span></span></div><span class="w-hand w-hand-l"></span><span class="w-hand w-hand-r"></span></div>
     </div>
     <p class="watchers-msg" id="watchers-msg">Так, всё, глаза закрыты — пароль это личное!</p>
- 
+
     <label class="field"><span>Почта</span><input type="email" id="email" placeholder="you@mail.ru"></label>
     <label class="field"><span>Пароль</span>
       <span class="pass-wrap"><input type="password" id="password" placeholder="Минимум 6 символов" oninput="checkPasswordStrength()">
@@ -775,7 +796,20 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 </div>
  
 <!-- БОТ -->
-<button id="bot-toggle" onclick="toggleBot()" aria-label="Помощник">✦</button>
+<div id="bot-toggle-wrap">
+  <div class="bot-tip" id="bot-tip">Нажми на меня — подскажу, что делать!</div>
+  <button id="bot-toggle" onclick="toggleBot()" aria-label="Открыть помощника StaroBot">
+    <div class="bot-robot">
+      <span class="bot-antenna"></span>
+      <div class="bot-head">
+        <span class="bot-eye"><span class="bot-pupil"></span></span>
+        <span class="bot-eye"><span class="bot-pupil"></span></span>
+      </div>
+      <span class="bot-arm bot-arm-l"></span>
+      <span class="bot-arm bot-arm-r"></span>
+    </div>
+  </button>
+</div>
 <div id="bot">
   <header>StaroBot<button onclick="toggleBot()" aria-label="Закрыть">×</button></header>
   <div id="bot-log">
@@ -1334,7 +1368,7 @@ function openNoteModal(){
   document.getElementById('note-date-input').value = '';
   openModal('note-modal');
 }
- 
+
 function exportToCal(title, text, dateStr){
   const t = decodeURIComponent(title);
   const x = decodeURIComponent(text);
@@ -1346,7 +1380,7 @@ function exportToCal(title, text, dateStr){
   const url = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(t) + '&details=' + encodeURIComponent(x) + '&dates=' + start + '/' + end;
   window.open(url, '_blank');
 }
- 
+
 function saveNewNote(){
   const t = document.getElementById('note-title-input').value.trim();
   const x = document.getElementById('note-text-input').value.trim();
@@ -1355,19 +1389,19 @@ function saveNewNote(){
   getActiveGroupData().notesList.push({ id: Date.now(), title: t, text: x, eventDate: d, isPinned: false });
   saveToCloud(true); renderNotes(); closeModal('note-modal'); showToast('Карточка добавлена', 'success');
 }
- 
+
 function togglePin(id){
   const list = getActiveGroupData().notesList;
   const n = list.find(n => n.id === id); if (n) n.isPinned = !n.isPinned;
   saveToCloud(true); renderNotes();
 }
- 
+
 function deleteNote(id){
   const g = getActiveGroupData();
   g.notesList = g.notesList.filter(n => n.id !== id);
   saveToCloud(true); renderNotes(); showToast('Карточка удалена', 'success');
 }
- 
+
 function renderNotes(){
   const box = document.getElementById('notes-grid-container'); box.innerHTML = '';
   const list = (getActiveGroupData().notesList || []).slice()
@@ -1385,7 +1419,7 @@ function renderNotes(){
        dateHtml = '<span>📅 ' + new Date(n.eventDate).toLocaleDateString('ru-RU') + '</span>' + 
                   '<button class="btn-ghost" style="padding:4px 8px;font-size:11px;margin-left:8px;border-radius:6px;" onclick="exportToCal(\'' + encodeURIComponent(n.title) + '\', \'' + encodeURIComponent(n.text) + '\', \'' + n.eventDate + '\')">В календарь</button>';
     }
- 
+
     el.innerHTML = '<button class="pin" title="Закрепить" onclick="togglePin(' + n.id + ')">📌</button>' +
       '<h4>' + n.title + '</h4><p>' + n.text + '</p>' +
       '<footer><div style="display:flex;align-items:center">' + dateHtml + '</div>' +
@@ -1551,7 +1585,33 @@ function exportCuratorCSV(){
 }
  
 /* ======================= БОТ ======================= */
-function toggleBot(){ document.getElementById('bot').classList.toggle('open'); }
+function toggleBot(){
+  document.getElementById('bot').classList.toggle('open');
+  hideBotTip();
+}
+function hideBotTip(){
+  const tip = document.getElementById('bot-tip');
+  if (tip) tip.classList.remove('show');
+}
+(function initBotRobot(){
+  const btn = document.getElementById('bot-toggle');
+  const pupils = document.querySelectorAll('#bot-toggle .bot-pupil');
+  const tip = document.getElementById('bot-tip');
+  if (!btn) return;
+  document.addEventListener('mousemove', e => {
+    const r = btn.getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2 - 8;
+    let dx = e.clientX - cx, dy = e.clientY - cy;
+    const dist = Math.hypot(dx, dy) || 1, max = 2.4;
+    dx = (dx / dist) * Math.min(max, dist / 20);
+    dy = (dy / dist) * Math.min(max, dist / 20);
+    pupils.forEach(p => { p.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px)'; });
+  });
+  if (tip){
+    setTimeout(() => tip.classList.add('show'), 2200);
+    setTimeout(() => hideBotTip(), 9000);
+  }
+})();
 function sendBot(e){
   e.preventDefault();
   const input = document.getElementById('bot-input');
@@ -1573,7 +1633,7 @@ function answer(q){
   if (q.includes('привет') || q.includes('помощь') || q.includes('умеешь') || q.includes('функции')) {
     return 'Я умею:\n• Показывать <b>«расписание»</b> на сегодня\n• Подсказывать <b>«какая неделя»</b>\n• Выводить все <b>«дедлайны»</b> и карточки\n• Считать <b>«сколько студентов»</b>\n• Находить тех, у кого есть <b>«долги»</b>\n• Показывать <b>«статистику»</b> посещаемости\n• Подсказывать про <b>«CSV»</b> и <b>«аватар»</b>\n• Напоминать какая <b>«группа»</b> выбрана\n• Быстро открывать <b>«журнал»</b> или <b>«отчёт»</b>.';
   }
- 
+
   // Благодарности и личность бота
   if (q.includes('спасибо') || q.includes('благодар')) return 'Всегда пожалуйста! Обращайтесь, если ещё понадоблюсь.';
   if (q.includes('кто ты') || q.includes('как тебя зовут') || q.includes('представься')) return 'Я StaroBot — встроенный помощник StaroSTATT. Слежу за расписанием, долгами и отчётами, пока вы заняты более важными делами.';
@@ -1585,16 +1645,16 @@ function answer(q){
     const type = (w % 2 !== 0) ? 'нечётная (знаменатель)' : 'чётная (числитель)';
     return 'Сейчас ' + w + '-я учебная неделя, ' + type + '.';
   }
- 
+
   // Студенты / Группа
   if (q.includes('студент')) return 'В текущей группе ' + g.students.length + ' человек.';
   if ((q.includes('открой') || q.includes('перейди')) && q.includes('групп')){ switchPage('group'); return 'Открываю страницу группы.'; }
   if (q.includes('групп')) return 'Сейчас выбрана группа: ' + userData.currentGroup + '.';
- 
+
   // Аватар и экспорт
   if (q.includes('аватар')) return 'Аватар меняется через профиль в правом верхнем углу — кнопка «Сменить аватар».';
   if (q.includes('csv') || q.includes('экспорт') || q.includes('скач')) return 'Выгрузка смотра — на вкладке «Отчёты», кнопка «Скачать CSV» над таблицей смотра.';
- 
+
   // Средняя статистика
   if (q.includes('статистик') || q.includes('процент посещ')) {
     if (!g.students.length) return 'Пока некого считать — добавьте студентов на вкладке «Группа».';
@@ -1622,7 +1682,7 @@ function answer(q){
     const avg = g.students.length ? Math.round(sumP / g.students.length) : 0;
     return 'Средняя посещаемость группы за семестр — примерно ' + avg + '%.';
   }
- 
+
   // Долги / Заметки по студентам
   if (q.includes('долг') || q.includes('заметк')) {
     let debts = [];
@@ -1640,14 +1700,14 @@ function answer(q){
     if (debts.length === 0) return 'Никаких долгов и пометок в журнале пока нет. Группа молодец!';
     return 'Вот что я нашёл в журнале:\n' + debts.join('\n');
   }
- 
+
   // Дедлайны / Инфо
   if (q.includes('дедлайн') || q.includes('карточк') || q.includes('инфо')) {
     if (!g.notesList || g.notesList.length === 0) return 'У вас пока нет карточек и дедлайнов на доске.';
     const notes = g.notesList.map(n => '• ' + n.title + (n.eventDate ? ' (до ' + new Date(n.eventDate).toLocaleDateString('ru-RU') + ')' : '')).join('\n');
     return 'Ваши записи на доске:\n' + notes;
   }
- 
+
   // Расписание
   if (q.includes('расписан') || q.includes('пары')){
     const d = new Date(), codes = ['sun','mon','tue','wed','thu','fri','sat'], code = codes[d.getDay()];
@@ -1657,42 +1717,42 @@ function answer(q){
     if (!lessons.length) return 'На сегодня пар в расписании нет.';
     return 'Сегодня по расписанию:\n' + lessons.map(l => '· ' + l.text).join('\n');
   }
- 
+
   // Навигация
   if (q.includes('куратор') || q.includes('отчет') || q.includes('отчёт')){ switchPage('reports'); return 'Открываю отчёты.'; }
   if (q.includes('журнал')){ switchPage('journal'); return 'Открываю журнал.'; }
   if (q.includes('отзыв')){ switchPage('reviews'); return 'Открываю отзывы.'; }
- 
+
   // Fallback
   return 'Я пока не знаю такой команды. Спросите меня про «расписание», «дедлайны», «неделю», «статистику», «долги» студентов или попросите открыть нужный раздел.';
 }
- 
+
 /* ======================= ОТЗЫВЫ ======================= */
 function submitReview() {
   const nameInput = document.getElementById('review-name');
   const textInput = document.getElementById('review-text');
   const name = nameInput.value.trim();
   const text = textInput.value.trim();
- 
+
   if (!name || !text) return showToast('Пожалуйста, заполните имя и текст отзыва.');
- 
+
   if (!userData.reviews) userData.reviews = [];
- 
+
   userData.reviews.push({
     id: Date.now(),
     name: name,
     text: text,
     date: new Date().toISOString()
   });
- 
+
   nameInput.value = '';
   textInput.value = '';
- 
+
   saveToCloud(true);
   renderReviews();
   showToast('Отзыв успешно добавлен', 'success');
 }
- 
+
 function renderReviews() {
   const box = document.getElementById('reviews-list');
   if (!box) return;
@@ -1704,9 +1764,9 @@ function renderReviews() {
     box.innerHTML = '<div class="card" style="grid-column:1/-1; margin:0;"><div class="empty">Пока нет ни одного отзыва. Будьте первыми!</div></div>';
     return;
   }
- 
+
   const sortedList = list.slice().sort((a, b) => b.id - a.id);
- 
+
   sortedList.forEach(r => {
     const el = document.createElement('article');
     el.className = 'note'; 
@@ -1723,7 +1783,7 @@ function renderReviews() {
     box.appendChild(el);
   });
 }
- 
+
 function deleteReview(id) {
   if (!confirm('Точно удалить этот отзыв?')) return;
   userData.reviews = userData.reviews.filter(r => r.id !== id);
@@ -1734,4 +1794,3 @@ function deleteReview(id) {
 </script>
 </body>
 </html>
- 
