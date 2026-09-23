@@ -1,3 +1,6 @@
+
+
+Starostatt · HTML
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -207,33 +210,6 @@ main{position:relative;z-index:1}
 .headline span:nth-child(2){animation-delay:.3s}
 @keyframes headlineFade{to{opacity:1;transform:none}}
  
-/* ---------- глитч заголовка ---------- */
-.glitch-title{position:relative;display:inline-block}
-.glitch-title.font-b{font-family:var(--font-sans);font-weight:600;letter-spacing:-.03em}
-.glitch-title::before,.glitch-title::after{
-  content:attr(data-text);position:absolute;left:0;top:0;width:100%;height:100%;
-  overflow:hidden;opacity:0;pointer-events:none}
-.glitch-title.glitching::before{
-  opacity:.75;color:#ff2b6d;mix-blend-mode:screen;
-  animation:glitchTop 3.4s steps(1,end) infinite}
-.glitch-title.glitching::after{
-  opacity:.75;color:#00e5ff;mix-blend-mode:screen;
-  animation:glitchBot 3.4s steps(1,end) infinite}
-@keyframes glitchTop{
-  0%,88%,100%{transform:translate(0,0);clip-path:inset(0 0 88% 0)}
-  90%{transform:translate(-4px,-2px);clip-path:inset(8% 0 62% 0)}
-  92%{transform:translate(4px,1px);clip-path:inset(38% 0 32% 0)}
-  94%{transform:translate(-3px,2px);clip-path:inset(58% 0 8% 0)}
-  96%{transform:translate(0,0);clip-path:inset(0 0 88% 0)}
-}
-@keyframes glitchBot{
-  0%,88%,100%{transform:translate(0,0);clip-path:inset(88% 0 0 0)}
-  90%{transform:translate(4px,2px);clip-path:inset(62% 0 8% 0)}
-  92%{transform:translate(-4px,-1px);clip-path:inset(32% 0 38% 0)}
-  94%{transform:translate(3px,-2px);clip-path:inset(8% 0 58% 0)}
-  96%{transform:translate(0,0);clip-path:inset(88% 0 0 0)}
-}
- 
 .subhead{max-width:min(560px,92%);margin:clamp(14px,2vh,20px) 0 0;color:#d0d0d0;opacity:.8;
   font-size:clamp(calc(13.5px + 2pt),calc(1.55vw + 2pt),calc(16.5px + 2pt));line-height:1.55;font-weight:400}
 .cta{margin-top:clamp(18px,3vh,28px);border:none;border-radius:999px;background:#fff;color:#000;
@@ -370,17 +346,26 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .watchers{display:flex;justify-content:center;gap:16px;margin:2px 0 6px}
 .watcher{position:relative;width:54px;height:54px;border-radius:50%;flex:0 0 auto;
   background:linear-gradient(160deg,#e9e4de,#c9c2b8);
-  box-shadow:inset 0 -6px 10px rgba(0,0,0,.18),0 8px 18px rgba(0,0,0,.4);overflow:hidden}
+  box-shadow:inset 0 -6px 10px rgba(0,0,0,.18),0 8px 18px rgba(0,0,0,.4);overflow:hidden;
+  animation:watcherFloat 3.4s ease-in-out infinite;transition:transform .25s ease,box-shadow .25s ease}
+.watcher:nth-child(1){animation-delay:0s}
+.watcher:nth-child(2){animation-delay:.5s}
+.watcher:nth-child(3){animation-delay:1s}
+@keyframes watcherFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-4px) rotate(-1.5deg)}}
+.watcher.covering{animation-play-state:paused}
+.watchers.active .watcher{box-shadow:inset 0 -6px 10px rgba(0,0,0,.18),0 8px 18px rgba(0,0,0,.4),0 0 0 2px rgba(255,255,255,.18)}
 .w-eyes{position:absolute;top:50%;left:50%;transform:translate(-50%,-56%);display:flex;gap:9px;z-index:1}
 .w-eye{width:13px;height:13px;border-radius:50%;background:#161616;display:grid;place-items:center;
-  transition:transform .18s ease}
-.w-pupil{width:5px;height:5px;border-radius:50%;background:#fff}
+  transition:transform .12s ease,height .09s ease;transform-origin:center}
+.w-eye.blink{transform:scaleY(.12)!important}
+.w-pupil{width:5px;height:5px;border-radius:50%;background:#fff;transition:transform .08s linear}
 .w-hand{position:absolute;left:50%;top:50%;width:24px;height:24px;border-radius:50%;
   background:linear-gradient(160deg,#efeae3,#cfc8be);box-shadow:0 3px 8px rgba(0,0,0,.35);z-index:2;
   transform:translate(-50%,120%);transition:transform .34s cubic-bezier(.22,1,.36,1)}
 .w-hand-l{margin-left:-16px}
 .w-hand-r{margin-left:16px}
-.watcher.covering .w-hand{transform:translate(-50%,-56%)}
+.watcher.covering .w-hand{transform:translate(-50%,-56%) rotate(-4deg)}
+.watcher.covering .w-hand-r{transform:translate(-50%,-56%) rotate(4deg)}
 .watchers-msg{text-align:center;font-size:12.5px;margin:0 0 16px;min-height:16px;color:var(--bad);
   opacity:0;transform:translateY(-4px);transition:opacity .25s ease,transform .25s ease;
   font-family:var(--font-display);letter-spacing:-.01em}
@@ -443,7 +428,6 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   *{animation:none!important;transition:none!important}
   .anim,.cta{opacity:1;transform:none;filter:none}
   .headline span{opacity:1;transform:none}
-  .glitch-title::before,.glitch-title::after{display:none}
 }
 </style>
 </head>
@@ -517,7 +501,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
         <div class="trust-pill">Журнал, дедлайны и смотр куратору</div>
       </div>
  
-      <h1 class="headline"><span id="glitch-headline" class="glitch-title font-a">StaroSTATT</span><span>Attendance Evolved</span></h1>
+      <h1 class="headline"><span>StaroSTATT</span><span>Attendance Evolved</span></h1>
  
       <p class="subhead anim" style="--d:.28s">
         Рабочее место старосты. Отмечайте пару в один клик, держите дедлайны группы на виду
@@ -722,14 +706,14 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     </div>
   </div>
 </section>
-
+ 
 <!-- ОТЗЫВЫ -->
 <section class="view app-view" id="page-reviews">
   <div class="page-head">
     <h1>Reviews</h1>
     <p>Оставьте свой отзыв, пожелание или сообщите о баге. Ваши идеи помогают делать журнал лучше.</p>
   </div>
-
+ 
   <div class="card">
     <div class="card-head"><h2>Написать отзыв</h2></div>
     <label class="field"><span>Ваше имя</span>
@@ -740,7 +724,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     </label>
     <button class="btn btn-primary" onclick="submitReview()">Отправить отзыв</button>
   </div>
-
+ 
   <div class="card">
     <div class="card-head"><h2>Оставленные отзывы</h2></div>
     <div id="reviews-list" class="notes-grid"></div>
@@ -754,14 +738,14 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   <div class="modal-box">
     <div class="modal-head"><h2 id="auth-title">Вход в аккаунт</h2><button class="x" onclick="closeModal('auth-modal')">×</button></div>
     <p class="hint" style="margin:-8px 0 18px">Аккаунт нужен, чтобы журнал синхронизировался между устройствами.</p>
-
+ 
     <div class="watchers" id="auth-watchers">
       <div class="watcher"><div class="w-eyes"><span class="w-eye"><span class="w-pupil"></span></span><span class="w-eye"><span class="w-pupil"></span></span></div><span class="w-hand w-hand-l"></span><span class="w-hand w-hand-r"></span></div>
       <div class="watcher"><div class="w-eyes"><span class="w-eye"><span class="w-pupil"></span></span><span class="w-eye"><span class="w-pupil"></span></span></div><span class="w-hand w-hand-l"></span><span class="w-hand w-hand-r"></span></div>
       <div class="watcher"><div class="w-eyes"><span class="w-eye"><span class="w-pupil"></span></span><span class="w-eye"><span class="w-pupil"></span></span></div><span class="w-hand w-hand-l"></span><span class="w-hand w-hand-r"></span></div>
     </div>
     <p class="watchers-msg" id="watchers-msg">Так, всё, глаза закрыты — пароль это личное!</p>
-
+ 
     <label class="field"><span>Почта</span><input type="email" id="email" placeholder="you@mail.ru"></label>
     <label class="field"><span>Пароль</span>
       <span class="pass-wrap"><input type="password" id="password" placeholder="Минимум 6 символов" oninput="checkPasswordStrength()">
@@ -892,48 +876,56 @@ document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e =
   });
 })();
  
-/* ======================= ГЛИТЧ ЗАГОЛОВКА ======================= */
-(function headlineGlitch(){
-  const el = document.getElementById('glitch-headline');
-  if (!el) return;
-  el.setAttribute('data-text', el.textContent);
-  el.classList.add('glitching');
-  let alt = false;
-  setInterval(() => {
-    alt = !alt;
-    el.classList.toggle('font-a', !alt);
-    el.classList.toggle('font-b', alt);
-  }, 2400);
-})();
- 
 /* ======================= АНОНИМЫ В ОКНЕ ВХОДА ======================= */
 function initWatchers(){
+  const box = document.getElementById('auth-watchers');
+  const modal = document.getElementById('auth-modal');
   const watchers = document.querySelectorAll('#auth-watchers .watcher');
   const emailEl = document.getElementById('email');
   const passEl = document.getElementById('password');
   const msg = document.getElementById('watchers-msg');
-  if (!watchers.length || !emailEl || !passEl) return;
+  if (!watchers.length || !modal) return;
  
-  function gazeAt(targetEl){
-    const tr = targetEl.getBoundingClientRect();
-    const tx = tr.left + tr.width / 2, ty = tr.top + tr.height / 2;
+  let covering = false, lastX = null, lastY = null;
+ 
+  function gazeAtPoint(x, y){
+    lastX = x; lastY = y;
     watchers.forEach(w => {
       const wr = w.getBoundingClientRect();
-      const wx = wr.left + wr.width / 2, wy = wr.top + wr.height / 2;
-      let dx = tx - wx, dy = ty - wy;
-      const dist = Math.hypot(dx, dy) || 1, max = 3.4;
-      dx = (dx / dist) * max; dy = (dy / dist) * max;
+      const wx = wr.left + wr.width / 2, wy = wr.top + wr.height / 2 - 4;
+      let dx = x - wx, dy = y - wy;
+      const dist = Math.hypot(dx, dy) || 1, max = 3.6;
+      dx = (dx / dist) * Math.min(max, dist / 14);
+      dy = (dy / dist) * Math.min(max, dist / 14);
       w.querySelectorAll('.w-pupil').forEach(p => { p.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px)'; });
     });
   }
   function coverEyes(on){
+    covering = on;
     watchers.forEach(w => w.classList.toggle('covering', on));
+    box.classList.toggle('active', !on);
     if (msg) msg.classList.toggle('show', on);
   }
-  emailEl.addEventListener('focus', () => { coverEyes(false); gazeAt(emailEl); });
-  emailEl.addEventListener('input', () => gazeAt(emailEl));
-  passEl.addEventListener('focus', () => coverEyes(true));
-  passEl.addEventListener('blur', () => coverEyes(false));
+ 
+  document.addEventListener('mousemove', e => {
+    if (!modal.classList.contains('open') || covering) return;
+    gazeAtPoint(e.clientX, e.clientY);
+  });
+  if (emailEl) emailEl.addEventListener('focus', () => { coverEyes(false); gazeAtPoint(lastX ?? window.innerWidth/2, lastY ?? window.innerHeight/2); });
+  if (passEl){
+    passEl.addEventListener('focus', () => coverEyes(true));
+    passEl.addEventListener('blur', () => coverEyes(false));
+  }
+ 
+  // лёгкое моргание вразнобой, пока глаза не закрыты руками
+  watchers.forEach((w, i) => {
+    const eyes = w.querySelectorAll('.w-eye');
+    setInterval(() => {
+      if (covering) return;
+      eyes.forEach(e => e.classList.add('blink'));
+      setTimeout(() => eyes.forEach(e => e.classList.remove('blink')), 110);
+    }, 2600 + i * 900 + Math.random() * 1200);
+  });
 }
 initWatchers();
  
@@ -1342,7 +1334,7 @@ function openNoteModal(){
   document.getElementById('note-date-input').value = '';
   openModal('note-modal');
 }
-
+ 
 function exportToCal(title, text, dateStr){
   const t = decodeURIComponent(title);
   const x = decodeURIComponent(text);
@@ -1354,7 +1346,7 @@ function exportToCal(title, text, dateStr){
   const url = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(t) + '&details=' + encodeURIComponent(x) + '&dates=' + start + '/' + end;
   window.open(url, '_blank');
 }
-
+ 
 function saveNewNote(){
   const t = document.getElementById('note-title-input').value.trim();
   const x = document.getElementById('note-text-input').value.trim();
@@ -1363,19 +1355,19 @@ function saveNewNote(){
   getActiveGroupData().notesList.push({ id: Date.now(), title: t, text: x, eventDate: d, isPinned: false });
   saveToCloud(true); renderNotes(); closeModal('note-modal'); showToast('Карточка добавлена', 'success');
 }
-
+ 
 function togglePin(id){
   const list = getActiveGroupData().notesList;
   const n = list.find(n => n.id === id); if (n) n.isPinned = !n.isPinned;
   saveToCloud(true); renderNotes();
 }
-
+ 
 function deleteNote(id){
   const g = getActiveGroupData();
   g.notesList = g.notesList.filter(n => n.id !== id);
   saveToCloud(true); renderNotes(); showToast('Карточка удалена', 'success');
 }
-
+ 
 function renderNotes(){
   const box = document.getElementById('notes-grid-container'); box.innerHTML = '';
   const list = (getActiveGroupData().notesList || []).slice()
@@ -1393,7 +1385,7 @@ function renderNotes(){
        dateHtml = '<span>📅 ' + new Date(n.eventDate).toLocaleDateString('ru-RU') + '</span>' + 
                   '<button class="btn-ghost" style="padding:4px 8px;font-size:11px;margin-left:8px;border-radius:6px;" onclick="exportToCal(\'' + encodeURIComponent(n.title) + '\', \'' + encodeURIComponent(n.text) + '\', \'' + n.eventDate + '\')">В календарь</button>';
     }
-
+ 
     el.innerHTML = '<button class="pin" title="Закрепить" onclick="togglePin(' + n.id + ')">📌</button>' +
       '<h4>' + n.title + '</h4><p>' + n.text + '</p>' +
       '<footer><div style="display:flex;align-items:center">' + dateHtml + '</div>' +
@@ -1581,7 +1573,7 @@ function answer(q){
   if (q.includes('привет') || q.includes('помощь') || q.includes('умеешь') || q.includes('функции')) {
     return 'Я умею:\n• Показывать <b>«расписание»</b> на сегодня\n• Подсказывать <b>«какая неделя»</b>\n• Выводить все <b>«дедлайны»</b> и карточки\n• Считать <b>«сколько студентов»</b>\n• Находить тех, у кого есть <b>«долги»</b>\n• Показывать <b>«статистику»</b> посещаемости\n• Подсказывать про <b>«CSV»</b> и <b>«аватар»</b>\n• Напоминать какая <b>«группа»</b> выбрана\n• Быстро открывать <b>«журнал»</b> или <b>«отчёт»</b>.';
   }
-
+ 
   // Благодарности и личность бота
   if (q.includes('спасибо') || q.includes('благодар')) return 'Всегда пожалуйста! Обращайтесь, если ещё понадоблюсь.';
   if (q.includes('кто ты') || q.includes('как тебя зовут') || q.includes('представься')) return 'Я StaroBot — встроенный помощник StaroSTATT. Слежу за расписанием, долгами и отчётами, пока вы заняты более важными делами.';
@@ -1593,16 +1585,16 @@ function answer(q){
     const type = (w % 2 !== 0) ? 'нечётная (знаменатель)' : 'чётная (числитель)';
     return 'Сейчас ' + w + '-я учебная неделя, ' + type + '.';
   }
-
+ 
   // Студенты / Группа
   if (q.includes('студент')) return 'В текущей группе ' + g.students.length + ' человек.';
   if ((q.includes('открой') || q.includes('перейди')) && q.includes('групп')){ switchPage('group'); return 'Открываю страницу группы.'; }
   if (q.includes('групп')) return 'Сейчас выбрана группа: ' + userData.currentGroup + '.';
-
+ 
   // Аватар и экспорт
   if (q.includes('аватар')) return 'Аватар меняется через профиль в правом верхнем углу — кнопка «Сменить аватар».';
   if (q.includes('csv') || q.includes('экспорт') || q.includes('скач')) return 'Выгрузка смотра — на вкладке «Отчёты», кнопка «Скачать CSV» над таблицей смотра.';
-
+ 
   // Средняя статистика
   if (q.includes('статистик') || q.includes('процент посещ')) {
     if (!g.students.length) return 'Пока некого считать — добавьте студентов на вкладке «Группа».';
@@ -1630,7 +1622,7 @@ function answer(q){
     const avg = g.students.length ? Math.round(sumP / g.students.length) : 0;
     return 'Средняя посещаемость группы за семестр — примерно ' + avg + '%.';
   }
-
+ 
   // Долги / Заметки по студентам
   if (q.includes('долг') || q.includes('заметк')) {
     let debts = [];
@@ -1648,14 +1640,14 @@ function answer(q){
     if (debts.length === 0) return 'Никаких долгов и пометок в журнале пока нет. Группа молодец!';
     return 'Вот что я нашёл в журнале:\n' + debts.join('\n');
   }
-
+ 
   // Дедлайны / Инфо
   if (q.includes('дедлайн') || q.includes('карточк') || q.includes('инфо')) {
     if (!g.notesList || g.notesList.length === 0) return 'У вас пока нет карточек и дедлайнов на доске.';
     const notes = g.notesList.map(n => '• ' + n.title + (n.eventDate ? ' (до ' + new Date(n.eventDate).toLocaleDateString('ru-RU') + ')' : '')).join('\n');
     return 'Ваши записи на доске:\n' + notes;
   }
-
+ 
   // Расписание
   if (q.includes('расписан') || q.includes('пары')){
     const d = new Date(), codes = ['sun','mon','tue','wed','thu','fri','sat'], code = codes[d.getDay()];
@@ -1665,42 +1657,42 @@ function answer(q){
     if (!lessons.length) return 'На сегодня пар в расписании нет.';
     return 'Сегодня по расписанию:\n' + lessons.map(l => '· ' + l.text).join('\n');
   }
-
+ 
   // Навигация
   if (q.includes('куратор') || q.includes('отчет') || q.includes('отчёт')){ switchPage('reports'); return 'Открываю отчёты.'; }
   if (q.includes('журнал')){ switchPage('journal'); return 'Открываю журнал.'; }
   if (q.includes('отзыв')){ switchPage('reviews'); return 'Открываю отзывы.'; }
-
+ 
   // Fallback
   return 'Я пока не знаю такой команды. Спросите меня про «расписание», «дедлайны», «неделю», «статистику», «долги» студентов или попросите открыть нужный раздел.';
 }
-
+ 
 /* ======================= ОТЗЫВЫ ======================= */
 function submitReview() {
   const nameInput = document.getElementById('review-name');
   const textInput = document.getElementById('review-text');
   const name = nameInput.value.trim();
   const text = textInput.value.trim();
-
+ 
   if (!name || !text) return showToast('Пожалуйста, заполните имя и текст отзыва.');
-
+ 
   if (!userData.reviews) userData.reviews = [];
-
+ 
   userData.reviews.push({
     id: Date.now(),
     name: name,
     text: text,
     date: new Date().toISOString()
   });
-
+ 
   nameInput.value = '';
   textInput.value = '';
-
+ 
   saveToCloud(true);
   renderReviews();
   showToast('Отзыв успешно добавлен', 'success');
 }
-
+ 
 function renderReviews() {
   const box = document.getElementById('reviews-list');
   if (!box) return;
@@ -1712,9 +1704,9 @@ function renderReviews() {
     box.innerHTML = '<div class="card" style="grid-column:1/-1; margin:0;"><div class="empty">Пока нет ни одного отзыва. Будьте первыми!</div></div>';
     return;
   }
-
+ 
   const sortedList = list.slice().sort((a, b) => b.id - a.id);
-
+ 
   sortedList.forEach(r => {
     const el = document.createElement('article');
     el.className = 'note'; 
@@ -1731,7 +1723,7 @@ function renderReviews() {
     box.appendChild(el);
   });
 }
-
+ 
 function deleteReview(id) {
   if (!confirm('Точно удалить этот отзыв?')) return;
   userData.reviews = userData.reviews.filter(r => r.id !== id);
@@ -1742,3 +1734,4 @@ function deleteReview(id) {
 </script>
 </body>
 </html>
+ 
