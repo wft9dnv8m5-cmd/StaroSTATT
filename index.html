@@ -207,6 +207,33 @@ main{position:relative;z-index:1}
 .headline span:nth-child(2){animation-delay:.3s}
 @keyframes headlineFade{to{opacity:1;transform:none}}
  
+/* ---------- глитч заголовка ---------- */
+.glitch-title{position:relative;display:inline-block}
+.glitch-title.font-b{font-family:var(--font-sans);font-weight:600;letter-spacing:-.03em}
+.glitch-title::before,.glitch-title::after{
+  content:attr(data-text);position:absolute;left:0;top:0;width:100%;height:100%;
+  overflow:hidden;opacity:0;pointer-events:none}
+.glitch-title.glitching::before{
+  opacity:.75;color:#ff2b6d;mix-blend-mode:screen;
+  animation:glitchTop 3.4s steps(1,end) infinite}
+.glitch-title.glitching::after{
+  opacity:.75;color:#00e5ff;mix-blend-mode:screen;
+  animation:glitchBot 3.4s steps(1,end) infinite}
+@keyframes glitchTop{
+  0%,88%,100%{transform:translate(0,0);clip-path:inset(0 0 88% 0)}
+  90%{transform:translate(-4px,-2px);clip-path:inset(8% 0 62% 0)}
+  92%{transform:translate(4px,1px);clip-path:inset(38% 0 32% 0)}
+  94%{transform:translate(-3px,2px);clip-path:inset(58% 0 8% 0)}
+  96%{transform:translate(0,0);clip-path:inset(0 0 88% 0)}
+}
+@keyframes glitchBot{
+  0%,88%,100%{transform:translate(0,0);clip-path:inset(88% 0 0 0)}
+  90%{transform:translate(4px,2px);clip-path:inset(62% 0 8% 0)}
+  92%{transform:translate(-4px,-1px);clip-path:inset(32% 0 38% 0)}
+  94%{transform:translate(3px,-2px);clip-path:inset(8% 0 58% 0)}
+  96%{transform:translate(0,0);clip-path:inset(88% 0 0 0)}
+}
+ 
 .subhead{max-width:min(560px,92%);margin:clamp(14px,2vh,20px) 0 0;color:#d0d0d0;opacity:.8;
   font-size:clamp(calc(13.5px + 2pt),calc(1.55vw + 2pt),calc(16.5px + 2pt));line-height:1.55;font-weight:400}
 .cta{margin-top:clamp(18px,3vh,28px);border:none;border-radius:999px;background:#fff;color:#000;
@@ -339,6 +366,26 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   border:1px solid transparent;background:rgba(255,255,255,.05);transition:.2s}
 .avatar-opt:hover,.avatar-opt.selected{border-color:#fff;background:rgba(255,255,255,.14);transform:scale(1.06)}
  
+/* ---------- анонимы в окне входа ---------- */
+.watchers{display:flex;justify-content:center;gap:16px;margin:2px 0 6px}
+.watcher{position:relative;width:54px;height:54px;border-radius:50%;flex:0 0 auto;
+  background:linear-gradient(160deg,#e9e4de,#c9c2b8);
+  box-shadow:inset 0 -6px 10px rgba(0,0,0,.18),0 8px 18px rgba(0,0,0,.4);overflow:hidden}
+.w-eyes{position:absolute;top:50%;left:50%;transform:translate(-50%,-56%);display:flex;gap:9px;z-index:1}
+.w-eye{width:13px;height:13px;border-radius:50%;background:#161616;display:grid;place-items:center;
+  transition:transform .18s ease}
+.w-pupil{width:5px;height:5px;border-radius:50%;background:#fff}
+.w-hand{position:absolute;left:50%;top:50%;width:24px;height:24px;border-radius:50%;
+  background:linear-gradient(160deg,#efeae3,#cfc8be);box-shadow:0 3px 8px rgba(0,0,0,.35);z-index:2;
+  transform:translate(-50%,120%);transition:transform .34s cubic-bezier(.22,1,.36,1)}
+.w-hand-l{margin-left:-16px}
+.w-hand-r{margin-left:16px}
+.watcher.covering .w-hand{transform:translate(-50%,-56%)}
+.watchers-msg{text-align:center;font-size:12.5px;margin:0 0 16px;min-height:16px;color:var(--bad);
+  opacity:0;transform:translateY(-4px);transition:opacity .25s ease,transform .25s ease;
+  font-family:var(--font-display);letter-spacing:-.01em}
+.watchers-msg.show{opacity:1;transform:none}
+ 
 /* ---------- тосты ---------- */
 #toasts{position:fixed;bottom:22px;left:22px;z-index:200;display:flex;flex-direction:column;gap:10px;max-width:330px}
 .toast{padding:14px 16px;border-radius:16px;background:rgba(18,18,20,.96);border:1px solid var(--card-border);
@@ -396,6 +443,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   *{animation:none!important;transition:none!important}
   .anim,.cta{opacity:1;transform:none;filter:none}
   .headline span{opacity:1;transform:none}
+  .glitch-title::before,.glitch-title::after{display:none}
 }
 </style>
 </head>
@@ -469,7 +517,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
         <div class="trust-pill">Журнал, дедлайны и смотр куратору</div>
       </div>
  
-      <h1 class="headline"><span>StaroSTATT</span><span>Attendance Evolved</span></h1>
+      <h1 class="headline"><span id="glitch-headline" class="glitch-title font-a">StaroSTATT</span><span>Attendance Evolved</span></h1>
  
       <p class="subhead anim" style="--d:.28s">
         Рабочее место старосты. Отмечайте пару в один клик, держите дедлайны группы на виду
@@ -706,6 +754,14 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   <div class="modal-box">
     <div class="modal-head"><h2 id="auth-title">Вход в аккаунт</h2><button class="x" onclick="closeModal('auth-modal')">×</button></div>
     <p class="hint" style="margin:-8px 0 18px">Аккаунт нужен, чтобы журнал синхронизировался между устройствами.</p>
+
+    <div class="watchers" id="auth-watchers">
+      <div class="watcher"><div class="w-eyes"><span class="w-eye"><span class="w-pupil"></span></span><span class="w-eye"><span class="w-pupil"></span></span></div><span class="w-hand w-hand-l"></span><span class="w-hand w-hand-r"></span></div>
+      <div class="watcher"><div class="w-eyes"><span class="w-eye"><span class="w-pupil"></span></span><span class="w-eye"><span class="w-pupil"></span></span></div><span class="w-hand w-hand-l"></span><span class="w-hand w-hand-r"></span></div>
+      <div class="watcher"><div class="w-eyes"><span class="w-eye"><span class="w-pupil"></span></span><span class="w-eye"><span class="w-pupil"></span></span></div><span class="w-hand w-hand-l"></span><span class="w-hand w-hand-r"></span></div>
+    </div>
+    <p class="watchers-msg" id="watchers-msg">Так, всё, глаза закрыты — пароль это личное!</p>
+
     <label class="field"><span>Почта</span><input type="email" id="email" placeholder="you@mail.ru"></label>
     <label class="field"><span>Пароль</span>
       <span class="pass-wrap"><input type="password" id="password" placeholder="Минимум 6 символов" oninput="checkPasswordStrength()">
@@ -739,7 +795,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 <div id="bot">
   <header>StaroBot<button onclick="toggleBot()" aria-label="Закрыть">×</button></header>
   <div id="bot-log">
-    <div class="msg bot">Привет! Я ваш помощник StaroBot ✦<br><br>Вот что я умею:<br>• Показывать <b>«расписание на сегодня»</b><br>• Подсказывать <b>«какая неделя»</b><br>• Напоминать <b>«дедлайны»</b><br>• Считать <b>«сколько студентов»</b> в группе<br>• Находить тех, у кого есть <b>«долги»</b> в журнале<br>• Открывать <b>«журнал»</b> или <b>«отчёт»</b><br><br>Чем могу помочь?</div>
+    <div class="msg bot">Привет! Я ваш помощник StaroBot ✦<br><br>Вот что я умею:<br>• Показывать <b>«расписание на сегодня»</b><br>• Подсказывать <b>«какая неделя»</b><br>• Напоминать <b>«дедлайны»</b><br>• Считать <b>«сколько студентов»</b> в группе<br>• Находить тех, у кого есть <b>«долги»</b> в журнале<br>• Показывать <b>«статистику»</b> посещаемости<br>• Подсказывать, как <b>«скачать CSV»</b> или сменить <b>«аватар»</b><br>• Открывать <b>«журнал»</b> или <b>«отчёт»</b><br><br>Чем могу помочь?</div>
   </div>
   <form id="bot-form" onsubmit="sendBot(event)">
     <input id="bot-input" placeholder="Сообщение…" autocomplete="off">
@@ -835,6 +891,51 @@ document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e =
     requestAnimationFrame(frame);
   });
 })();
+ 
+/* ======================= ГЛИТЧ ЗАГОЛОВКА ======================= */
+(function headlineGlitch(){
+  const el = document.getElementById('glitch-headline');
+  if (!el) return;
+  el.setAttribute('data-text', el.textContent);
+  el.classList.add('glitching');
+  let alt = false;
+  setInterval(() => {
+    alt = !alt;
+    el.classList.toggle('font-a', !alt);
+    el.classList.toggle('font-b', alt);
+  }, 2400);
+})();
+ 
+/* ======================= АНОНИМЫ В ОКНЕ ВХОДА ======================= */
+function initWatchers(){
+  const watchers = document.querySelectorAll('#auth-watchers .watcher');
+  const emailEl = document.getElementById('email');
+  const passEl = document.getElementById('password');
+  const msg = document.getElementById('watchers-msg');
+  if (!watchers.length || !emailEl || !passEl) return;
+ 
+  function gazeAt(targetEl){
+    const tr = targetEl.getBoundingClientRect();
+    const tx = tr.left + tr.width / 2, ty = tr.top + tr.height / 2;
+    watchers.forEach(w => {
+      const wr = w.getBoundingClientRect();
+      const wx = wr.left + wr.width / 2, wy = wr.top + wr.height / 2;
+      let dx = tx - wx, dy = ty - wy;
+      const dist = Math.hypot(dx, dy) || 1, max = 3.4;
+      dx = (dx / dist) * max; dy = (dy / dist) * max;
+      w.querySelectorAll('.w-pupil').forEach(p => { p.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px)'; });
+    });
+  }
+  function coverEyes(on){
+    watchers.forEach(w => w.classList.toggle('covering', on));
+    if (msg) msg.classList.toggle('show', on);
+  }
+  emailEl.addEventListener('focus', () => { coverEyes(false); gazeAt(emailEl); });
+  emailEl.addEventListener('input', () => gazeAt(emailEl));
+  passEl.addEventListener('focus', () => coverEyes(true));
+  passEl.addEventListener('blur', () => coverEyes(false));
+}
+initWatchers();
  
 /* ======================= FIREBASE ======================= */
 const firebaseConfig = {
@@ -1478,8 +1579,12 @@ function answer(q){
   
   // Приветствие / Помощь
   if (q.includes('привет') || q.includes('помощь') || q.includes('умеешь') || q.includes('функции')) {
-    return 'Я умею:\n• Показывать <b>«расписание»</b> на сегодня\n• Подсказывать <b>«какая неделя»</b>\n• Выводить все <b>«дедлайны»</b> и карточки\n• Считать <b>«сколько студентов»</b>\n• Находить тех, у кого есть <b>«долги»</b>\n• Напоминать какая <b>«группа»</b> выбрана\n• Быстро открывать <b>«журнал»</b> или <b>«отчёт»</b>.';
+    return 'Я умею:\n• Показывать <b>«расписание»</b> на сегодня\n• Подсказывать <b>«какая неделя»</b>\n• Выводить все <b>«дедлайны»</b> и карточки\n• Считать <b>«сколько студентов»</b>\n• Находить тех, у кого есть <b>«долги»</b>\n• Показывать <b>«статистику»</b> посещаемости\n• Подсказывать про <b>«CSV»</b> и <b>«аватар»</b>\n• Напоминать какая <b>«группа»</b> выбрана\n• Быстро открывать <b>«журнал»</b> или <b>«отчёт»</b>.';
   }
+
+  // Благодарности и личность бота
+  if (q.includes('спасибо') || q.includes('благодар')) return 'Всегда пожалуйста! Обращайтесь, если ещё понадоблюсь.';
+  if (q.includes('кто ты') || q.includes('как тебя зовут') || q.includes('представься')) return 'Я StaroBot — встроенный помощник StaroSTATT. Слежу за расписанием, долгами и отчётами, пока вы заняты более важными делами.';
   
   // Неделя
   if (q.includes('недел')) {
@@ -1491,7 +1596,40 @@ function answer(q){
 
   // Студенты / Группа
   if (q.includes('студент')) return 'В текущей группе ' + g.students.length + ' человек.';
+  if ((q.includes('открой') || q.includes('перейди')) && q.includes('групп')){ switchPage('group'); return 'Открываю страницу группы.'; }
   if (q.includes('групп')) return 'Сейчас выбрана группа: ' + userData.currentGroup + '.';
+
+  // Аватар и экспорт
+  if (q.includes('аватар')) return 'Аватар меняется через профиль в правом верхнем углу — кнопка «Сменить аватар».';
+  if (q.includes('csv') || q.includes('экспорт') || q.includes('скач')) return 'Выгрузка смотра — на вкладке «Отчёты», кнопка «Скачать CSV» над таблицей смотра.';
+
+  // Средняя статистика
+  if (q.includes('статистик') || q.includes('процент посещ')) {
+    if (!g.students.length) return 'Пока некого считать — добавьте студентов на вкладке «Группа».';
+    let totalLec = 0, totalSem = 0;
+    for (let w = 1; w <= 18; w++){
+      const wt = (w % 2 !== 0) ? 'even' : 'odd';
+      for (const day in g.schedule[wt]) (g.schedule[wt][day] || []).forEach(l => {
+        if (String(l.text).includes('(Л)')) totalLec++;
+        if (String(l.text).includes('(С)')) totalSem++;
+      });
+    }
+    const totalPairs = totalLec + totalSem;
+    let sumP = 0;
+    g.students.forEach((_, s) => {
+      let att = 0;
+      for (let w = 1; w <= 18; w++){
+        const wt = (w % 2 !== 0) ? 'even' : 'odd';
+        for (const day in g.schedule[wt]) (g.schedule[wt][day] || []).forEach(l => {
+          const cell = g.attendance[key(w, day, l.id, s)];
+          if (cell && cell.present) att++;
+        });
+      }
+      sumP += totalPairs ? (att / totalPairs * 100) : 0;
+    });
+    const avg = g.students.length ? Math.round(sumP / g.students.length) : 0;
+    return 'Средняя посещаемость группы за семестр — примерно ' + avg + '%.';
+  }
 
   // Долги / Заметки по студентам
   if (q.includes('долг') || q.includes('заметк')) {
@@ -1531,9 +1669,10 @@ function answer(q){
   // Навигация
   if (q.includes('куратор') || q.includes('отчет') || q.includes('отчёт')){ switchPage('reports'); return 'Открываю отчёты.'; }
   if (q.includes('журнал')){ switchPage('journal'); return 'Открываю журнал.'; }
+  if (q.includes('отзыв')){ switchPage('reviews'); return 'Открываю отзывы.'; }
 
   // Fallback
-  return 'Я пока не знаю такой команды. Спросите меня про «расписание», «дедлайны», «неделю», «долги» студентов или попросите открыть нужный раздел.';
+  return 'Я пока не знаю такой команды. Спросите меня про «расписание», «дедлайны», «неделю», «статистику», «долги» студентов или попросите открыть нужный раздел.';
 }
 
 /* ======================= ОТЗЫВЫ ======================= */
