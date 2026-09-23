@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">StaroSTATT — журнал старосты</title>
  
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="StaroSTATT">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -80,7 +87,8 @@ body.app-mode .scrim{background:rgba(0,0,0,.74);backdrop-filter:blur(7px);-webki
   height:clamp(44px,5.2vw,48px);padding:4px 8px;background:#fff;border-radius:999px;box-shadow:var(--nav-shadow)}
 .nav-link{position:relative;padding:8px 10px;cursor:pointer;color:var(--nav-text);opacity:.5;
   font-weight:500;font-size:clamp(12px,1.35vw,14.5px);letter-spacing:-.01em;
-  transition:opacity .25s ease,transform .25s ease;white-space:nowrap}
+  transition:opacity .25s ease,transform .12s cubic-bezier(.22,1,.36,1);white-space:nowrap;
+  transform-origin:center bottom;will-change:transform}
 .nav-link:hover{opacity:.75}
 .nav-link:active{transform:scale(.96)}
 .nav-link::after{content:"";position:absolute;left:50%;bottom:5px;width:3px;height:3px;border-radius:1px;
@@ -839,6 +847,30 @@ function showToast(msg, type){
 }
  
 /* ======================= НАВИГАЦИЯ ======================= */
+(function initDockNav(){
+  const pill = document.querySelector('.nav-pill');
+  if (!pill) return;
+  const links = Array.from(pill.querySelectorAll('.nav-link'));
+  const maxDist = 78, maxScale = 1.42, restScale = 1;
+ 
+  function apply(px){
+    links.forEach(l => {
+      const r = l.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const dist = Math.abs(px - cx);
+      const t = Math.max(0, 1 - dist / maxDist);
+      const eased = t * t * (3 - 2 * t); // smoothstep — мягче на краях
+      const scale = restScale + (maxScale - restScale) * eased;
+      l.style.transform = 'scale(' + scale.toFixed(3) + ')';
+      l.style.zIndex = eased > 0.05 ? '2' : '1';
+    });
+  }
+  function reset(){
+    links.forEach(l => { l.style.transform = ''; l.style.zIndex = ''; });
+  }
+  pill.addEventListener('mousemove', e => apply(e.clientX));
+  pill.addEventListener('mouseleave', reset);
+})();
 function switchPage(page){
   const current = document.querySelector('.view.active');
   const target = document.getElementById('page-' + page);
@@ -1791,6 +1823,16 @@ function deleteReview(id) {
   renderReviews();
   showToast('Отзыв удален', 'success');
 }
+
+/* ======================= PWA: SERVICE WORKER ======================= */
+if ('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {
+      console.warn('StaroSTATT: service worker не зарегистрировался — офлайн-режим и установка на экран будут недоступны, сама страница при этом работает как обычно.');
+    });
+  });
+}
+
 </script>
 </body>
 </html>
