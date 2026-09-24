@@ -45,11 +45,11 @@
   --font-display:"BubbledotICG-FinePos","Geist Pixel Circle",monospace;
   
   /* Apple Glassmorphism Colors */
-  --apple-glass: rgba(255, 255, 255, 0.08);
-  --apple-glass-strong: rgba(255, 255, 255, 0.15);
+  --apple-glass: rgba(30, 30, 32, 0.65);
+  --apple-glass-strong: rgba(20, 20, 22, 0.85);
   --apple-border: rgba(255, 255, 255, 0.15);
   --apple-border-light: rgba(255, 255, 255, 0.25);
-  --apple-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  --apple-shadow: 0 10px 40px rgba(0,0,0,0.5);
   --neon-green: #00ff66;
 }
 *,*::before,*::after{box-sizing:border-box}
@@ -68,9 +68,9 @@ a{color:inherit;text-decoration:none}
 :focus-visible{outline:2px solid #fff;outline-offset:3px;border-radius:6px}
  
 /* ---------- фон ---------- */
-.bg{position:fixed;inset:0;background:#000;overflow:hidden;z-index:0}
+.bg{position:fixed;inset:0;background:#000;overflow:hidden;z-index:-2}
 .bg-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
-.scrim{position:fixed;inset:0;z-index:0;pointer-events:none;transition:background .5s ease,backdrop-filter .5s ease;
+.scrim{position:fixed;inset:0;z-index:-1;pointer-events:none;transition:background .5s ease,backdrop-filter .5s ease;
   background:radial-gradient(ellipse at center,rgba(0,0,0,.15) 0%,rgba(0,0,0,.6) 100%)}
 body.app-mode .scrim{background:rgba(0,0,0,.74);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
   animation:scrimBreathe 12s ease-in-out infinite}
@@ -86,7 +86,7 @@ body.app-mode .scrim{background:rgba(0,0,0,.74);backdrop-filter:blur(7px);-webki
  
 .logo{width:clamp(40px,4.4vw,46px);height:clamp(40px,4.4vw,46px);flex:0 0 auto;border:none;
   border-radius:50%;background:#fff;box-shadow:var(--nav-shadow);cursor:pointer;padding:0;
-  display:grid;place-items:center;transition:transform .25s ease}
+  display:grid;place-items:center;transition:transform .25s ease; z-index: 50;}
 .logo:hover{transform:scale(1.04)}
 .logo img{width:72%;height:72%;object-fit:contain}
 .logo-fallback{display:none;font-family:var(--font-display);font-size:18px;color:#111;line-height:1}
@@ -153,7 +153,7 @@ body.app-mode .scrim{background:rgba(0,0,0,.74);backdrop-filter:blur(7px);-webki
   background:var(--pill-dark);color:#fff;font-size:15px;font-weight:500;cursor:pointer}
  
 /* ---------- страницы и переходы ---------- */
-main{position:relative;z-index:1}
+main{position:relative;} /* Убран z-index для корректной работы подсветки */
 .view{display:none}
 .view.active{display:block}
 .app-view{max-width:1150px;margin:0 auto;padding:clamp(96px,14vh,132px) clamp(14px,3vw,32px) 70px}
@@ -333,9 +333,9 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:18px;
   background:rgba(0,0,0,.72);backdrop-filter:blur(10px)}
 .modal.open{display:flex;animation:overlayIn .25s ease}
-.modal-box{width:100%;max-width:440px;max-height:90vh;overflow-y:auto;background:rgba(16,16,18,.96);
+.modal-box{width:100%;max-width:440px;max-height:90vh;overflow-y:auto;background:var(--apple-glass-strong);
   border:1px solid var(--card-border);border-radius:26px;padding:28px;box-shadow:0 30px 80px rgba(0,0,0,.6);
-  animation:menuIn .32s cubic-bezier(.22,1,.36,1)}
+  backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); animation:menuIn .32s cubic-bezier(.22,1,.36,1)}
 .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
 .modal-head h2{margin:0;font-size:19px;font-weight:600}
 .x{background:none;border:none;color:var(--muted);font-size:24px;line-height:1;cursor:pointer}
@@ -383,40 +383,42 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
  
 /* ---------- тосты ---------- */
 #toasts{position:fixed;bottom:22px;left:22px;z-index:200;display:flex;flex-direction:column;gap:10px;max-width:330px}
-.toast{padding:14px 16px;border-radius:16px;background:rgba(18,18,20,.96);border:1px solid var(--card-border);
-  border-left:3px solid var(--bad);font-size:13.5px;line-height:1.45;box-shadow:0 16px 40px rgba(0,0,0,.5);
-  animation:toastIn .3s cubic-bezier(.22,1,.36,1)}
+.toast{padding:14px 16px;border-radius:16px;background:var(--apple-glass-strong);border:1px solid var(--card-border);
+  border-left:3px solid var(--bad);font-size:13.5px;line-height:1.45;box-shadow:var(--apple-shadow);
+  backdrop-filter:blur(10px); animation:toastIn .3s cubic-bezier(.22,1,.36,1)}
 .toast.success{border-left-color:var(--neon-green)}
 .toast b{display:block;margin-bottom:3px;font-weight:600}
 @keyframes toastIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
 @keyframes toastOut{to{opacity:0}}
  
-/* ---------- БОТ APPLE GLASS STYLE (Умный Адаптив) ---------- */
+/* ---------- БОТ APPLE GLASS STYLE (Умный Адаптив & Ходьба) ---------- */
 #tour-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 9997; /* Сильное затемнение */
+  position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 9997; 
   backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: 0.5s ease;
 }
 #tour-overlay.show { opacity: 1; pointer-events: auto; }
 
+/* Умная подсветка с неоновой заливкой */
 .tour-highlight {
-  position: relative; z-index: 9998 !important;
-  box-shadow: 0 0 0 3px rgba(0, 255, 102, 0.8), 0 0 35px rgba(0, 255, 102, 0.4) !important;
+  position: relative !important; z-index: 9998 !important;
+  box-shadow: 0 0 0 2px var(--neon-green), 0 0 35px rgba(0, 255, 102, 0.4) !important;
   border-radius: inherit; transition: box-shadow 0.3s ease;
-  background: rgba(20, 20, 22, 0.95);
+  background: rgba(0, 255, 102, 0.1) !important;
 }
 
 #bot-toggle-wrap {
   position: fixed; z-index: 9999;
   display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 14px;
-  /* Перемещается только по JS, изначально скрыт до инициализации */
-  transform: translateX(-50%);
   width: 60px;
+  /* Перемещается только по JS, изначально за экраном */
+  left: -100px; bottom: 22px; opacity: 0;
+  transition: left 0.6s cubic-bezier(0.34, 1.3, 0.64, 1), bottom 0.6s cubic-bezier(0.34, 1.3, 0.64, 1), opacity 0.3s;
 }
 
-/* Умный пузырь в стиле Apple iMessage */
+/* Умный пузырь в стиле Apple iMessage (Сообщение с хвостиком) */
 .tour-bubble {
   position: absolute; bottom: calc(100% + 15px);
-  background: rgba(30, 30, 32, 0.85);
+  background: var(--apple-glass-strong);
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--apple-border-light);
   box-shadow: var(--apple-shadow);
@@ -426,32 +428,34 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   transition: opacity 0.3s, transform 0.3s cubic-bezier(0.22,1,0.36,1);
 }
 
-/* Варианты позиционирования пузыря (меняются через JS) */
+.tour-bubble.show { opacity: 1 !important; pointer-events: auto !important; }
+
+/* Варианты позиционирования пузыря (с правильными галочками) */
 .bubble-center {
   border-radius: 18px; left: 50%; transform: translateX(-50%) scale(0.9); transform-origin: bottom center;
 }
-.bubble-center.show { transform: translateX(-50%) scale(1); pointer-events: auto; }
+.bubble-center.show { transform: translateX(-50%) scale(1) !important; }
 .bubble-center::after {
   content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-  border: 8px solid transparent; border-top-color: rgba(30, 30, 32, 0.85);
+  border: 10px solid transparent; border-top-color: var(--apple-glass-strong);
 }
 
 .bubble-left {
   border-radius: 18px 18px 18px 0; left: -10px; transform: scale(0.9); transform-origin: bottom left;
 }
-.bubble-left.show { transform: scale(1); pointer-events: auto; }
+.bubble-left.show { transform: scale(1) !important; }
 .bubble-left::after {
   content: ''; position: absolute; top: 100%; left: 30px; transform: translateX(-50%);
-  border: 8px solid transparent; border-top-color: rgba(30, 30, 32, 0.85);
+  border: 10px solid transparent; border-top-color: var(--apple-glass-strong);
 }
 
 .bubble-right {
   border-radius: 18px 18px 0 18px; right: -10px; transform: scale(0.9); transform-origin: bottom right;
 }
-.bubble-right.show { transform: scale(1); pointer-events: auto; }
+.bubble-right.show { transform: scale(1) !important; }
 .bubble-right::after {
   content: ''; position: absolute; top: 100%; right: 30px; transform: translateX(50%);
-  border: 8px solid transparent; border-top-color: rgba(30, 30, 32, 0.85);
+  border: 10px solid transparent; border-top-color: var(--apple-glass-strong);
 }
 
 #tour-text { font-size: 14px; line-height: 1.5; margin-bottom: 14px; font-weight:500; font-family:-apple-system, sans-serif;}
@@ -482,7 +486,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   width: 44px; height: 32px; border-radius: 16px;
   background: var(--apple-glass); border: 1px solid var(--apple-border-light);
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,255,102,0.1);
   display: flex; align-items: center; justify-content: center; gap: 8px;
   position: relative; z-index: 3;
 }
@@ -490,11 +494,11 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   width: 40px; height: 44px; border-radius: 12px;
   background: var(--apple-glass); border: 1px solid var(--apple-border-light);
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,255,102,0.1);
   margin-top: -6px; z-index: 2; position: relative;
   display: grid; place-items: center;
 }
-.bot-logo-text { font-family: monospace; font-size: 13px; font-weight: bold; color: var(--neon-green); opacity: 0.9; text-shadow: 0 0 4px var(--neon-green);}
+.bot-logo-text { font-family: monospace; font-size: 13px; font-weight: bold; color: var(--neon-green); text-shadow: 0 0 6px var(--neon-green);}
 
 .bot-limbs { position: absolute; inset: 0; pointer-events: none;}
 .bot-arm, .bot-leg {
@@ -508,7 +512,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .bot-leg-l { left: 14px; }
 .bot-leg-r { right: 14px; }
 
-/* Анимация ходьбы (ограничена по низу) */
+/* Анимация ходьбы */
 #bot-toggle-wrap.is-walking .bot-leg-l { animation: walkLegL 0.3s infinite alternate linear; }
 #bot-toggle-wrap.is-walking .bot-leg-r { animation: walkLegR 0.3s infinite alternate linear; }
 #bot-toggle-wrap.is-walking .bot-robot { animation: walkBob 0.3s infinite alternate linear; }
@@ -534,25 +538,25 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 
 /* Окно чата (Apple Glass) */
 #bot {
-  position: fixed; right: 22px; bottom: 120px; z-index: 90; width: 340px; max-width: calc(100vw - 36px); height: 460px;
+  position: fixed; right: 22px; bottom: 120px; z-index: 10000; width: 340px; max-width: calc(100vw - 36px); height: 460px;
   display: flex; flex-direction: column; overflow: hidden;
-  background: rgba(30, 30, 32, 0.65); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--apple-border); border-radius: 20px;
-  box-shadow: 0 24px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+  background: rgba(20, 20, 22, 0.75); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.15); border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
   opacity: 0; transform: translateY(14px); pointer-events: none; transition: .3s cubic-bezier(.22,1,.36,1);
 }
-#bot.open { opacity: 1; transform: none; pointer-events: auto; }
+#bot.open { opacity: 1; transform: none; pointer-events: auto; box-shadow: 0 24px 60px rgba(0,255,102,.25), 0 0 0 1px rgba(0,255,102,0.3); }
 #bot header {
   display: flex; justify-content: space-between; align-items: center; padding: 16px 18px;
   border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 15px; font-weight: 500; color: #fff;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 #bot header button { background: none; border: none; color: var(--muted); font-size: 22px; cursor: pointer; transition: .2s; }
 #bot header button:hover { color: var(--neon-green); }
 #bot-log { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
 .msg { max-width: 88%; padding: 11px 15px; border-radius: 16px; font-size: 13.5px; line-height: 1.45; white-space: pre-wrap; font-family:-apple-system, sans-serif;}
-.msg.bot { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.05); color: #fff; border-bottom-left-radius: 4px; align-self: flex-start; }
-.msg.me { background: var(--neon-green); color: #000; border-bottom-right-radius: 4px; align-self: flex-end; font-weight: 500; }
+.msg.bot { background: rgba(0, 255, 102, 0.1); border: 1px solid rgba(0, 255, 102, 0.2); color: #fff; border-bottom-left-radius: 4px; align-self: flex-start; }
+.msg.me { background: var(--neon-green); color: #000; border-bottom-right-radius: 4px; align-self: flex-end; font-weight: 600; }
 .bot-action-btn { display: inline-block; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 7px 12px; margin: 6px 6px 0 0; color: #fff; cursor: pointer; font-size: 12.5px; transition: 0.2s; font-weight: 500; }
 .bot-action-btn:hover { background: var(--neon-green); color: #000; border-color:var(--neon-green); transform: translateY(-1px); }
 #bot-form { display: flex; align-items: center; gap: 8px; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); }
@@ -1617,36 +1621,39 @@ let botX = 0;
 let botY = 22;
 let idleTimer;
 
-// Инициализация стартовой позиции (вызывается 1 раз при загрузке)
-window.addEventListener('DOMContentLoaded', () => {
+// Инициализация при загрузке (чтобы бот сразу стоял на месте, а не улетал)
+function initBotPosition() {
     const wrap = document.getElementById('bot-toggle-wrap');
-    botX = window.innerWidth - 60; // 60px ширина бота
-    botY = 22; // высота от пола
+    botX = window.innerWidth - 60; 
+    botY = 22;
+    wrap.style.transitionDuration = '0s'; // Мгновенно ставим на место
     wrap.style.left = botX + 'px';
     wrap.style.bottom = botY + 'px';
-    
-    // Подключаем слушатели для окна
-    window.addEventListener('resize', () => {
-        if (botX > window.innerWidth - 60) {
-            botX = window.innerWidth - 60;
-            wrap.style.left = botX + 'px';
-        }
-    });
+    setTimeout(() => {
+        wrap.style.opacity = '1';
+        wrap.style.transitionDuration = ''; // Возвращаем анимации
+    }, 100);
+}
+initBotPosition();
+
+window.addEventListener('resize', () => {
+    if (botX > window.innerWidth - 60) {
+        botX = window.innerWidth - 60;
+        document.getElementById('bot-toggle-wrap').style.left = botX + 'px';
+    }
 });
 
-// Центральная функция передвижения
+// Центральная функция передвижения (жесткие ограничения экрана)
 function walkBotTo(targetX, targetY, callback) {
     const wrap = document.getElementById('bot-toggle-wrap');
-    const robot = document.querySelector('.bot-robot');
     const bubble = document.getElementById('tour-bubble');
 
-    // ЖЕСТКИЕ ГРАНИЦЫ
     const minX = 40;
-    const maxX = window.innerWidth - 80;
+    const maxX = window.innerWidth - 60;
     targetX = Math.max(minX, Math.min(targetX, maxX));
 
     const minY = 22;
-    const maxY = window.innerHeight - 180; // Место для пузыря
+    const maxY = window.innerHeight - 180; 
     targetY = Math.max(minY, Math.min(targetY, maxY));
 
     // Поворачиваем лицо в нужную сторону
@@ -1656,11 +1663,9 @@ function walkBotTo(targetX, targetY, callback) {
         wrap.classList.remove('bot-flipped');
     }
 
-    // Рассчитываем время пути (примерно 300px за секунду, но минимум 400мс)
     const distance = Math.hypot(targetX - botX, targetY - botY);
     const duration = Math.max(400, (distance / 400) * 1000);
 
-    // Применяем CSS анимацию
     wrap.style.transitionDuration = `${duration}ms`;
     wrap.style.left = targetX + 'px';
     wrap.style.bottom = targetY + 'px';
@@ -1669,8 +1674,8 @@ function walkBotTo(targetX, targetY, callback) {
     botX = targetX;
     botY = targetY;
 
-    // Умное позиционирование пузыря (чтобы не резался экраном)
-    bubble.className = 'tour-bubble'; // reset
+    // Умное позиционирование пузыря (хвостик всегда смотрит на голову)
+    bubble.className = 'tour-bubble'; 
     if (targetX < 160) {
         bubble.classList.add('bubble-left');
     } else if (targetX > window.innerWidth - 160) {
@@ -1693,12 +1698,11 @@ function startIdlePatrol() {
 
     idleTimer = setTimeout(() => {
         if (botState !== 'idle') return;
-        // Случайная точка по оси X, Y всегда 22 (пол)
         const randomX = 50 + Math.random() * (window.innerWidth - 150);
         walkBotTo(randomX, 22, () => {
-            startIdlePatrol(); // цикл
+            startIdlePatrol();
         });
-    }, 4000 + Math.random() * 5000); // пауза между шагами 4-9 секунд
+    }, 4000 + Math.random() * 5000); 
 }
 
 function stopIdlePatrol() {
@@ -1721,16 +1725,13 @@ let currentTourStep = 0;
 
 let authTimer = setTimeout(() => {
     let authUser = firebase && firebase.auth().currentUser;
-    setAuthUI(authUser);
-    initApp();
-    checkFirstVisit();
+    setAuthUI(authUser); initApp(); checkFirstVisit();
 }, 1500);
 
 if (auth){
   auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
     auth.onAuthStateChanged(user => {
-      clearTimeout(authTimer);
-      setAuthUI(user);
+      clearTimeout(authTimer); setAuthUI(user);
       if (user){
         currentUser = user;
         db.collection('users').doc(user.uid).get().then(doc => {
@@ -1785,10 +1786,8 @@ function goToTourStep(index) {
   
   setTimeout(() => {
     if (step.target === null) {
-      // Идем в центр экрана (по X), по Y стоим на полу
       walkBotTo(window.innerWidth / 2, 22, showBubbleContent);
     } else if (step.target === 'home') {
-      // Возвращаемся в правый угол
       walkBotTo(window.innerWidth - 60, 22, showBubbleContent);
     } else {
       const targetEl = document.querySelector(step.target);
@@ -1798,7 +1797,6 @@ function goToTourStep(index) {
         setTimeout(() => {
           const rect = targetEl.getBoundingClientRect();
           let tX = rect.left + rect.width / 2;
-          // Пытаемся встать ровно под элементом
           let distFromBottom = window.innerHeight - rect.bottom - 120;
           
           walkBotTo(tX, Math.max(22, distFromBottom), () => {
@@ -1828,7 +1826,6 @@ function endTour() {
   document.getElementById('tour-overlay').classList.remove('show');
   document.getElementById('tour-bubble').classList.remove('show');
   
-  // Отправляем в правый нижний угол и включаем патруль
   walkBotTo(window.innerWidth - 60, 22, () => {
       botState = 'idle';
       startIdlePatrol();
@@ -1851,12 +1848,11 @@ function handleLogoClick() {
   const bubble = document.getElementById('tour-bubble');
   const textEl = document.getElementById('tour-text');
   
-  // Прячем кнопки в пузыре для пасхалки
   document.querySelector('.tour-btns').style.display = 'none';
   
   const logoRect = document.querySelector('.logo').getBoundingClientRect();
   const tX = logoRect.left + logoRect.width / 2;
-  const tY = window.innerHeight - logoRect.bottom - 120; // подбегаем под логотип
+  const tY = window.innerHeight - logoRect.bottom - 120;
   
   walkBotTo(tX, tY, () => {
       if (logoClicks === 1) {
@@ -1867,7 +1863,7 @@ function handleLogoClick() {
         textEl.innerHTML = "Ты нажал второй раз... 🤖";
         bubble.classList.add('show');
         logoTimer = setTimeout(resetLogoEasterEgg, 4000);
-      } else if (logoClicks === 3) {
+      } else if (logoClicks >= 3) {
         resetLogoEasterEgg();
         openMiniGame();
       }
@@ -1916,17 +1912,14 @@ function toggleBot(){
   const botEl = document.getElementById('bot');
   
   if (botState === 'chat') {
-      // Закрываем чат
       botEl.classList.remove('open');
       botState = 'idle';
       startIdlePatrol();
   } else {
-      // Открываем чат
       botState = 'chat';
       stopIdlePatrol();
       document.getElementById('tour-bubble').classList.remove('show');
       
-      // Бот бежит в правый нижний угол, чтобы открыть там окно чата
       walkBotTo(window.innerWidth - 60, 22, () => {
           botEl.classList.add('open');
       });
