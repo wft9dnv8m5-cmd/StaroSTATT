@@ -401,7 +401,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 /* Умная подсветка с неоновой заливкой */
 .tour-highlight {
   position: relative !important; z-index: 9998 !important;
-  box-shadow: 0 0 0 2px var(--neon-green), 0 0 35px rgba(0, 255, 102, 0.4) !important;
+  box-shadow: 0 0 0 3px var(--neon-green), 0 0 35px rgba(0, 255, 102, 0.4) !important;
   border-radius: inherit; transition: box-shadow 0.3s ease;
   background: rgba(0, 255, 102, 0.1) !important;
 }
@@ -473,9 +473,9 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 }
 #bot-toggle:hover { transform: scale(1.05); }
 
-/* Зеркалирование робота при ходьбе влево */
-.bot-flipped { transform: scaleX(-1); }
-.bot-flipped .bot-logo-text { transform: scaleX(-1); } /* Чтобы текст i/e не читался задом наперед */
+/* ИСПРАВЛЕНИЕ: Зеркалирование только тела робота (чтобы текст в пузыре не переворачивался!) */
+#bot-toggle-wrap.bot-flipped .bot-robot { transform: scaleX(-1); }
+#bot-toggle-wrap.bot-flipped .bot-logo-text { transform: scaleX(-1); } /* Чтобы текст i/e читался нормально */
 
 .bot-robot {
   position: relative; width: 100%; height: 100%;
@@ -970,7 +970,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   <div class="tour-bubble bubble-center" id="tour-bubble">
     <div id="tour-text"></div>
     <div class="tour-btns">
-      <button class="tour-btn tour-btn-skip" onclick="endTour()">Пропустить</button>
+      <button class="tour-btn tour-btn-skip" onclick="disableTourForever()">Закрыть обучение</button>
       <button class="tour-btn tour-btn-next" onclick="nextTourStep()">Дальше ➔</button>
     </div>
   </div>
@@ -1656,7 +1656,7 @@ function walkBotTo(targetX, targetY, callback) {
     const maxY = window.innerHeight - 180; 
     targetY = Math.max(minY, Math.min(targetY, maxY));
 
-    // Поворачиваем лицо в нужную сторону
+    // Поворачиваем лицо в нужную сторону (ИСХОДНОЕ ИСПРАВЛЕНИЕ ЗЕРКАЛИРОВАНИЯ)
     if (targetX < botX - 5) {
         wrap.classList.add('bot-flipped');
     } else if (targetX > botX + 5) {
@@ -1747,14 +1747,15 @@ if (auth){
   }).catch(() => { clearTimeout(authTimer); loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); });
 } else { clearTimeout(authTimer); loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); }
 
+// Проверка первого визита или отмены тура
 function checkFirstVisit() {
-  if (!localStorage.getItem('bot_tour_v6')) {
+  if (localStorage.getItem('bot_tour_completed_final') !== 'true') {
     setTimeout(startTour, 1000);
   } else {
     botState = 'idle';
     startIdlePatrol();
     document.getElementById('bot-log').innerHTML = ''; 
-    addMsg('Привет! Как твои дела? Я ваш помощник StaroBot ✦\nГотов подсказать расписание, дедлайны или долги.', 'bot', ['Расписание', 'Дедлайны', 'Долги студентов', 'Какая неделя?']);
+    addMsg('Привет! Как твои дела? Я ваш помощник StaroBot ✦\nГотов подсказать расписание, дедлайны или долги.', 'bot', ['Расписание', 'Дедлайны', 'Долги студентов', 'Какая неделя?', 'Обучение']);
   }
 }
 
@@ -1766,7 +1767,6 @@ function startTour() {
   
   if(document.getElementById('bot').classList.contains('open')) toggleBot();
   goToTourStep(0);
-  localStorage.setItem('bot_tour_v6', 'true');
 }
 
 function nextTourStep() {
@@ -1826,13 +1826,21 @@ function endTour() {
   document.getElementById('tour-overlay').classList.remove('show');
   document.getElementById('tour-bubble').classList.remove('show');
   
+  // Сохраняем информацию о том, что обучение завершено
+  localStorage.setItem('bot_tour_completed_final', 'true');
+  
   walkBotTo(window.innerWidth - 60, 22, () => {
       botState = 'idle';
       startIdlePatrol();
   });
   
   document.getElementById('bot-log').innerHTML = ''; 
-  addMsg('Привет! Как твои дела? Экскурсия завершена. Если что-то забудешь — я всегда тут.', 'bot', ['Что ты умеешь?', 'Открой журнал', 'Покажи долги']);
+  addMsg('Привет! Как твои дела? Обучение завершено. Если что-то забудешь — я всегда тут.', 'bot', ['Что ты умеешь?', 'Открой журнал', 'Покажи долги', 'Обучение']);
+}
+
+// Отдельная функция для жесткой отмены показа навсегда (нажатие на "Больше не показывать")
+function disableTourForever() {
+  endTour();
 }
 
 /* ======================= МИНИ-ИГРА И ПАСХАЛКА ЛОГОТИПА ======================= */
@@ -1975,10 +1983,19 @@ function addMsg(text, cls, buttons = []){
 }
 function answer(q){
   const g = getActiveGroupData();
+  
+  if (q.includes('обучени') || q.includes('тур') || q.includes('экскурси')) {
+    setTimeout(() => {
+        toggleBot(); // Закрываем чат
+        startTour(); // Запускаем обучение
+    }, 600);
+    return { text: 'Без проблем! Начинаю экскурсию по сайту...', buttons: [] };
+  }
+
   if (q.includes('привет') || q.includes('помощь') || q.includes('умеешь') || q.includes('функции') || q.includes('дела')) {
     return {
       text: 'Привет! У меня всё отлично! Я умею многое! Выберите, что вам подсказать:',
-      buttons: ['Расписание', 'Какая неделя?', 'Долги студентов', 'Сколько человек в группе?', 'Дедлайны', 'Где скачать CSV?']
+      buttons: ['Расписание', 'Какая неделя?', 'Долги студентов', 'Сколько человек в группе?', 'Обучение', 'Где скачать CSV?']
     };
   }
   if (q.includes('спасибо') || q.includes('благодар')) return { text: 'Всегда пожалуйста! Обращайтесь.', buttons: ['Что ты умеешь?'] };
@@ -2056,7 +2073,7 @@ function answer(q){
   if (q.includes('инфо')){ switchPage('notes'); return { text: 'Открыл доску дедлайнов.', buttons: [] }; }
   return { 
     text: 'Я пока не знаю такой команды. Но вот что могу предложить:', 
-    buttons: ['Расписание', 'Дедлайны', 'Долги студентов'] 
+    buttons: ['Расписание', 'Дедлайны', 'Обучение'] 
   };
 }
 
