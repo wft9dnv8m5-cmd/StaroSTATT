@@ -43,6 +43,7 @@
   --bad:#ff7a7a;
   --font-sans:"Inter","Segoe UI",system-ui,sans-serif;
   --font-display:"BubbledotICG-FinePos","Geist Pixel Circle",monospace;
+  --cyber-cyan:#00f2fe;
 }
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;padding:0}
@@ -383,66 +384,122 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 @keyframes toastIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
 @keyframes toastOut{to{opacity:0}}
  
-/* ---------- бот ---------- */
-#bot-toggle-wrap{position:fixed;right:22px;bottom:22px;z-index:90;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
-.bot-tip{position:relative;max-width:190px;padding:10px 14px;border-radius:14px 14px 4px 14px;
-  background:#fff;color:#111;font-size:12.5px;line-height:1.4;font-weight:500;box-shadow:0 10px 26px rgba(0,0,0,.35);
-  opacity:0;transform:translateY(6px) scale(.94);pointer-events:none;
-  transition:opacity .3s cubic-bezier(.22,1,.36,1),transform .3s cubic-bezier(.22,1,.36,1)}
-.bot-tip.show{opacity:1;transform:none;pointer-events:auto}
-#bot-toggle{width:60px;height:60px;border-radius:20px;border:none;cursor:pointer;padding:0;position:relative;
-  background:linear-gradient(160deg,#f2efe9,#cfc8be);
-  box-shadow:0 0 0 1px rgba(255,255,255,.2),0 10px 26px rgba(0,0,0,.4);
-  transition:transform .25s ease}
-#bot-toggle:hover{transform:scale(1.06)}
-.bot-attention{animation:botBounce 1s infinite alternate, botGlow 2s infinite alternate;}
-@keyframes botBounce{from{transform:translateY(0);}to{transform:translateY(-12px);}}
-@keyframes botGlow{from{box-shadow:0 0 0 1px rgba(255,255,255,.2),0 10px 26px rgba(0,0,0,.4);}to{box-shadow:0 0 0 3px rgba(255,255,255,.6),0 14px 34px rgba(255,255,255,.3);}}
+/* ---------- БОТ КИБЕРПАНК (Экскурсия) ---------- */
+#tour-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 9997;
+  backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: 0.5s ease;
+}
+#tour-overlay.show { opacity: 1; pointer-events: auto; }
+
+.tour-highlight {
+  position: relative;
+  z-index: 9998 !important;
+  box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.6), 0 0 25px rgba(0, 242, 254, 0.4) !important;
+  border-radius: inherit;
+  transition: box-shadow 0.3s ease;
+  background: rgba(16, 16, 18, 0.9);
+}
+
+#bot-toggle-wrap{
+  position:fixed; right:22px; bottom:22px; z-index:9999;
+  display:flex; flex-direction:column; align-items:center; gap:14px;
+  /* Для полета: */
+  transition: left 0.7s cubic-bezier(0.34, 1.3, 0.64, 1), top 0.7s cubic-bezier(0.34, 1.3, 0.64, 1), transform 0.4s;
+}
+#bot-toggle-wrap.flying {
+  right: auto; bottom: auto;
+  transform: translate(-50%, -50%); /* Центрирование при полете */
+  animation: hoverFly 2.5s infinite ease-in-out alternate;
+}
+@keyframes hoverFly { from { transform: translate(-50%, -50%) translateY(0); } to { transform: translate(-50%, -50%) translateY(-10px); } }
+
+/* Пузырь во время полета/обучения */
+.tour-bubble {
+  position: absolute; bottom: calc(100% + 20px); left: 50%;
+  transform: translateX(-50%) scale(0.9);
+  background: rgba(12, 12, 14, 0.95);
+  border: 1px solid rgba(0, 242, 254, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 242, 254, 0.25);
+  color: #fff; padding: 18px; border-radius: 16px;
+  width: 280px; text-align: left;
+  opacity: 0; pointer-events: none;
+  transition: 0.3s cubic-bezier(0.22,1,0.36,1);
+  backdrop-filter: blur(10px);
+}
+.tour-bubble.show { opacity: 1; transform: translateX(-50%) scale(1); pointer-events: auto; }
+.tour-bubble::after {
+  content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  border-width: 8px; border-style: solid; border-color: rgba(0, 242, 254, 0.4) transparent transparent transparent;
+}
+#tour-text { font-size: 13.5px; line-height: 1.5; margin-bottom: 14px; }
+.tour-btns { display: flex; justify-content: space-between; gap: 8px; }
+.tour-btn { flex: 1; padding: 8px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.2s; }
+.tour-btn-next { background: var(--cyber-cyan); color: #000; box-shadow: 0 0 10px rgba(0,242,254,0.4); }
+.tour-btn-next:hover { transform: translateY(-1px); box-shadow: 0 0 15px rgba(0,242,254,0.6); }
+.tour-btn-skip { background: transparent; color: var(--muted); border: 1px solid #444; }
+.tour-btn-skip:hover { color: #fff; border-color: #888; }
+
+/* Сам дрон */
+#bot-toggle{
+  width:64px; height:64px; border-radius:50%; border:none; cursor:pointer; padding:0; position:relative;
+  background: linear-gradient(145deg, #1f212a 0%, #111216 100%);
+  box-shadow: 0 0 0 1px rgba(0, 242, 254, 0.2), 0 10px 25px rgba(0,0,0,.6), inset 0 2px 10px rgba(255,255,255,0.05);
+  transition: transform .25s ease;
+}
+#bot-toggle:hover{transform:scale(1.08)}
 
 .bot-robot{position:relative;width:100%;height:100%}
-.bot-antenna{position:absolute;top:2px;left:50%;width:4px;height:9px;border-radius:2px;background:#8b8377;transform:translateX(-50%)}
-.bot-antenna::before{content:"";position:absolute;top:-5px;left:50%;width:6px;height:6px;border-radius:50%;
-  background:#ff6b6b;transform:translateX(-50%);box-shadow:0 0 8px rgba(255,107,107,.7);
-  animation:antennaBlink 1.8s ease-in-out infinite}
-@keyframes antennaBlink{0%,100%{opacity:1}50%{opacity:.35}}
-.bot-head{position:absolute;top:16px;left:50%;transform:translateX(-50%);width:34px;height:26px;border-radius:9px;
-  background:#181818;display:flex;align-items:center;justify-content:center;gap:7px}
-.bot-eye{width:8px;height:8px;border-radius:50%;background:#fff;display:grid;place-items:center;transition:transform .1s ease}
-.bot-pupil{width:3.5px;height:3.5px;border-radius:50%;background:#181818;transition:transform .08s linear}
-.bot-arm{position:absolute;top:26px;width:9px;height:16px;border-radius:6px;background:#a8a096;
-  transform-origin:top center;animation:armWave 2.4s ease-in-out infinite}
-.bot-arm-l{left:2px;transform:rotate(14deg);animation-delay:0s}
-.bot-arm-r{right:2px;transform:rotate(-14deg);animation-delay:.35s}
+.bot-antenna{position:absolute;top:-4px;left:50%;width:3px;height:12px;background:var(--cyber-cyan);transform:translateX(-50%); border-radius:2px;}
+.bot-antenna::before{content:"";position:absolute;top:-4px;left:50%;width:6px;height:6px;border-radius:50%;
+  background:#fff;transform:translateX(-50%);box-shadow:0 0 12px #fff, 0 0 20px var(--cyber-cyan);
+  animation:antennaBlink 1.5s infinite}
+@keyframes antennaBlink{0%,100%{opacity:1}50%{opacity:.4}}
 
-/* Агрессивное махание при привлечении внимания */
-.bot-attention .bot-arm-r { animation: armIntenseWave 0.5s ease-in-out infinite alternate; background:#fff;}
-@keyframes armIntenseWave{from{transform:rotate(-10deg);}to{transform:rotate(-130deg);}}
+.bot-head{position:absolute;top:18px;left:50%;transform:translateX(-50%);width:40px;height:22px;border-radius:12px;
+  background:#0a0a0c;display:flex;align-items:center;justify-content:center;gap:8px; border:1px solid rgba(0,242,254,0.2);}
+.bot-eye{width:10px;height:10px;border-radius:50%;background:var(--cyber-cyan);display:grid;place-items:center;transition:transform .1s ease; box-shadow:0 0 8px var(--cyber-cyan);}
+.bot-pupil{width:4px;height:4px;border-radius:50%;background:#000;transition:transform .08s linear}
 
-@keyframes armWave{0%,100%{transform:rotate(14deg)}50%{transform:rotate(26deg)}}
+/* Манипуляторы */
+.bot-arm{position:absolute;top:32px;width:10px;height:18px;border-radius:5px;background:#2a2b36; border:1px solid rgba(0,242,254,0.3);
+  transform-origin:top center;animation:armWave 3s ease-in-out infinite}
+.bot-arm-l{left:-2px;transform:rotate(20deg);animation-delay:0s}
+.bot-arm-r{right:-2px;transform:rotate(-20deg);animation-delay:.4s}
+@keyframes armWave{0%,100%{transform:rotate(20deg)}50%{transform:rotate(35deg)}}
 .bot-arm-r{animation-name:armWaveR}
-@keyframes armWaveR{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(-26deg)}}
+@keyframes armWaveR{0%,100%{transform:rotate(-20deg)}50%{transform:rotate(-35deg)}}
 
-#bot{position:fixed;right:22px;bottom:96px;z-index:90;width:330px;max-width:calc(100vw - 36px);height:450px;
-  display:flex;flex-direction:column;overflow:hidden;background:rgba(16,16,18,.96);border:1px solid var(--card-border);
-  border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,.55);backdrop-filter:blur(18px);
+/* Плазменный двигатель (видно только в полете) */
+.bot-thruster {
+  position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%);
+  width: 18px; height: 18px; border-radius: 50%;
+  background: linear-gradient(to bottom, #fff, var(--cyber-cyan), transparent);
+  filter: blur(3px); opacity: 0; transition: opacity 0.4s;
+}
+#bot-toggle-wrap.flying .bot-thruster { opacity: 1; animation: thrustPulse 0.3s infinite alternate; }
+@keyframes thrustPulse { from { height: 18px; opacity: 0.8; } to { height: 26px; opacity: 1; filter: blur(4px); } }
+
+/* Окно чата */
+#bot{position:fixed;right:22px;bottom:100px;z-index:90;width:340px;max-width:calc(100vw - 36px);height:460px;
+  display:flex;flex-direction:column;overflow:hidden;background:rgba(12,12,14,.95);border:1px solid var(--card-border);
+  border-radius:24px;box-shadow:0 24px 60px rgba(0,242,254,.15);backdrop-filter:blur(18px);
   opacity:0;transform:translateY(14px);pointer-events:none;transition:.28s cubic-bezier(.22,1,.36,1)}
-#bot.open{opacity:1;transform:none;pointer-events:auto}
+#bot.open{opacity:1;transform:none;pointer-events:auto; box-shadow:0 24px 60px rgba(0,242,254,.25), 0 0 0 1px rgba(0,242,254,0.2);}
 #bot header{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;
-  border-bottom:1px solid var(--card-border);font-size:14px;font-weight:600}
-#bot header button{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer}
-#bot-log{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
-.msg{max-width:86%;padding:10px 14px;border-radius:16px;font-size:13.5px;line-height:1.45;white-space:pre-wrap}
-.msg.bot{background:rgba(255,255,255,.07);border-bottom-left-radius:4px;align-self:flex-start}
-.msg.me{background:#fff;color:#000;border-bottom-right-radius:4px;align-self:flex-end}
-
-/* Кнопки в чате бота */
-.bot-action-btn { display:inline-block; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.25); border-radius:12px; padding:7px 12px; margin:6px 6px 0 0; color:#fff; cursor:pointer; font-size:12.5px; transition:0.2s; font-weight:500;}
-.bot-action-btn:hover { background:#fff; color:#000; transform:translateY(-1px); box-shadow:0 4px 12px rgba(255,255,255,.25);}
-.bot-action-btn:active { transform:scale(.95);}
-
-#bot-form{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid var(--card-border)}
-#bot-input{background:transparent;border:none;padding:8px 4px;font-size:13.5px;color:#fff}
-#bot-form button{background:none;border:none;color:#fff;font-size:16px;cursor:pointer}
+  border-bottom:1px solid rgba(255,255,255,0.08);font-size:14.5px;font-weight:600; color:var(--cyber-cyan);}
+#bot header button{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer; transition:.2s;}
+#bot header button:hover{color:#fff;}
+#bot-log{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:88%;padding:11px 15px;border-radius:16px;font-size:13.5px;line-height:1.45;white-space:pre-wrap}
+.msg.bot{background:rgba(0,242,254,.08);border:1px solid rgba(0,242,254,.15); border-bottom-left-radius:4px;align-self:flex-start}
+.msg.me{background:var(--cyber-cyan);color:#000;border-bottom-right-radius:4px;align-self:flex-end; font-weight:500;}
+.bot-action-btn { display:inline-block; background:rgba(255,255,255,.05); border:1px solid rgba(0,242,254,.3); border-radius:12px; padding:7px 12px; margin:6px 6px 0 0; color:var(--cyber-cyan); cursor:pointer; font-size:12.5px; transition:0.2s; font-weight:500;}
+.bot-action-btn:hover { background:var(--cyber-cyan); color:#000; transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,242,254,.3);}
+#bot-form{display:flex;align-items:center;gap:8px;padding:12px;border-top:1px solid rgba(255,255,255,0.08)}
+#bot-input{background:rgba(255,255,255,0.05);border:1px solid transparent;border-radius:12px;padding:10px 14px;font-size:13.5px;color:#fff;flex:1; transition:0.2s;}
+#bot-input:focus{border-color:var(--cyber-cyan); outline:none;}
+#bot-form button{background:none;border:none;color:var(--cyber-cyan);font-size:18px;cursor:pointer; padding:4px 8px; transition:0.2s;}
+#bot-form button:hover{transform:scale(1.1);}
  
 /* ---------- адаптив ---------- */
 @media (max-width:900px){.grid-2{grid-template-columns:1fr}}
@@ -482,6 +539,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 </div>
 <div class="scrim"></div>
 <div id="toasts"></div>
+<div id="tour-overlay"></div>
  
 <header class="site-header">
   <div class="header-inner">
@@ -490,7 +548,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
       <span class="logo-fallback">S</span>
     </button>
  
-    <nav class="nav-pill" aria-label="Основная навигация">
+    <nav class="nav-pill" id="tour-nav" aria-label="Основная навигация">
       <div class="nav-hover-pill"></div>
       <span class="nav-link active" data-page="landing" onclick="switchPage('landing')">Главная</span>
       <span class="nav-link" data-page="group" onclick="switchPage('group')">Группа</span>
@@ -555,7 +613,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
       <p class="cta-note anim" style="--d:.5s">Без регистрации — данные останутся в этом браузере</p>
     </div>
  
-    <div class="stats">
+    <div class="stats" id="tour-stats">
       <div class="anim" style="--d:.5s">
         <div class="stat-icon">&lt;</div>
         <div class="stat-value" data-target="30" data-suffix=" с" data-dec="0">0</div>
@@ -659,7 +717,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   </div>
  
   <div class="grid-2" style="margin-bottom:22px">
-    <div class="card" style="margin:0">
+    <div class="card" style="margin:0" id="tour-journal-schedule">
       <div class="card-head" style="margin-bottom:14px"><h2 id="card-title">Расписание</h2></div>
       <div id="schedule-display-cards"></div>
     </div>
@@ -707,7 +765,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     <p>Три среза по одним и тем же отметкам: смотр для куратора, общая статистика группы и посещаемость по предмету.</p>
   </div>
  
-  <div class="card">
+  <div class="card" id="tour-reports-csv">
     <div class="card-head">
       <h2>Смотр для куратора</h2>
       <button class="btn btn-primary" onclick="exportCuratorCSV()">Скачать CSV</button>
@@ -778,17 +836,16 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
  
 <!-- МОДАЛКИ -->
 <div class="modal" id="auth-modal">
+  <!-- Опущено для краткости, код авто-модалок не менялся -->
   <div class="modal-box">
     <div class="modal-head"><h2 id="auth-title">Вход в аккаунт</h2><button class="x" onclick="closeModal('auth-modal')">×</button></div>
     <p class="hint" style="margin:-8px 0 18px">Аккаунт нужен, чтобы журнал синхронизировался между устройствами.</p>
-
     <div class="watchers" id="auth-watchers">
       <div class="watcher"><div class="w-eyes"><span class="w-eye"><span class="w-pupil"></span></span><span class="w-eye"><span class="w-pupil"></span></span></div><span class="w-hand w-hand-l"></span><span class="w-hand w-hand-r"></span></div>
       <div class="watcher"><div class="w-eyes"><span class="w-eye"><span class="w-pupil"></span></span><span class="w-eye"><span class="w-pupil"></span></span></div><span class="w-hand w-hand-l"></span><span class="w-hand w-hand-r"></span></div>
       <div class="watcher"><div class="w-eyes"><span class="w-eye"><span class="w-pupil"></span></span><span class="w-eye"><span class="w-pupil"></span></span></div><span class="w-hand w-hand-l"></span><span class="w-hand w-hand-r"></span></div>
     </div>
     <p class="watchers-msg" id="watchers-msg">Так, всё, глаза закрыты — пароль это личное!</p>
-
     <label class="field"><span>Почта</span><input type="email" id="email" placeholder="you@mail.ru"></label>
     <label class="field"><span>Пароль</span>
       <span class="pass-wrap"><input type="password" id="password" placeholder="Минимум 6 символов" oninput="checkPasswordStrength()">
@@ -817,8 +874,16 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   </div>
 </div>
  
-<!-- БОТ -->
+<!-- БОТ-ДРОН И ЧАТ -->
 <div id="bot-toggle-wrap">
+  <div class="tour-bubble" id="tour-bubble">
+    <div id="tour-text"></div>
+    <div class="tour-btns">
+      <button class="tour-btn tour-btn-skip" onclick="endTour()">Пропустить</button>
+      <button class="tour-btn tour-btn-next" onclick="nextTourStep()">Дальше ➔</button>
+    </div>
+  </div>
+
   <button id="bot-toggle" onclick="toggleBot()" aria-label="Открыть помощника StaroBot">
     <div class="bot-robot">
       <span class="bot-antenna"></span>
@@ -828,15 +893,19 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
       </div>
       <span class="bot-arm bot-arm-l"></span>
       <span class="bot-arm bot-arm-r"></span>
+      <div class="bot-thruster"></div> <!-- Плазменный след -->
     </div>
   </button>
 </div>
+
 <div id="bot">
-  <header>StaroBot<button onclick="toggleBot()" aria-label="Закрыть">×</button></header>
+  <header>StaroBot ✦<button onclick="toggleBot()" aria-label="Закрыть">×</button></header>
   <div id="bot-log"></div>
   <form id="bot-form" onsubmit="sendBotQuery(event)">
-    <input id="bot-input" placeholder="Сообщение или выберите кнопку…" autocomplete="off">
-    <button type="submit" aria-label="Отправить">↑</button>
+    <input id="bot-input" placeholder="Напишите или выберите..." autocomplete="off">
+    <button type="submit" aria-label="Отправить">
+      <i class="fa-solid fa-paper-plane"></i>
+    </button>
   </form>
 </div>
  
@@ -913,6 +982,7 @@ function switchPage(page){
   }
   closeMenu();
 }
+
 function toggleMenu(){
   const open = document.getElementById('burger').getAttribute('aria-expanded') === 'true';
   open ? closeMenu() : openMenu();
@@ -931,12 +1001,11 @@ function closeMenu(){
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape'){ closeMenu(); document.querySelectorAll('.modal.open').forEach(m => m.classList.remove('open')); }});
 window.addEventListener('resize', () => { if (window.innerWidth > 720) closeMenu(); });
- 
 function openModal(id){ document.getElementById(id).classList.add('open'); }
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }));
  
-/* ======================= СЧЁТЧИКИ НА ГЛАВНОЙ ======================= */
+/* ======================= СЧЁТЧИКИ ======================= */
 (function countUp(){
   document.querySelectorAll('.stat-value').forEach((el, i) => {
     const target = parseFloat(el.dataset.target), dec = parseInt(el.dataset.dec || 0), suf = el.dataset.suffix || '';
@@ -960,9 +1029,7 @@ function initWatchers(){
   const passEl = document.getElementById('password');
   const msg = document.getElementById('watchers-msg');
   if (!watchers.length || !modal) return;
- 
   let covering = false, lastX = null, lastY = null;
- 
   function gazeAtPoint(x, y){
     lastX = x; lastY = y;
     watchers.forEach(w => {
@@ -981,7 +1048,6 @@ function initWatchers(){
     box.classList.toggle('active', !on);
     if (msg) msg.classList.toggle('show', on);
   }
- 
   document.addEventListener('mousemove', e => {
     if (!modal.classList.contains('open') || covering) return;
     gazeAtPoint(e.clientX, e.clientY);
@@ -991,8 +1057,6 @@ function initWatchers(){
     passEl.addEventListener('focus', () => coverEyes(true));
     passEl.addEventListener('blur', () => coverEyes(false));
   }
- 
-  // лёгкое моргание вразнобой
   watchers.forEach((w, i) => {
     const eyes = w.querySelectorAll('.w-eye');
     setInterval(() => {
@@ -1254,7 +1318,6 @@ function initApp(){
     renderNotes();
     if (document.getElementById('page-reports').classList.contains('active')) renderReports();
     
-    // Отзывы теперь грузятся из общей базы
     fetchGlobalReviews();
   } catch(err){
     console.error(err);
@@ -1426,7 +1489,6 @@ function openNoteModal(){
   document.getElementById('note-date-input').value = '';
   openModal('note-modal');
 }
-
 function exportToCal(title, text, dateStr){
   const t = decodeURIComponent(title);
   const x = decodeURIComponent(text);
@@ -1438,7 +1500,6 @@ function exportToCal(title, text, dateStr){
   const url = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(t) + '&details=' + encodeURIComponent(x) + '&dates=' + start + '/' + end;
   window.open(url, '_blank');
 }
-
 function saveNewNote(){
   const t = document.getElementById('note-title-input').value.trim();
   const x = document.getElementById('note-text-input').value.trim();
@@ -1447,19 +1508,16 @@ function saveNewNote(){
   getActiveGroupData().notesList.push({ id: Date.now(), title: t, text: x, eventDate: d, isPinned: false });
   saveToCloud(true); renderNotes(); closeModal('note-modal'); showToast('Карточка добавлена', 'success');
 }
-
 function togglePin(id){
   const list = getActiveGroupData().notesList;
   const n = list.find(n => n.id === id); if (n) n.isPinned = !n.isPinned;
   saveToCloud(true); renderNotes();
 }
-
 function deleteNote(id){
   const g = getActiveGroupData();
   g.notesList = g.notesList.filter(n => n.id !== id);
   saveToCloud(true); renderNotes(); showToast('Карточка удалена', 'success');
 }
-
 function renderNotes(){
   const box = document.getElementById('notes-grid-container'); box.innerHTML = '';
   const list = (getActiveGroupData().notesList || []).slice()
@@ -1488,9 +1546,7 @@ function renderNotes(){
  
 /* ======================= ОТЧЁТЫ ======================= */
 function renderReports(){ renderCuratorTable(); renderGroupStats(); initSubjects(); }
- 
 function tone(p){ return p >= 80 ? 'var(--ok)' : (p < 50 ? 'var(--bad)' : '#fff'); }
- 
 function renderCuratorTable(){
   const g = getActiveGroupData();
   const target = parseInt(document.getElementById('curator-week-select').value) || 1;
@@ -1542,7 +1598,6 @@ function renderCuratorTable(){
     tbody.appendChild(tr);
   });
 }
- 
 function renderGroupStats(){
   const g = getActiveGroupData();
   const tbody = document.getElementById('stats-body'); tbody.innerHTML = '';
@@ -1578,7 +1633,6 @@ function renderGroupStats(){
     tbody.appendChild(tr);
   });
 }
- 
 function initSubjects(){
   const g = getActiveGroupData();
   const grid = document.getElementById('subject-grid'); grid.innerHTML = '';
@@ -1626,7 +1680,6 @@ function buildSubjectStats(subject){
     tbody.appendChild(tr);
   });
 }
- 
 function exportCuratorCSV(){
   if (!currentExportData.length) return showToast('Нечего выгружать — сначала заполните журнал.');
   let csv = '\uFEFFСмотр группы ' + userData.currentGroup + '\nПо неделю: ' +
@@ -1641,67 +1694,171 @@ function exportCuratorCSV(){
   a.download = 'Смотр_' + userData.currentGroup + '.csv';
   a.click();
 }
- 
-/* ======================= БОТ ======================= */
+
+/* ======================= БОТ ЭКСКУРСИЯ (FLYING DRONE) ======================= */
+const tourSteps = [
+  {
+    text: "Привет! 👋 Я твой кибер-помощник StaroBot. Давай я проведу быструю экскурсию по твоему новому журналу!",
+    page: 'landing', target: null
+  },
+  {
+    text: "Это главная навигация. Отсюда можно переходить между журналом, настройками группы и отчётами.",
+    page: 'landing', target: '#tour-nav'
+  },
+  {
+    text: "Тут настраивается расписание. Введи студентов и расписание на чётную/нечётную неделю всего один раз.",
+    page: 'group', target: '#group-editor'
+  },
+  {
+    text: "В журнале магия! Пары и даты подставляются сами. Кликай чекбоксы и пиши долги студентов прямо в строку.",
+    page: 'journal', target: '#tour-journal-schedule'
+  },
+  {
+    text: "А здесь в пару кликов собирается смотр для куратора. Можно выгрузить всё в CSV-файл.",
+    page: 'reports', target: '#tour-reports-csv'
+  },
+  {
+    text: "Я всегда буду здесь внизу! Жми на меня, если нужно узнать расписание, долги студентов или какая сейчас неделя. Удачи! 🚀",
+    page: 'landing', target: 'home', isEnd: true
+  }
+];
+
+let currentTourStep = 0;
+
 function checkFirstVisit() {
-  if (!localStorage.getItem('bot_onboarded_v2')) {
-    const toggle = document.getElementById('bot-toggle');
-    // Включаем махание и прыгание
-    setTimeout(() => { toggle.classList.add('bot-attention'); }, 1500);
-    
-    // Бот сам открывается и представляется
-    setTimeout(() => {
-      if(!document.getElementById('bot').classList.contains('open')){
-        toggleBot();
-        document.getElementById('bot-log').innerHTML = ''; 
-        addMsg('Привет! 👋 Ты попал на сайт StaroSTATT — твой электронный журнал старосты.\n\nЯ StaroBot, твой личный помощник. Давай я быстро покажу, что тут есть и как всё работает!', 'bot', ['Что ты умеешь?', 'Открой журнал', 'Покажи долги']);
-      }
-      localStorage.setItem('bot_onboarded_v2', 'true');
-    }, 4500);
+  if (!localStorage.getItem('bot_tour_v3')) {
+    setTimeout(startTour, 1000);
   } else {
-    // Если уже заходили - просто добавляем стартовое сообщение в закрытом виде
+    // Обычный старт
     document.getElementById('bot-log').innerHTML = ''; 
-    addMsg('Привет! Я ваш помощник StaroBot ✦\nЖмите на кнопки или пишите сообщение, если нужна помощь.', 'bot', ['Расписание', 'Дедлайны', 'Долги студентов', 'Какая неделя?']);
+    addMsg('Привет! Я StaroBot ✦\nГотов подсказать расписание, дедлайны или долги.', 'bot', ['Расписание', 'Дедлайны', 'Долги студентов', 'Какая неделя?']);
   }
 }
 
-function toggleBot(){
-  const botEl = document.getElementById('bot');
-  const toggle = document.getElementById('bot-toggle');
-  botEl.classList.toggle('open');
-  toggle.classList.remove('bot-attention'); // выключаем махание
-  hideBotTip();
-}
-function hideBotTip(){
-  const tip = document.getElementById('bot-tip');
-  if (tip) tip.classList.remove('show');
+function startTour() {
+  currentTourStep = 0;
+  document.getElementById('tour-overlay').classList.add('show');
+  
+  const botWrap = document.getElementById('bot-toggle-wrap');
+  botWrap.classList.add('flying');
+  
+  if(document.getElementById('bot').classList.contains('open')) {
+    toggleBot();
+  }
+  
+  goToTourStep(0);
+  localStorage.setItem('bot_tour_v3', 'true');
 }
 
-(function initBotRobot(){
+function nextTourStep() {
+  currentTourStep++;
+  if (currentTourStep >= tourSteps.length) { endTour(); return; }
+  goToTourStep(currentTourStep);
+}
+
+function goToTourStep(index) {
+  const step = tourSteps[index];
+  const botWrap = document.getElementById('bot-toggle-wrap');
+  const bubble = document.getElementById('tour-bubble');
+  
+  // Убираем старую подсветку
+  document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+  bubble.classList.remove('show');
+  
+  // Переключаем страницу
+  switchPage(step.page);
+  
+  setTimeout(() => {
+    if (step.target === null) {
+      // Летим в центр
+      botWrap.style.left = '50vw';
+      botWrap.style.top = '50vh';
+    } else if (step.target === 'home') {
+      // Летим домой (на место)
+      botWrap.style.left = '';
+      botWrap.style.top = '';
+      botWrap.classList.remove('flying');
+    } else {
+      // Летим к элементу
+      const targetEl = document.querySelector(step.target);
+      if (targetEl) {
+        // Подкручиваем скролл если надо (на мобилках)
+        if(window.innerWidth <= 720) targetEl.scrollIntoView({behavior: 'smooth', block: 'center'});
+        
+        setTimeout(() => {
+          const rect = targetEl.getBoundingClientRect();
+          let targetX = rect.left + rect.width / 2;
+          let targetY = rect.bottom + 80;
+          
+          // Ограничители чтобы не вылетал за края
+          if (targetX < 150) targetX = 150;
+          if (targetX > window.innerWidth - 150) targetX = window.innerWidth - 150;
+          if (targetY > window.innerHeight - 100) targetY = window.innerHeight - 100;
+          
+          botWrap.style.left = targetX + 'px';
+          botWrap.style.top = targetY + 'px';
+          targetEl.classList.add('tour-highlight');
+        }, window.innerWidth <= 720 ? 300 : 0);
+      }
+    }
+
+    setTimeout(() => {
+      document.getElementById('tour-text').innerHTML = step.text;
+      if (step.isEnd) {
+        document.querySelector('.tour-btn-next').textContent = 'Закончить';
+        document.querySelector('.tour-btn-skip').style.display = 'none';
+      } else {
+        document.querySelector('.tour-btn-next').textContent = 'Дальше ➔';
+        document.querySelector('.tour-btn-skip').style.display = 'block';
+      }
+      bubble.classList.add('show');
+    }, 400); // Ждем пока долетит
+  }, 100); // Ждем отрисовку страницы
+}
+
+function endTour() {
+  const botWrap = document.getElementById('bot-toggle-wrap');
+  const bubble = document.getElementById('tour-bubble');
+  
+  document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+  document.getElementById('tour-overlay').classList.remove('show');
+  bubble.classList.remove('show');
+  
+  botWrap.style.left = '';
+  botWrap.style.top = '';
+  botWrap.classList.remove('flying');
+  
+  // Добавляем стартовое сообщение в чат
+  document.getElementById('bot-log').innerHTML = ''; 
+  addMsg('Экскурсия завершена! Если что-то забудешь — я всегда тут.', 'bot', ['Что ты умеешь?', 'Открой журнал', 'Покажи долги']);
+}
+
+/* ======================= ЛОГИКА ЧАТА БОТА ======================= */
+function toggleBot(){
+  const botEl = document.getElementById('bot');
+  botEl.classList.toggle('open');
+  document.getElementById('tour-bubble').classList.remove('show');
+}
+
+(function initBotEyes(){
   const btn = document.getElementById('bot-toggle');
   const pupils = document.querySelectorAll('#bot-toggle .bot-pupil');
-  const tip = document.getElementById('bot-tip');
   if (!btn) return;
   document.addEventListener('mousemove', e => {
     const r = btn.getBoundingClientRect();
     const cx = r.left + r.width / 2, cy = r.top + r.height / 2 - 8;
     let dx = e.clientX - cx, dy = e.clientY - cy;
-    const dist = Math.hypot(dx, dy) || 1, max = 2.4;
+    const dist = Math.hypot(dx, dy) || 1, max = 2;
     dx = (dx / dist) * Math.min(max, dist / 20);
     dy = (dy / dist) * Math.min(max, dist / 20);
     pupils.forEach(p => { p.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px)'; });
   });
-  if (tip && !localStorage.getItem('bot_onboarded_v2')){
-    setTimeout(() => tip.classList.add('show'), 2200);
-    setTimeout(() => hideBotTip(), 8000);
-  }
 })();
 
 function sendBotAction(text) {
   addMsg(text, 'me');
   setTimeout(() => processBotQuery(text.toLowerCase()), 350);
 }
-
 function sendBotQuery(e){
   e.preventDefault();
   const input = document.getElementById('bot-input');
@@ -1709,43 +1866,35 @@ function sendBotQuery(e){
   addMsg(text, 'me'); input.value = '';
   setTimeout(() => processBotQuery(text.toLowerCase()), 350);
 }
-
 function processBotQuery(q) {
   const res = answer(q);
   addMsg(res.text, 'bot', res.buttons);
 }
-
 function addMsg(text, cls, buttons = []){
   const log = document.getElementById('bot-log');
   const d = document.createElement('div'); 
   d.className = 'msg ' + cls; 
-  
   let html = text.replace(/\n/g, '<br>');
   if (buttons && buttons.length > 0) {
     html += '<div style="margin-top:8px;">';
     buttons.forEach(b => {
-      // Исключаем кавычки из обработчика
       const cleanText = b.replace(/'/g, "\\'");
       html += `<button class="bot-action-btn" onclick="sendBotAction('${cleanText}')">${b}</button>`;
     });
     html += '</div>';
   }
-  
   d.innerHTML = html;
   log.appendChild(d); 
   log.scrollTop = log.scrollHeight;
 }
-
 function answer(q){
   const g = getActiveGroupData();
-  
   if (q.includes('привет') || q.includes('помощь') || q.includes('умеешь') || q.includes('функции')) {
     return {
       text: 'Я умею многое! Выберите, что вам подсказать:',
       buttons: ['Расписание', 'Какая неделя?', 'Долги студентов', 'Сколько человек в группе?', 'Дедлайны', 'Где скачать CSV?']
     };
   }
-
   if (q.includes('спасибо') || q.includes('благодар')) return { text: 'Всегда пожалуйста! Обращайтесь.', buttons: ['Что ты умеешь?'] };
   
   if (q.includes('недел')) {
@@ -1754,16 +1903,13 @@ function answer(q){
     const type = (w % 2 !== 0) ? 'нечётная (знаменатель)' : 'чётная (числитель)';
     return { text: 'Сейчас ' + w + '-я учебная неделя, ' + type + '.', buttons: ['А пары какие?'] };
   }
-
   if (q.includes('человек') || q.includes('студент') && !q.includes('долг')) return { text: 'В текущей группе ' + g.students.length + ' человек.', buttons: ['Покажи статистику'] };
   if ((q.includes('открой') || q.includes('перейди')) && q.includes('групп')){ switchPage('group'); return { text: 'Открываю страницу группы.', buttons: [] }; }
-  
   if (q.includes('аватар')) return { text: 'Аватар меняется через профиль в правом верхнем углу — кнопка «Сменить аватар».', buttons: [] };
   if (q.includes('csv') || q.includes('экспорт') || q.includes('скач')) {
     switchPage('reports');
     return { text: 'Я открыл вам раздел отчётов. Выгрузка смотра — кнопка «Скачать CSV» прямо над таблицей.', buttons: [] };
   }
-
   if (q.includes('статистик') || q.includes('процент посещ')) {
     if (!g.students.length) return { text: 'Пока некого считать — добавьте студентов.', buttons: ['Открыть настройки группы'] };
     let totalLec = 0, totalSem = 0;
@@ -1790,7 +1936,6 @@ function answer(q){
     const avg = g.students.length ? Math.round(sumP / g.students.length) : 0;
     return { text: 'Средняя посещаемость группы за семестр — примерно ' + avg + '%.', buttons: ['Подробный отчёт'] };
   }
-
   if (q.includes('долг') || q.includes('заметк')) {
     let debts = [];
     g.students.forEach((name, i) => {
@@ -1805,13 +1950,11 @@ function answer(q){
     if (debts.length === 0) return { text: 'Никаких долгов и пометок в журнале пока нет. Группа молодец!', buttons: ['Открыть журнал'] };
     return { text: 'Вот что я нашёл в журнале:\n' + debts.join('\n'), buttons: ['Открыть журнал'] };
   }
-
   if (q.includes('дедлайн') || q.includes('карточк') || q.includes('инфо')) {
     if (!g.notesList || g.notesList.length === 0) return { text: 'У вас пока нет карточек и дедлайнов на доске.', buttons: ['Перейти к инфо'] };
     const notes = g.notesList.map(n => '• ' + n.title + (n.eventDate ? ' (до ' + new Date(n.eventDate).toLocaleDateString('ru-RU') + ')' : '')).join('\n');
     return { text: 'Ваши записи на доске:\n' + notes, buttons: ['Перейти к инфо'] };
   }
-
   if (q.includes('расписан') || q.includes('пары')){
     const d = new Date(), codes = ['sun','mon','tue','wed','thu','fri','sat'], code = codes[d.getDay()];
     if (code === 'sun') return { text: 'Сегодня воскресенье — пар нет. Можно отдыхать!', buttons: ['Какая неделя?'] };
@@ -1820,13 +1963,11 @@ function answer(q){
     if (!lessons.length) return { text: 'На сегодня пар в расписании нет.', buttons: ['Открыть журнал'] };
     return { text: 'Сегодня по расписанию:\n' + lessons.map(l => '· ' + l.text).join('\n'), buttons: ['Открыть журнал'] };
   }
-
   if (q.includes('отчет') || q.includes('отчёт') || q.includes('куратор') || q.includes('подробный')){ switchPage('reports'); return { text: 'Открыл отчёты. Тут полная статистика!', buttons: ['Скачать CSV'] }; }
   if (q.includes('журнал')){ switchPage('journal'); return { text: 'Журнал открыт. Можно отмечать группу!', buttons: ['Покажи долги'] }; }
   if (q.includes('отзыв')){ switchPage('reviews'); return { text: 'Раздел отзывов открыт. Буду рад обратной связи!', buttons: [] }; }
   if (q.includes('настрой')){ switchPage('group'); return { text: 'Открыл настройки группы.', buttons: [] }; }
   if (q.includes('инфо')){ switchPage('notes'); return { text: 'Открыл доску дедлайнов.', buttons: [] }; }
-
   return { 
     text: 'Я пока не знаю такой команды. Но вот что могу предложить:', 
     buttons: ['Расписание', 'Дедлайны', 'Долги студентов'] 
@@ -1835,112 +1976,62 @@ function answer(q){
 
 /* ======================= ГЛОБАЛЬНЫЕ ОТЗЫВЫ ======================= */
 let globalReviews = [];
-
-// Инициализация при старте приложения
 async function fetchGlobalReviews() {
   if (db) {
     try {
       const snapshot = await db.collection('global_reviews').orderBy('date', 'desc').get();
       globalReviews = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    } catch(e) {
-      loadLocalReviews();
-    }
-  } else {
-    loadLocalReviews();
-  }
+    } catch(e) { loadLocalReviews(); }
+  } else { loadLocalReviews(); }
   renderReviews();
 }
-
 function loadLocalReviews() {
   try { globalReviews = JSON.parse(localStorage.getItem('ss_global_reviews') || '[]'); } 
   catch(e) { globalReviews = []; }
 }
-
 async function submitReview() {
   const nameInput = document.getElementById('review-name');
   const textInput = document.getElementById('review-text');
   const name = nameInput.value.trim();
   const text = textInput.value.trim();
-
   if (!name || !text) return showToast('Пожалуйста, заполните имя и текст отзыва.');
-
-  const newReview = {
-    name: name,
-    text: text,
-    date: new Date().toISOString(),
-    uid: currentUser ? currentUser.uid : 'anon'
-  };
-
-  nameInput.value = '';
-  textInput.value = '';
-
+  const newReview = { name: name, text: text, date: new Date().toISOString(), uid: currentUser ? currentUser.uid : 'anon' };
+  nameInput.value = ''; textInput.value = '';
   if (db) {
     try {
       const docRef = await db.collection('global_reviews').add(newReview);
-      newReview.id = docRef.id;
-      globalReviews.unshift(newReview); // добавляем в начало локального массива
-    } catch(e) {
-      saveLocalReview(newReview);
-    }
-  } else {
-    saveLocalReview(newReview);
-  }
-  
-  renderReviews();
-  showToast('Отзыв успешно добавлен', 'success');
+      newReview.id = docRef.id; globalReviews.unshift(newReview); 
+    } catch(e) { saveLocalReview(newReview); }
+  } else { saveLocalReview(newReview); }
+  renderReviews(); showToast('Отзыв успешно добавлен', 'success');
 }
-
 function saveLocalReview(review) {
-  review.id = Date.now().toString();
-  globalReviews.unshift(review);
+  review.id = Date.now().toString(); globalReviews.unshift(review);
   localStorage.setItem('ss_global_reviews', JSON.stringify(globalReviews));
 }
-
 function renderReviews() {
   const box = document.getElementById('reviews-list');
-  if (!box) return;
-  box.innerHTML = '';
-  
+  if (!box) return; box.innerHTML = '';
   if (!globalReviews || !globalReviews.length) {
-    box.innerHTML = '<div class="card" style="grid-column:1/-1; margin:0;"><div class="empty">Пока нет ни одного отзыва. Будьте первыми!</div></div>';
-    return;
+    box.innerHTML = '<div class="card" style="grid-column:1/-1; margin:0;"><div class="empty">Пока нет ни одного отзыва. Будьте первыми!</div></div>'; return;
   }
-
-  // globalReviews уже отсортированы по убыванию даты
   globalReviews.forEach(r => {
-    const el = document.createElement('article');
-    el.className = 'note'; 
-    el.innerHTML = `
-      <h4>${r.name}</h4>
-      <p>${r.text}</p>
-      <footer>
-        <div style="display:flex;align-items:center">
-          <span>${new Date(r.date).toLocaleDateString('ru-RU')}</span>
-        </div>
+    const el = document.createElement('article'); el.className = 'note'; 
+    el.innerHTML = `<h4>${r.name}</h4><p>${r.text}</p><footer>
+        <div style="display:flex;align-items:center"><span>${new Date(r.date).toLocaleDateString('ru-RU')}</span></div>
         ${ (currentUser && currentUser.uid === r.uid) || (!currentUser && r.uid === 'anon') ? `<button class="btn-danger" onclick="deleteReview('${r.id}')">Удалить</button>` : '' }
-      </footer>
-    `;
+      </footer>`;
     box.appendChild(el);
   });
 }
-
 async function deleteReview(id) {
   if (!confirm('Точно удалить этот отзыв?')) return;
-  
   if (db) {
-    try {
-      await db.collection('global_reviews').doc(id).delete();
-      globalReviews = globalReviews.filter(r => r.id !== id);
-    } catch(e) {
-      deleteLocalReview(id);
-    }
-  } else {
-    deleteLocalReview(id);
-  }
-  renderReviews();
-  showToast('Отзыв удален', 'success');
+    try { await db.collection('global_reviews').doc(id).delete(); globalReviews = globalReviews.filter(r => r.id !== id);
+    } catch(e) { deleteLocalReview(id); }
+  } else { deleteLocalReview(id); }
+  renderReviews(); showToast('Отзыв удален', 'success');
 }
-
 function deleteLocalReview(id) {
   globalReviews = globalReviews.filter(r => r.id !== id);
   localStorage.setItem('ss_global_reviews', JSON.stringify(globalReviews));
@@ -1954,7 +2045,6 @@ if ('serviceWorker' in navigator){
     });
   });
 }
-
 </script>
 </body>
 </html>
