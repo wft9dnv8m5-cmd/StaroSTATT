@@ -45,10 +45,10 @@
   --font-display:"BubbledotICG-FinePos","Geist Pixel Circle",monospace;
   
   /* Apple Liquid Glass Colors & Effects */
-  --liquid-bg: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.01) 100%);
-  --liquid-border: 1px solid rgba(255, 255, 255, 0.18);
-  --liquid-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.25);
-  --liquid-blur: blur(40px) saturate(200%);
+  --liquid-bg: rgba(35, 35, 40, 0.75);
+  --liquid-border: 1px solid rgba(255, 255, 255, 0.15);
+  --liquid-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.2);
+  --liquid-blur: blur(24px) saturate(180%);
   --neon-green: #00ff66;
 }
 *,*::before,*::after{box-sizing:border-box}
@@ -391,19 +391,18 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 @keyframes toastIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
 @keyframes toastOut{to{opacity:0}}
  
-/* ---------- БОТ APPLE LIQUID GLASS (Умный Адаптив & Центрирование) ---------- */
+/* ---------- БОТ APPLE LIQUID GLASS (Адаптив & Экскурсия) ---------- */
 #tour-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 9997; 
-  backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); opacity: 0; pointer-events: none; transition: 0.5s ease;
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 9997; 
+  opacity: 0; pointer-events: none; transition: 0.5s ease;
 }
 #tour-overlay.show { opacity: 1; pointer-events: auto; }
 
-/* Умная подсветка с неоновой заливкой */
+/* Подсветка выводит элемент поверх затемнения */
 .tour-highlight {
   position: relative !important; z-index: 9998 !important;
-  box-shadow: 0 0 0 3px var(--neon-green), 0 0 35px rgba(0, 255, 102, 0.4) !important;
+  box-shadow: 0 0 0 3px var(--neon-green), 0 0 30px rgba(0, 255, 102, 0.5) !important;
   border-radius: inherit; transition: box-shadow 0.3s ease;
-  background: rgba(0, 255, 102, 0.08) !important;
 }
 
 #bot-toggle-wrap {
@@ -418,8 +417,9 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 /* Умный пузырь в стиле Apple iMessage (Сообщение с хвостиком) */
 .tour-bubble {
   position: absolute; bottom: calc(100% + 15px);
-  background: var(--liquid-bg); border: var(--liquid-border);
+  background: rgba(35, 35, 40, 0.95); /* Менее прозрачно, чтобы текст читался идеально */
   backdrop-filter: var(--liquid-blur); -webkit-backdrop-filter: var(--liquid-blur);
+  border: var(--liquid-border);
   box-shadow: var(--liquid-shadow);
   color: #fff; padding: 18px; 
   width: 280px; text-align: left;
@@ -429,14 +429,15 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 
 .tour-bubble.show { opacity: 1 !important; pointer-events: auto !important; }
 
-/* Варианты позиционирования пузыря (с правильными галочками) */
+/* Варианты позиционирования пузыря (с правильными галочками-указателями) */
 .bubble-center {
   border-radius: 18px; left: 50%; transform: translateX(-50%) scale(0.9); transform-origin: bottom center;
 }
 .bubble-center.show { transform: translateX(-50%) scale(1) !important; }
 .bubble-center::after {
   content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-  border: 10px solid transparent; border-top-color: rgba(30, 30, 35, 0.8); /* Ближайший цвет к liquid */
+  border-left: 10px solid transparent; border-right: 10px solid transparent;
+  border-top: 10px solid rgba(35, 35, 40, 0.95);
 }
 
 .bubble-left {
@@ -445,7 +446,8 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .bubble-left.show { transform: scale(1) !important; }
 .bubble-left::after {
   content: ''; position: absolute; top: 100%; left: 30px; transform: translateX(-50%);
-  border: 10px solid transparent; border-top-color: rgba(30, 30, 35, 0.8);
+  border-left: 10px solid transparent; border-right: 10px solid transparent;
+  border-top: 10px solid rgba(35, 35, 40, 0.95);
 }
 
 .bubble-right {
@@ -454,7 +456,8 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .bubble-right.show { transform: scale(1) !important; }
 .bubble-right::after {
   content: ''; position: absolute; top: 100%; right: 30px; transform: translateX(50%);
-  border: 10px solid transparent; border-top-color: rgba(30, 30, 35, 0.8);
+  border-left: 10px solid transparent; border-right: 10px solid transparent;
+  border-top: 10px solid rgba(35, 35, 40, 0.95);
 }
 
 #tour-text { font-size: 14px; line-height: 1.5; margin-bottom: 14px; font-weight:500; font-family:-apple-system, sans-serif;}
@@ -1229,7 +1232,7 @@ function saveToCloud(silent){
   if (currentUser && db){
     db.collection('users').doc(currentUser.uid).set(userData)
       .then(() => { if (!silent) showToast('Журнал сохранён в облаке', 'success'); })
-      .catch(() => showToast('Облако недоступно. Данные сохранены в браузере.'));
+      .catch(() => showToast('Облако недоступно. Данные сохранены в бра браузерах.'));
   }
   try{
     localStorage.setItem('ss_all_groups', JSON.stringify(userData.groups));
@@ -1615,22 +1618,22 @@ function exportCuratorCSV(){
 }
 
 /* ======================= УМНАЯ СИСТЕМА ПЕРЕДВИЖЕНИЯ РОБОТА ======================= */
-let botState = 'idle'; // idle, tour, chat, easter
+let botState = 'idle'; 
 let botX = 0;
 let botY = 22;
 let idleTimer;
 
-// Инициализация при загрузке (чтобы бот сразу стоял на месте)
+// Инициализация при загрузке (робот сразу стоит на месте)
 function initBotPosition() {
     const wrap = document.getElementById('bot-toggle-wrap');
     botX = window.innerWidth - 60; 
     botY = 22;
-    wrap.style.transitionDuration = '0s'; // Мгновенно ставим на место
+    wrap.style.transitionDuration = '0s'; 
     wrap.style.left = botX + 'px';
     wrap.style.bottom = botY + 'px';
     setTimeout(() => {
         wrap.style.opacity = '1';
-        wrap.style.transitionDuration = ''; // Возвращаем анимации
+        wrap.style.transitionDuration = ''; 
     }, 100);
 }
 initBotPosition();
@@ -1655,7 +1658,6 @@ function walkBotTo(targetX, targetY, callback) {
     const maxY = window.innerHeight - 180; 
     targetY = Math.max(minY, Math.min(targetY, maxY));
 
-    // Поворачиваем лицо в нужную сторону
     if (targetX < botX - 5) {
         wrap.classList.add('bot-flipped');
     } else if (targetX > botX + 5) {
@@ -1673,7 +1675,6 @@ function walkBotTo(targetX, targetY, callback) {
     botX = targetX;
     botY = targetY;
 
-    // Умное позиционирование пузыря (только если не тур)
     if (botState !== 'tour') {
         bubble.className = 'tour-bubble'; 
         if (targetX < 160) {
@@ -1692,7 +1693,7 @@ function walkBotTo(targetX, targetY, callback) {
     }, duration);
 }
 
-/* --- Логика патрулирования --- */
+/* --- Логика патрулирования (гуляет строго по низу) --- */
 function startIdlePatrol() {
     clearTimeout(idleTimer);
     if (botState !== 'idle') return;
@@ -1748,8 +1749,9 @@ if (auth){
   }).catch(() => { clearTimeout(authTimer); loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); });
 } else { clearTimeout(authTimer); loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); }
 
+// Проверка первого визита
 function checkFirstVisit() {
-  if (localStorage.getItem('bot_tour_completed_final_v2') !== 'true') {
+  if (localStorage.getItem('bot_tour_completed_final_v3') !== 'true') {
     setTimeout(startTour, 1000);
   } else {
     botState = 'idle';
@@ -1787,10 +1789,11 @@ function goToTourStep(index) {
   setTimeout(() => {
     // В туре робот всегда бежит строго в центр экрана
     let tX = window.innerWidth / 2;
-    let tY = window.innerHeight / 2 - 40; // Чуть ниже центра, чтобы пузырь был идеально по середине
+    let tY = window.innerHeight / 2 - 40; 
 
     const targetEl = step.target ? document.querySelector(step.target) : null;
     
+    // Если есть таргет на мобилке - просто плавно скроллим к нему
     if (targetEl && window.innerWidth <= 720) {
         targetEl.scrollIntoView({behavior: 'smooth', block: 'center'});
     }
@@ -1798,7 +1801,7 @@ function goToTourStep(index) {
     walkBotTo(tX, tY, () => {
          if (targetEl) targetEl.classList.add('tour-highlight');
          
-         // Фиксируем центральный пузырь для обучения
+         // Фиксируем центральный пузырь для обучения (текст никогда не обрежется)
          bubble.className = 'tour-bubble bubble-center show'; 
          
          document.getElementById('tour-text').innerHTML = step.text;
@@ -1818,7 +1821,7 @@ function endTour() {
   document.getElementById('tour-overlay').classList.remove('show');
   document.getElementById('tour-bubble').classList.remove('show');
   
-  localStorage.setItem('bot_tour_completed_final_v2', 'true');
+  localStorage.setItem('bot_tour_completed_final_v3', 'true');
   
   walkBotTo(window.innerWidth - 60, 22, () => {
       botState = 'idle';
@@ -1979,7 +1982,7 @@ function answer(q){
         toggleBot(); 
         startTour(); 
     }, 600);
-    return { text: 'Без проблем! Начинаю экскурсию по сайту...', buttons: [] };
+    return { text: 'Без проблем! Выхожу в центр для проведения экскурсии по сайту...', buttons: [] };
   }
 
   if (q.includes('привет') || q.includes('помощь') || q.includes('умеешь') || q.includes('функции') || q.includes('дела')) {
