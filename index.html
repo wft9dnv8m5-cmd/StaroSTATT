@@ -68,7 +68,7 @@ body.app-mode .scrim{background:rgba(0,0,0,.74);backdrop-filter:blur(7px);-webki
   animation:scrimBreathe 12s ease-in-out infinite}
 @keyframes scrimBreathe{0%,100%{backdrop-filter:blur(7px)}50%{backdrop-filter:blur(9px)}}
  
-/* ---------- шапка ---------- */
+/* ---------- шапка и меню ---------- */
 .site-header{position:fixed;top:0;left:0;right:0;z-index:40;
   padding:clamp(14px,2.2vh,24px) clamp(14px,3vw,32px);
   animation:slideDown .7s cubic-bezier(.22,1,.36,1) both}
@@ -83,19 +83,16 @@ body.app-mode .scrim{background:rgba(0,0,0,.74);backdrop-filter:blur(7px);-webki
 .logo img{width:72%;height:72%;object-fit:contain}
 .logo-fallback{display:none;font-family:var(--font-display);font-size:18px;color:#111;line-height:1}
  
-.nav-pill{display:flex;align-items:center;justify-content:space-between;flex:1;max-width:480px;
+/* Овал при наведении (Magic Line) */
+.nav-pill{position:relative;display:flex;align-items:center;justify-content:space-between;flex:1;max-width:480px;
   height:clamp(44px,5.2vw,48px);padding:4px 8px;background:#fff;border-radius:999px;box-shadow:var(--nav-shadow)}
+.nav-hover-pill { position:absolute; top:4px; bottom:4px; border-radius:999px; background:rgba(0,0,0,.06); pointer-events:none; transition:all .3s cubic-bezier(.22,1,.36,1); opacity:0; z-index:0; }
 .nav-link{position:relative;padding:8px 10px;cursor:pointer;color:var(--nav-text);opacity:.5;
   font-weight:500;font-size:clamp(12px,1.35vw,14.5px);letter-spacing:-.01em;
-  transition:opacity .25s ease,transform .12s cubic-bezier(.22,1,.36,1);white-space:nowrap;
-  transform-origin:center bottom;will-change:transform}
-.nav-link:hover{opacity:.75}
+  transition:opacity .25s ease,transform .12s cubic-bezier(.22,1,.36,1);white-space:nowrap; z-index:1;}
+.nav-link:hover{opacity:.9}
 .nav-link:active{transform:scale(.96)}
-.nav-link::after{content:"";position:absolute;left:50%;bottom:5px;width:3px;height:3px;border-radius:1px;
-  background:#000;transform:translateX(-50%) scale(0);box-shadow:-5px 0 0 #000,5px 0 0 #000;
-  transition:transform .25s cubic-bezier(.22,1,.36,1)}
 .nav-link.active{opacity:1}
-.nav-link.active::after{transform:translateX(-50%) scale(1)}
  
 .signin{height:clamp(44px,5.2vw,48px);padding:0 clamp(16px,2vw,22px);border:none;border-radius:999px;
   background:var(--pill-dark);color:var(--sign-in-text);box-shadow:var(--nav-shadow);cursor:pointer;
@@ -107,7 +104,7 @@ body.app-mode .scrim{background:rgba(0,0,0,.74);backdrop-filter:blur(7px);-webki
   border:none;border-radius:999px;background:var(--pill-dark);color:var(--sign-in-text);
   box-shadow:var(--nav-shadow);cursor:pointer;font-size:13px;transition:.25s ease}
 .profile-pill:hover{background:#323234;color:#fff}
-.profile-avatar{width:34px;height:34px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:17px}
+.profile-avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:17px; background:linear-gradient(135deg, #f6d365, #fda085); box-shadow:0 2px 6px rgba(0,0,0,.3);}
 .profile-name{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dropdown{position:absolute;top:calc(100% + 10px);right:0;min-width:220px;padding:6px;z-index:60;
   background:rgba(18,18,20,.96);border:1px solid var(--card-border);border-radius:16px;
@@ -342,10 +339,10 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   border:1px solid rgba(255,122,122,.35);color:var(--bad);font-size:13px;line-height:1.45}
 .link-line{margin:14px 0 0;text-align:center;color:var(--muted);font-size:13px;cursor:pointer}
 .link-line:hover{color:#fff}
-.avatar-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
-.avatar-opt{width:52px;height:52px;display:grid;place-items:center;font-size:24px;border-radius:50%;cursor:pointer;
-  border:1px solid transparent;background:rgba(255,255,255,.05);transition:.2s}
-.avatar-opt:hover,.avatar-opt.selected{border-color:#fff;background:rgba(255,255,255,.14);transform:scale(1.06)}
+.avatar-grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.avatar-opt{width:56px;height:56px;display:grid;place-items:center;font-size:26px;border-radius:50%;cursor:pointer;
+  border:2px solid transparent; transition:.2s; box-shadow: 0 4px 10px rgba(0,0,0,.3);}
+.avatar-opt:hover,.avatar-opt.selected{border-color:#fff; transform:scale(1.08) translateY(-2px);}
  
 /* ---------- анонимы в окне входа ---------- */
 .watchers{display:flex;justify-content:center;gap:16px;margin:2px 0 6px}
@@ -398,6 +395,10 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   box-shadow:0 0 0 1px rgba(255,255,255,.2),0 10px 26px rgba(0,0,0,.4);
   transition:transform .25s ease}
 #bot-toggle:hover{transform:scale(1.06)}
+.bot-attention{animation:botBounce 1s infinite alternate, botGlow 2s infinite alternate;}
+@keyframes botBounce{from{transform:translateY(0);}to{transform:translateY(-12px);}}
+@keyframes botGlow{from{box-shadow:0 0 0 1px rgba(255,255,255,.2),0 10px 26px rgba(0,0,0,.4);}to{box-shadow:0 0 0 3px rgba(255,255,255,.6),0 14px 34px rgba(255,255,255,.3);}}
+
 .bot-robot{position:relative;width:100%;height:100%}
 .bot-antenna{position:absolute;top:2px;left:50%;width:4px;height:9px;border-radius:2px;background:#8b8377;transform:translateX(-50%)}
 .bot-antenna::before{content:"";position:absolute;top:-5px;left:50%;width:6px;height:6px;border-radius:50%;
@@ -412,10 +413,16 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   transform-origin:top center;animation:armWave 2.4s ease-in-out infinite}
 .bot-arm-l{left:2px;transform:rotate(14deg);animation-delay:0s}
 .bot-arm-r{right:2px;transform:rotate(-14deg);animation-delay:.35s}
+
+/* Агрессивное махание при привлечении внимания */
+.bot-attention .bot-arm-r { animation: armIntenseWave 0.5s ease-in-out infinite alternate; background:#fff;}
+@keyframes armIntenseWave{from{transform:rotate(-10deg);}to{transform:rotate(-130deg);}}
+
 @keyframes armWave{0%,100%{transform:rotate(14deg)}50%{transform:rotate(26deg)}}
 .bot-arm-r{animation-name:armWaveR}
 @keyframes armWaveR{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(-26deg)}}
-#bot{position:fixed;right:22px;bottom:96px;z-index:90;width:330px;max-width:calc(100vw - 36px);height:430px;
+
+#bot{position:fixed;right:22px;bottom:96px;z-index:90;width:330px;max-width:calc(100vw - 36px);height:450px;
   display:flex;flex-direction:column;overflow:hidden;background:rgba(16,16,18,.96);border:1px solid var(--card-border);
   border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,.55);backdrop-filter:blur(18px);
   opacity:0;transform:translateY(14px);pointer-events:none;transition:.28s cubic-bezier(.22,1,.36,1)}
@@ -427,6 +434,12 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .msg{max-width:86%;padding:10px 14px;border-radius:16px;font-size:13.5px;line-height:1.45;white-space:pre-wrap}
 .msg.bot{background:rgba(255,255,255,.07);border-bottom-left-radius:4px;align-self:flex-start}
 .msg.me{background:#fff;color:#000;border-bottom-right-radius:4px;align-self:flex-end}
+
+/* Кнопки в чате бота */
+.bot-action-btn { display:inline-block; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.25); border-radius:12px; padding:7px 12px; margin:6px 6px 0 0; color:#fff; cursor:pointer; font-size:12.5px; transition:0.2s; font-weight:500;}
+.bot-action-btn:hover { background:#fff; color:#000; transform:translateY(-1px); box-shadow:0 4px 12px rgba(255,255,255,.25);}
+.bot-action-btn:active { transform:scale(.95);}
+
 #bot-form{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid var(--card-border)}
 #bot-input{background:transparent;border:none;padding:8px 4px;font-size:13.5px;color:#fff}
 #bot-form button{background:none;border:none;color:#fff;font-size:16px;cursor:pointer}
@@ -478,6 +491,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     </button>
  
     <nav class="nav-pill" aria-label="Основная навигация">
+      <div class="nav-hover-pill"></div>
       <span class="nav-link active" data-page="landing" onclick="switchPage('landing')">Главная</span>
       <span class="nav-link" data-page="group" onclick="switchPage('group')">Группа</span>
       <span class="nav-link" data-page="journal" onclick="switchPage('journal')">Журнал</span>
@@ -740,7 +754,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 <section class="view app-view" id="page-reviews">
   <div class="page-head">
     <h1>Reviews</h1>
-    <p>Оставьте свой отзыв, пожелание или сообщите о баге. Ваши идеи помогают делать журнал лучше.</p>
+    <p>Ваши отзывы сохраняются для всех. Они помогают делать журнал лучше.</p>
   </div>
 
   <div class="card">
@@ -805,7 +819,6 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
  
 <!-- БОТ -->
 <div id="bot-toggle-wrap">
-  <div class="bot-tip" id="bot-tip">Нажми на меня — подскажу, что делать!</div>
   <button id="bot-toggle" onclick="toggleBot()" aria-label="Открыть помощника StaroBot">
     <div class="bot-robot">
       <span class="bot-antenna"></span>
@@ -820,11 +833,9 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 </div>
 <div id="bot">
   <header>StaroBot<button onclick="toggleBot()" aria-label="Закрыть">×</button></header>
-  <div id="bot-log">
-    <div class="msg bot">Привет! Я ваш помощник StaroBot ✦<br><br>Вот что я умею:<br>• Показывать <b>«расписание на сегодня»</b><br>• Подсказывать <b>«какая неделя»</b><br>• Напоминать <b>«дедлайны»</b><br>• Считать <b>«сколько студентов»</b> в группе<br>• Находить тех, у кого есть <b>«долги»</b> в журнале<br>• Показывать <b>«статистику»</b> посещаемости<br>• Подсказывать, как <b>«скачать CSV»</b> или сменить <b>«аватар»</b><br>• Открывать <b>«журнал»</b> или <b>«отчёт»</b><br><br>Чем могу помочь?</div>
-  </div>
-  <form id="bot-form" onsubmit="sendBot(event)">
-    <input id="bot-input" placeholder="Сообщение…" autocomplete="off">
+  <div id="bot-log"></div>
+  <form id="bot-form" onsubmit="sendBotQuery(event)">
+    <input id="bot-input" placeholder="Сообщение или выберите кнопку…" autocomplete="off">
     <button type="submit" aria-label="Отправить">↑</button>
   </form>
 </div>
@@ -846,31 +857,29 @@ function showToast(msg, type){
   setTimeout(() => { t.style.animation = 'toastOut .4s forwards'; setTimeout(() => t.remove(), 400); }, 4500);
 }
  
-/* ======================= НАВИГАЦИЯ ======================= */
-(function initDockNav(){
+/* ======================= НАВИГАЦИЯ (Magic Line) ======================= */
+function initMagicNav(){
   const pill = document.querySelector('.nav-pill');
   if (!pill) return;
+  const hoverPill = document.querySelector('.nav-hover-pill');
   const links = Array.from(pill.querySelectorAll('.nav-link'));
-  const maxDist = 78, maxScale = 1.42, restScale = 1;
  
-  function apply(px){
-    links.forEach(l => {
-      const r = l.getBoundingClientRect();
-      const cx = r.left + r.width / 2;
-      const dist = Math.abs(px - cx);
-      const t = Math.max(0, 1 - dist / maxDist);
-      const eased = t * t * (3 - 2 * t); // smoothstep — мягче на краях
-      const scale = restScale + (maxScale - restScale) * eased;
-      l.style.transform = 'scale(' + scale.toFixed(3) + ')';
-      l.style.zIndex = eased > 0.05 ? '2' : '1';
+  links.forEach(link => {
+    link.addEventListener('mouseenter', () => {
+      if(window.innerWidth <= 720) return; // Выключаем на мобилках
+      const rect = link.getBoundingClientRect();
+      const pillRect = pill.getBoundingClientRect();
+      hoverPill.style.width = rect.width + 'px';
+      hoverPill.style.left = (rect.left - pillRect.left) + 'px';
+      hoverPill.style.opacity = '1';
     });
-  }
-  function reset(){
-    links.forEach(l => { l.style.transform = ''; l.style.zIndex = ''; });
-  }
-  pill.addEventListener('mousemove', e => apply(e.clientX));
-  pill.addEventListener('mouseleave', reset);
-})();
+  });
+  pill.addEventListener('mouseleave', () => {
+    hoverPill.style.opacity = '0';
+  });
+}
+initMagicNav();
+
 function switchPage(page){
   const current = document.querySelector('.view.active');
   const target = document.getElementById('page-' + page);
@@ -983,7 +992,7 @@ function initWatchers(){
     passEl.addEventListener('blur', () => coverEyes(false));
   }
  
-  // лёгкое моргание вразнобой, пока глаза не закрыты руками
+  // лёгкое моргание вразнобой
   watchers.forEach((w, i) => {
     const eyes = w.querySelectorAll('.w-eye');
     setInterval(() => {
@@ -1010,12 +1019,12 @@ if (typeof firebase !== 'undefined'){
   try { firebase.initializeApp(firebaseConfig); auth = firebase.auth(); db = firebase.firestore(); }
   catch(e){ console.warn('Firebase init failed, работаем в гостевом режиме', e); }
 } else {
-  console.warn('Firebase SDK не загрузился (например, заблокирован сетью) — работаем в гостевом режиме, данные хранятся в браузере.');
+  console.warn('Firebase SDK не загрузился — работаем локально.');
 }
  
 /* ======================= ДАННЫЕ ======================= */
 const defaultData = {
-  currentGroup: "Моя группа", avatar: "😎", reviews: [],
+  currentGroup: "Моя группа", avatar: 0,
   groups: {
     "Моя группа": {
       students: [],
@@ -1056,8 +1065,7 @@ function loadLocalData(){
       userData = { 
         currentGroup: localStorage.getItem('ss_current_group') || Object.keys(legacy)[0],
         groups: legacy, 
-        avatar: localStorage.getItem('ss_avatar') || "😎",
-        reviews: JSON.parse(localStorage.getItem('ss_reviews') || '[]')
+        avatar: parseInt(localStorage.getItem('ss_avatar_index')) || 0,
       };
     } else { userData = JSON.parse(JSON.stringify(defaultData)); }
   } catch(e){ userData = JSON.parse(JSON.stringify(defaultData)); }
@@ -1067,16 +1075,14 @@ function saveToCloud(silent){
   if (currentUser && db){
     db.collection('users').doc(currentUser.uid).set(userData)
       .then(() => { if (!silent) showToast('Журнал сохранён в облаке', 'success'); })
-      .catch(() => showToast('Облако недоступно. Данные сохранены в браузере — проверьте правила Firestore.'));
+      .catch(() => showToast('Облако недоступно. Данные сохранены в браузере.'));
   }
   try{
     localStorage.setItem('ss_all_groups', JSON.stringify(userData.groups));
     localStorage.setItem('ss_current_group', userData.currentGroup);
-    localStorage.setItem('ss_avatar', userData.avatar || "😎");
-    localStorage.setItem('ss_reviews', JSON.stringify(userData.reviews || []));
+    localStorage.setItem('ss_avatar_index', userData.avatar || 0);
   } catch(e){}
-  const av = document.getElementById('profile-avatar');
-  if (av) av.textContent = userData.avatar || "😎";
+  applyAvatarUI();
 }
  
 /* ======================= АВТОРИЗАЦИЯ ======================= */
@@ -1103,10 +1109,7 @@ function toggleAuthMode(){
 function handleAuthError(error){
   let msg = error.message || 'Что-то пошло не так.';
   const c = error.code;
-  if (c === 'auth/operation-not-allowed') msg = 'В Firebase не включён вход по email — включите Email/Password в консоли.';
-  else if (c === 'auth/admin-restricted-operation') msg = 'Регистрация новых пользователей отключена в настройках проекта. Попросите владельца сайта включить «Enable create (sign-up)» в Firebase → Authentication → Settings.';
-  else if (c === 'auth/unauthorized-domain') msg = 'Домен сайта не добавлен в белый список Firebase.';
-  else if (c === 'auth/email-already-in-use') msg = 'Эта почта уже занята.';
+  if (c === 'auth/email-already-in-use') msg = 'Эта почта уже занята.';
   else if (c === 'auth/weak-password') msg = 'Нужен пароль минимум из шести символов.';
   else if (c === 'auth/invalid-email') msg = 'Проверьте формат почты.';
   else if (c === 'auth/invalid-credential' || c === 'auth/wrong-password' || c === 'auth/user-not-found') msg = 'Неверная почта или пароль.';
@@ -1158,7 +1161,7 @@ function setAuthUI(user){
   }
 }
  
-let bootTimer = setTimeout(() => { loadLocalData(); setAuthUI(null); initApp(); }, 1500);
+let bootTimer = setTimeout(() => { loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); }, 1500);
 if (auth){
   auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
     auth.onAuthStateChanged(user => {
@@ -1169,39 +1172,60 @@ if (auth){
         db.collection('users').doc(user.uid).get().then(doc => {
           if (doc.exists){ 
             userData = doc.data(); 
-            if (!userData.avatar) userData.avatar = "😎"; 
-            if (!userData.reviews) userData.reviews = [];
+            if (userData.avatar === undefined) userData.avatar = 0; 
           }
           else { loadLocalData(); saveToCloud(true); }
-          initApp();
-        }).catch(() => { loadLocalData(); initApp(); });
-      } else { currentUser = null; loadLocalData(); initApp(); }
+          initApp(); checkFirstVisit();
+        }).catch(() => { loadLocalData(); initApp(); checkFirstVisit(); });
+      } else { currentUser = null; loadLocalData(); initApp(); checkFirstVisit(); }
     });
-  }).catch(() => { clearTimeout(bootTimer); loadLocalData(); setAuthUI(null); initApp(); });
-} else { clearTimeout(bootTimer); loadLocalData(); setAuthUI(null); initApp(); }
+  }).catch(() => { clearTimeout(bootTimer); loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); });
+} else { clearTimeout(bootTimer); loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); }
  
-/* ======================= АВАТАР ======================= */
-const avatars = ["😎","🎓","👑","🦊","👽","🚀","💻","🔥","🦄","☕️","🐼","🌙"];
+/* ======================= КАСТОМНЫЙ АВАТАР ======================= */
+const avatarStyles = [
+  { emoji: "😎", bg: "linear-gradient(135deg, #f6d365 0%, #fda085 100%)" },
+  { emoji: "👽", bg: "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)" },
+  { emoji: "🦄", bg: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)" },
+  { emoji: "🦊", bg: "linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%)" },
+  { emoji: "🔥", bg: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)" },
+  { emoji: "🎓", bg: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" },
+  { emoji: "💻", bg: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)" },
+  { emoji: "👑", bg: "linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%)" },
+];
+
+function applyAvatarUI() {
+  const index = userData.avatar !== undefined ? userData.avatar : 0;
+  const style = avatarStyles[index] || avatarStyles[0];
+  const av = document.getElementById('profile-avatar');
+  if (av) {
+    av.textContent = style.emoji;
+    av.style.background = style.bg;
+  }
+}
+
 function openAvatarModal(e){
   if (e) e.stopPropagation();
   const grid = document.getElementById('avatar-grid'); grid.innerHTML = '';
-  avatars.forEach(a => {
+  avatarStyles.forEach((a, i) => {
     const d = document.createElement('div');
-    d.className = 'avatar-opt' + (userData.avatar === a ? ' selected' : '');
-    d.textContent = a; d.onclick = () => selectAvatar(a);
+    d.className = 'avatar-opt' + (userData.avatar === i ? ' selected' : '');
+    d.textContent = a.emoji;
+    d.style.background = a.bg;
+    d.onclick = () => selectAvatar(i);
     grid.appendChild(d);
   });
   document.getElementById('dropdown').classList.remove('show');
   openModal('avatar-modal');
 }
-function selectAvatar(a){ userData.avatar = a; saveToCloud(true); closeModal('avatar-modal'); initApp(); }
+function selectAvatar(i){ userData.avatar = i; saveToCloud(true); closeModal('avatar-modal'); }
  
 /* ======================= ИНИЦИАЛИЗАЦИЯ ======================= */
 function initApp(){
   try{
     const g = getActiveGroupData();
     document.getElementById('page-title').textContent = 'StaroSTATT — ' + (userData.currentGroup || '');
-    document.getElementById('profile-avatar').textContent = userData.avatar || "😎";
+    applyAvatarUI();
  
     const sel = document.getElementById('group-selector'); sel.innerHTML = '';
     Object.keys(userData.groups).forEach(name => {
@@ -1214,7 +1238,7 @@ function initApp(){
     document.getElementById('setup-group-name').value = userData.currentGroup || '';
     document.getElementById('setup-students').value = g.students.join('\n');
     
-    // Загрузка расписания в новый интерфейс
+    // Загрузка расписания
     ['even', 'odd'].forEach(wt => {
       ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'].forEach(day => {
         const arr = (g.schedule[wt] && g.schedule[wt][day]) ? g.schedule[wt][day] : [];
@@ -1229,7 +1253,9 @@ function initApp(){
     syncDateToDay();
     renderNotes();
     if (document.getElementById('page-reports').classList.contains('active')) renderReports();
-    renderReviews(); // Инициализация отрисовки отзывов
+    
+    // Отзывы теперь грузятся из общей базы
+    fetchGlobalReviews();
   } catch(err){
     console.error(err);
     userData = JSON.parse(JSON.stringify(defaultData));
@@ -1617,14 +1643,40 @@ function exportCuratorCSV(){
 }
  
 /* ======================= БОТ ======================= */
+function checkFirstVisit() {
+  if (!localStorage.getItem('bot_onboarded_v2')) {
+    const toggle = document.getElementById('bot-toggle');
+    // Включаем махание и прыгание
+    setTimeout(() => { toggle.classList.add('bot-attention'); }, 1500);
+    
+    // Бот сам открывается и представляется
+    setTimeout(() => {
+      if(!document.getElementById('bot').classList.contains('open')){
+        toggleBot();
+        document.getElementById('bot-log').innerHTML = ''; 
+        addMsg('Привет! 👋 Ты попал на сайт StaroSTATT — твой электронный журнал старосты.\n\nЯ StaroBot, твой личный помощник. Давай я быстро покажу, что тут есть и как всё работает!', 'bot', ['Что ты умеешь?', 'Открой журнал', 'Покажи долги']);
+      }
+      localStorage.setItem('bot_onboarded_v2', 'true');
+    }, 4500);
+  } else {
+    // Если уже заходили - просто добавляем стартовое сообщение в закрытом виде
+    document.getElementById('bot-log').innerHTML = ''; 
+    addMsg('Привет! Я ваш помощник StaroBot ✦\nЖмите на кнопки или пишите сообщение, если нужна помощь.', 'bot', ['Расписание', 'Дедлайны', 'Долги студентов', 'Какая неделя?']);
+  }
+}
+
 function toggleBot(){
-  document.getElementById('bot').classList.toggle('open');
+  const botEl = document.getElementById('bot');
+  const toggle = document.getElementById('bot-toggle');
+  botEl.classList.toggle('open');
+  toggle.classList.remove('bot-attention'); // выключаем махание
   hideBotTip();
 }
 function hideBotTip(){
   const tip = document.getElementById('bot-tip');
   if (tip) tip.classList.remove('show');
 }
+
 (function initBotRobot(){
   const btn = document.getElementById('bot-toggle');
   const pupils = document.querySelectorAll('#bot-toggle .bot-pupil');
@@ -1639,57 +1691,81 @@ function hideBotTip(){
     dy = (dy / dist) * Math.min(max, dist / 20);
     pupils.forEach(p => { p.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px)'; });
   });
-  if (tip){
+  if (tip && !localStorage.getItem('bot_onboarded_v2')){
     setTimeout(() => tip.classList.add('show'), 2200);
-    setTimeout(() => hideBotTip(), 9000);
+    setTimeout(() => hideBotTip(), 8000);
   }
 })();
-function sendBot(e){
+
+function sendBotAction(text) {
+  addMsg(text, 'me');
+  setTimeout(() => processBotQuery(text.toLowerCase()), 350);
+}
+
+function sendBotQuery(e){
   e.preventDefault();
   const input = document.getElementById('bot-input');
   const text = input.value.trim(); if (!text) return;
   addMsg(text, 'me'); input.value = '';
-  setTimeout(() => addMsg(answer(text.toLowerCase()), 'bot'), 350);
+  setTimeout(() => processBotQuery(text.toLowerCase()), 350);
 }
-function addMsg(text, cls){
+
+function processBotQuery(q) {
+  const res = answer(q);
+  addMsg(res.text, 'bot', res.buttons);
+}
+
+function addMsg(text, cls, buttons = []){
   const log = document.getElementById('bot-log');
-  const d = document.createElement('div'); d.className = 'msg ' + cls; 
-  // Поддержка переносов строк в ответах бота
-  d.innerHTML = text.replace(/\n/g, '<br>');
-  log.appendChild(d); log.scrollTop = log.scrollHeight;
+  const d = document.createElement('div'); 
+  d.className = 'msg ' + cls; 
+  
+  let html = text.replace(/\n/g, '<br>');
+  if (buttons && buttons.length > 0) {
+    html += '<div style="margin-top:8px;">';
+    buttons.forEach(b => {
+      // Исключаем кавычки из обработчика
+      const cleanText = b.replace(/'/g, "\\'");
+      html += `<button class="bot-action-btn" onclick="sendBotAction('${cleanText}')">${b}</button>`;
+    });
+    html += '</div>';
+  }
+  
+  d.innerHTML = html;
+  log.appendChild(d); 
+  log.scrollTop = log.scrollHeight;
 }
+
 function answer(q){
   const g = getActiveGroupData();
   
-  // Приветствие / Помощь
   if (q.includes('привет') || q.includes('помощь') || q.includes('умеешь') || q.includes('функции')) {
-    return 'Я умею:\n• Показывать <b>«расписание»</b> на сегодня\n• Подсказывать <b>«какая неделя»</b>\n• Выводить все <b>«дедлайны»</b> и карточки\n• Считать <b>«сколько студентов»</b>\n• Находить тех, у кого есть <b>«долги»</b>\n• Показывать <b>«статистику»</b> посещаемости\n• Подсказывать про <b>«CSV»</b> и <b>«аватар»</b>\n• Напоминать какая <b>«группа»</b> выбрана\n• Быстро открывать <b>«журнал»</b> или <b>«отчёт»</b>.';
+    return {
+      text: 'Я умею многое! Выберите, что вам подсказать:',
+      buttons: ['Расписание', 'Какая неделя?', 'Долги студентов', 'Сколько человек в группе?', 'Дедлайны', 'Где скачать CSV?']
+    };
   }
 
-  // Благодарности и личность бота
-  if (q.includes('спасибо') || q.includes('благодар')) return 'Всегда пожалуйста! Обращайтесь, если ещё понадоблюсь.';
-  if (q.includes('кто ты') || q.includes('как тебя зовут') || q.includes('представься')) return 'Я StaroBot — встроенный помощник StaroSTATT. Слежу за расписанием, долгами и отчётами, пока вы заняты более важными делами.';
+  if (q.includes('спасибо') || q.includes('благодар')) return { text: 'Всегда пожалуйста! Обращайтесь.', buttons: ['Что ты умеешь?'] };
   
-  // Неделя
   if (q.includes('недел')) {
     const d = new Date();
     const w = getAcademicWeek(d);
     const type = (w % 2 !== 0) ? 'нечётная (знаменатель)' : 'чётная (числитель)';
-    return 'Сейчас ' + w + '-я учебная неделя, ' + type + '.';
+    return { text: 'Сейчас ' + w + '-я учебная неделя, ' + type + '.', buttons: ['А пары какие?'] };
   }
 
-  // Студенты / Группа
-  if (q.includes('студент')) return 'В текущей группе ' + g.students.length + ' человек.';
-  if ((q.includes('открой') || q.includes('перейди')) && q.includes('групп')){ switchPage('group'); return 'Открываю страницу группы.'; }
-  if (q.includes('групп')) return 'Сейчас выбрана группа: ' + userData.currentGroup + '.';
+  if (q.includes('человек') || q.includes('студент') && !q.includes('долг')) return { text: 'В текущей группе ' + g.students.length + ' человек.', buttons: ['Покажи статистику'] };
+  if ((q.includes('открой') || q.includes('перейди')) && q.includes('групп')){ switchPage('group'); return { text: 'Открываю страницу группы.', buttons: [] }; }
+  
+  if (q.includes('аватар')) return { text: 'Аватар меняется через профиль в правом верхнем углу — кнопка «Сменить аватар».', buttons: [] };
+  if (q.includes('csv') || q.includes('экспорт') || q.includes('скач')) {
+    switchPage('reports');
+    return { text: 'Я открыл вам раздел отчётов. Выгрузка смотра — кнопка «Скачать CSV» прямо над таблицей.', buttons: [] };
+  }
 
-  // Аватар и экспорт
-  if (q.includes('аватар')) return 'Аватар меняется через профиль в правом верхнем углу — кнопка «Сменить аватар».';
-  if (q.includes('csv') || q.includes('экспорт') || q.includes('скач')) return 'Выгрузка смотра — на вкладке «Отчёты», кнопка «Скачать CSV» над таблицей смотра.';
-
-  // Средняя статистика
   if (q.includes('статистик') || q.includes('процент посещ')) {
-    if (!g.students.length) return 'Пока некого считать — добавьте студентов на вкладке «Группа».';
+    if (!g.students.length) return { text: 'Пока некого считать — добавьте студентов.', buttons: ['Открыть настройки группы'] };
     let totalLec = 0, totalSem = 0;
     for (let w = 1; w <= 18; w++){
       const wt = (w % 2 !== 0) ? 'even' : 'odd';
@@ -1712,10 +1788,9 @@ function answer(q){
       sumP += totalPairs ? (att / totalPairs * 100) : 0;
     });
     const avg = g.students.length ? Math.round(sumP / g.students.length) : 0;
-    return 'Средняя посещаемость группы за семестр — примерно ' + avg + '%.';
+    return { text: 'Средняя посещаемость группы за семестр — примерно ' + avg + '%.', buttons: ['Подробный отчёт'] };
   }
 
-  // Долги / Заметки по студентам
   if (q.includes('долг') || q.includes('заметк')) {
     let debts = [];
     g.students.forEach((name, i) => {
@@ -1725,42 +1800,63 @@ function answer(q){
           studentNotes.push(g.attendance[k].notes);
         }
       }
-      if (studentNotes.length > 0) {
-        debts.push('• ' + name + ': ' + [...new Set(studentNotes)].join(', '));
-      }
+      if (studentNotes.length > 0) debts.push('• ' + name + ': ' + [...new Set(studentNotes)].join(', '));
     });
-    if (debts.length === 0) return 'Никаких долгов и пометок в журнале пока нет. Группа молодец!';
-    return 'Вот что я нашёл в журнале:\n' + debts.join('\n');
+    if (debts.length === 0) return { text: 'Никаких долгов и пометок в журнале пока нет. Группа молодец!', buttons: ['Открыть журнал'] };
+    return { text: 'Вот что я нашёл в журнале:\n' + debts.join('\n'), buttons: ['Открыть журнал'] };
   }
 
-  // Дедлайны / Инфо
   if (q.includes('дедлайн') || q.includes('карточк') || q.includes('инфо')) {
-    if (!g.notesList || g.notesList.length === 0) return 'У вас пока нет карточек и дедлайнов на доске.';
+    if (!g.notesList || g.notesList.length === 0) return { text: 'У вас пока нет карточек и дедлайнов на доске.', buttons: ['Перейти к инфо'] };
     const notes = g.notesList.map(n => '• ' + n.title + (n.eventDate ? ' (до ' + new Date(n.eventDate).toLocaleDateString('ru-RU') + ')' : '')).join('\n');
-    return 'Ваши записи на доске:\n' + notes;
+    return { text: 'Ваши записи на доске:\n' + notes, buttons: ['Перейти к инфо'] };
   }
 
-  // Расписание
   if (q.includes('расписан') || q.includes('пары')){
     const d = new Date(), codes = ['sun','mon','tue','wed','thu','fri','sat'], code = codes[d.getDay()];
-    if (code === 'sun') return 'Сегодня воскресенье — пар нет. Можно отдыхать!';
+    if (code === 'sun') return { text: 'Сегодня воскресенье — пар нет. Можно отдыхать!', buttons: ['Какая неделя?'] };
     const wt = (getAcademicWeek(d) % 2 !== 0) ? 'even' : 'odd';
     const lessons = (g.schedule[wt] && g.schedule[wt][code]) || [];
-    if (!lessons.length) return 'На сегодня пар в расписании нет.';
-    return 'Сегодня по расписанию:\n' + lessons.map(l => '· ' + l.text).join('\n');
+    if (!lessons.length) return { text: 'На сегодня пар в расписании нет.', buttons: ['Открыть журнал'] };
+    return { text: 'Сегодня по расписанию:\n' + lessons.map(l => '· ' + l.text).join('\n'), buttons: ['Открыть журнал'] };
   }
 
-  // Навигация
-  if (q.includes('куратор') || q.includes('отчет') || q.includes('отчёт')){ switchPage('reports'); return 'Открываю отчёты.'; }
-  if (q.includes('журнал')){ switchPage('journal'); return 'Открываю журнал.'; }
-  if (q.includes('отзыв')){ switchPage('reviews'); return 'Открываю отзывы.'; }
+  if (q.includes('отчет') || q.includes('отчёт') || q.includes('куратор') || q.includes('подробный')){ switchPage('reports'); return { text: 'Открыл отчёты. Тут полная статистика!', buttons: ['Скачать CSV'] }; }
+  if (q.includes('журнал')){ switchPage('journal'); return { text: 'Журнал открыт. Можно отмечать группу!', buttons: ['Покажи долги'] }; }
+  if (q.includes('отзыв')){ switchPage('reviews'); return { text: 'Раздел отзывов открыт. Буду рад обратной связи!', buttons: [] }; }
+  if (q.includes('настрой')){ switchPage('group'); return { text: 'Открыл настройки группы.', buttons: [] }; }
+  if (q.includes('инфо')){ switchPage('notes'); return { text: 'Открыл доску дедлайнов.', buttons: [] }; }
 
-  // Fallback
-  return 'Я пока не знаю такой команды. Спросите меня про «расписание», «дедлайны», «неделю», «статистику», «долги» студентов или попросите открыть нужный раздел.';
+  return { 
+    text: 'Я пока не знаю такой команды. Но вот что могу предложить:', 
+    buttons: ['Расписание', 'Дедлайны', 'Долги студентов'] 
+  };
 }
 
-/* ======================= ОТЗЫВЫ ======================= */
-function submitReview() {
+/* ======================= ГЛОБАЛЬНЫЕ ОТЗЫВЫ ======================= */
+let globalReviews = [];
+
+// Инициализация при старте приложения
+async function fetchGlobalReviews() {
+  if (db) {
+    try {
+      const snapshot = await db.collection('global_reviews').orderBy('date', 'desc').get();
+      globalReviews = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch(e) {
+      loadLocalReviews();
+    }
+  } else {
+    loadLocalReviews();
+  }
+  renderReviews();
+}
+
+function loadLocalReviews() {
+  try { globalReviews = JSON.parse(localStorage.getItem('ss_global_reviews') || '[]'); } 
+  catch(e) { globalReviews = []; }
+}
+
+async function submitReview() {
   const nameInput = document.getElementById('review-name');
   const textInput = document.getElementById('review-text');
   const name = nameInput.value.trim();
@@ -1768,21 +1864,36 @@ function submitReview() {
 
   if (!name || !text) return showToast('Пожалуйста, заполните имя и текст отзыва.');
 
-  if (!userData.reviews) userData.reviews = [];
-
-  userData.reviews.push({
-    id: Date.now(),
+  const newReview = {
     name: name,
     text: text,
-    date: new Date().toISOString()
-  });
+    date: new Date().toISOString(),
+    uid: currentUser ? currentUser.uid : 'anon'
+  };
 
   nameInput.value = '';
   textInput.value = '';
 
-  saveToCloud(true);
+  if (db) {
+    try {
+      const docRef = await db.collection('global_reviews').add(newReview);
+      newReview.id = docRef.id;
+      globalReviews.unshift(newReview); // добавляем в начало локального массива
+    } catch(e) {
+      saveLocalReview(newReview);
+    }
+  } else {
+    saveLocalReview(newReview);
+  }
+  
   renderReviews();
   showToast('Отзыв успешно добавлен', 'success');
+}
+
+function saveLocalReview(review) {
+  review.id = Date.now().toString();
+  globalReviews.unshift(review);
+  localStorage.setItem('ss_global_reviews', JSON.stringify(globalReviews));
 }
 
 function renderReviews() {
@@ -1790,16 +1901,13 @@ function renderReviews() {
   if (!box) return;
   box.innerHTML = '';
   
-  const list = userData.reviews || [];
-  
-  if (!list.length) {
+  if (!globalReviews || !globalReviews.length) {
     box.innerHTML = '<div class="card" style="grid-column:1/-1; margin:0;"><div class="empty">Пока нет ни одного отзыва. Будьте первыми!</div></div>';
     return;
   }
 
-  const sortedList = list.slice().sort((a, b) => b.id - a.id);
-
-  sortedList.forEach(r => {
+  // globalReviews уже отсортированы по убыванию даты
+  globalReviews.forEach(r => {
     const el = document.createElement('article');
     el.className = 'note'; 
     el.innerHTML = `
@@ -1809,26 +1917,40 @@ function renderReviews() {
         <div style="display:flex;align-items:center">
           <span>${new Date(r.date).toLocaleDateString('ru-RU')}</span>
         </div>
-        <button class="btn-danger" onclick="deleteReview(${r.id})">Удалить</button>
+        ${ (currentUser && currentUser.uid === r.uid) || (!currentUser && r.uid === 'anon') ? `<button class="btn-danger" onclick="deleteReview('${r.id}')">Удалить</button>` : '' }
       </footer>
     `;
     box.appendChild(el);
   });
 }
 
-function deleteReview(id) {
+async function deleteReview(id) {
   if (!confirm('Точно удалить этот отзыв?')) return;
-  userData.reviews = userData.reviews.filter(r => r.id !== id);
-  saveToCloud(true);
+  
+  if (db) {
+    try {
+      await db.collection('global_reviews').doc(id).delete();
+      globalReviews = globalReviews.filter(r => r.id !== id);
+    } catch(e) {
+      deleteLocalReview(id);
+    }
+  } else {
+    deleteLocalReview(id);
+  }
   renderReviews();
   showToast('Отзыв удален', 'success');
+}
+
+function deleteLocalReview(id) {
+  globalReviews = globalReviews.filter(r => r.id !== id);
+  localStorage.setItem('ss_global_reviews', JSON.stringify(globalReviews));
 }
 
 /* ======================= PWA: SERVICE WORKER ======================= */
 if ('serviceWorker' in navigator){
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').catch(() => {
-      console.warn('StaroSTATT: service worker не зарегистрировался — офлайн-режим и установка на экран будут недоступны, сама страница при этом работает как обычно.');
+      console.warn('StaroSTATT: service worker не зарегистрировался.');
     });
   });
 }
