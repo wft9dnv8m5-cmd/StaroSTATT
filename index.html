@@ -43,7 +43,7 @@
   --bad:#ff7a7a;
   --font-sans:"Inter","Segoe UI",system-ui,sans-serif;
   --font-display:"BubbledotICG-FinePos","Geist Pixel Circle",monospace;
-  --cyber-cyan:#00f2fe;
+  --neon-green:#00ff66; /* Новый кибер-цвет */
 }
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;padding:0}
@@ -105,7 +105,7 @@ body.app-mode .scrim{background:rgba(0,0,0,.74);backdrop-filter:blur(7px);-webki
   border:none;border-radius:999px;background:var(--pill-dark);color:var(--sign-in-text);
   box-shadow:var(--nav-shadow);cursor:pointer;font-size:13px;transition:.25s ease}
 .profile-pill:hover{background:#323234;color:#fff}
-.profile-avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:17px; background:linear-gradient(135deg, #f6d365, #fda085); box-shadow:0 2px 6px rgba(0,0,0,.3);}
+.profile-avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:16px; background:linear-gradient(135deg, #00c6ff, #0072ff); box-shadow:0 2px 6px rgba(0,0,0,.3); color:#fff; font-family:var(--font-display); font-weight:bold;}
 .profile-name{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dropdown{position:absolute;top:calc(100% + 10px);right:0;min-width:220px;padding:6px;z-index:60;
   background:rgba(18,18,20,.96);border:1px solid var(--card-border);border-radius:16px;
@@ -341,7 +341,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .link-line{margin:14px 0 0;text-align:center;color:var(--muted);font-size:13px;cursor:pointer}
 .link-line:hover{color:#fff}
 .avatar-grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
-.avatar-opt{width:56px;height:56px;display:grid;place-items:center;font-size:26px;border-radius:50%;cursor:pointer;
+.avatar-opt{width:56px;height:56px;display:grid;place-items:center;font-size:26px;border-radius:50%;cursor:pointer; font-family:var(--font-display); font-weight:bold; color:#fff; text-shadow:0 2px 4px rgba(0,0,0,.3);
   border:2px solid transparent; transition:.2s; box-shadow: 0 4px 10px rgba(0,0,0,.3);}
 .avatar-opt:hover,.avatar-opt.selected{border-color:#fff; transform:scale(1.08) translateY(-2px);}
  
@@ -379,22 +379,22 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .toast{padding:14px 16px;border-radius:16px;background:rgba(18,18,20,.96);border:1px solid var(--card-border);
   border-left:3px solid var(--bad);font-size:13.5px;line-height:1.45;box-shadow:0 16px 40px rgba(0,0,0,.5);
   animation:toastIn .3s cubic-bezier(.22,1,.36,1)}
-.toast.success{border-left-color:#fff}
+.toast.success{border-left-color:var(--neon-green)}
 .toast b{display:block;margin-bottom:3px;font-weight:600}
 @keyframes toastIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
 @keyframes toastOut{to{opacity:0}}
  
 /* ---------- БОТ КИБЕРПАНК (Экскурсия) ---------- */
 #tour-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 9997;
-  backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: 0.5s ease;
+  position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 9997;
+  backdrop-filter: blur(2px); opacity: 0; pointer-events: none; transition: 0.5s ease;
 }
 #tour-overlay.show { opacity: 1; pointer-events: auto; }
 
 .tour-highlight {
   position: relative;
   z-index: 9998 !important;
-  box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.6), 0 0 25px rgba(0, 242, 254, 0.4) !important;
+  box-shadow: 0 0 0 3px rgba(0, 255, 102, 0.6), 0 0 25px rgba(0, 255, 102, 0.4) !important;
   border-radius: inherit;
   transition: box-shadow 0.3s ease;
   background: rgba(16, 16, 18, 0.9);
@@ -403,12 +403,11 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 #bot-toggle-wrap{
   position:fixed; right:22px; bottom:22px; z-index:9999;
   display:flex; flex-direction:column; align-items:center; gap:14px;
-  /* Для полета: */
   transition: left 0.7s cubic-bezier(0.34, 1.3, 0.64, 1), top 0.7s cubic-bezier(0.34, 1.3, 0.64, 1), transform 0.4s;
 }
 #bot-toggle-wrap.flying {
   right: auto; bottom: auto;
-  transform: translate(-50%, -50%); /* Центрирование при полете */
+  transform: translate(-50%, -50%); 
   animation: hoverFly 2.5s infinite ease-in-out alternate;
 }
 @keyframes hoverFly { from { transform: translate(-50%, -50%) translateY(0); } to { transform: translate(-50%, -50%) translateY(-10px); } }
@@ -418,8 +417,8 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   position: absolute; bottom: calc(100% + 20px); left: 50%;
   transform: translateX(-50%) scale(0.9);
   background: rgba(12, 12, 14, 0.95);
-  border: 1px solid rgba(0, 242, 254, 0.4);
-  box-shadow: 0 10px 30px rgba(0, 242, 254, 0.25);
+  border: 1px solid rgba(0, 255, 102, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 255, 102, 0.25);
   color: #fff; padding: 18px; border-radius: 16px;
   width: 280px; text-align: left;
   opacity: 0; pointer-events: none;
@@ -429,13 +428,13 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .tour-bubble.show { opacity: 1; transform: translateX(-50%) scale(1); pointer-events: auto; }
 .tour-bubble::after {
   content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-  border-width: 8px; border-style: solid; border-color: rgba(0, 242, 254, 0.4) transparent transparent transparent;
+  border-width: 8px; border-style: solid; border-color: rgba(0, 255, 102, 0.4) transparent transparent transparent;
 }
 #tour-text { font-size: 13.5px; line-height: 1.5; margin-bottom: 14px; }
 .tour-btns { display: flex; justify-content: space-between; gap: 8px; }
 .tour-btn { flex: 1; padding: 8px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.2s; }
-.tour-btn-next { background: var(--cyber-cyan); color: #000; box-shadow: 0 0 10px rgba(0,242,254,0.4); }
-.tour-btn-next:hover { transform: translateY(-1px); box-shadow: 0 0 15px rgba(0,242,254,0.6); }
+.tour-btn-next { background: var(--neon-green); color: #000; box-shadow: 0 0 10px rgba(0,255,102,0.4); }
+.tour-btn-next:hover { transform: translateY(-1px); box-shadow: 0 0 15px rgba(0,255,102,0.6); }
 .tour-btn-skip { background: transparent; color: var(--muted); border: 1px solid #444; }
 .tour-btn-skip:hover { color: #fff; border-color: #888; }
 
@@ -443,62 +442,110 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 #bot-toggle{
   width:64px; height:64px; border-radius:50%; border:none; cursor:pointer; padding:0; position:relative;
   background: linear-gradient(145deg, #1f212a 0%, #111216 100%);
-  box-shadow: 0 0 0 1px rgba(0, 242, 254, 0.2), 0 10px 25px rgba(0,0,0,.6), inset 0 2px 10px rgba(255,255,255,0.05);
+  box-shadow: 0 0 0 1px rgba(0, 255, 102, 0.2), 0 10px 25px rgba(0,0,0,.6), inset 0 2px 10px rgba(255,255,255,0.05);
   transition: transform .25s ease;
 }
 #bot-toggle:hover{transform:scale(1.08)}
 
 .bot-robot{position:relative;width:100%;height:100%}
-.bot-antenna{position:absolute;top:-4px;left:50%;width:3px;height:12px;background:var(--cyber-cyan);transform:translateX(-50%); border-radius:2px;}
+.bot-antenna{position:absolute;top:-4px;left:50%;width:3px;height:12px;background:var(--neon-green);transform:translateX(-50%); border-radius:2px;}
 .bot-antenna::before{content:"";position:absolute;top:-4px;left:50%;width:6px;height:6px;border-radius:50%;
-  background:#fff;transform:translateX(-50%);box-shadow:0 0 12px #fff, 0 0 20px var(--cyber-cyan);
+  background:#fff;transform:translateX(-50%);box-shadow:0 0 12px #fff, 0 0 20px var(--neon-green);
   animation:antennaBlink 1.5s infinite}
 @keyframes antennaBlink{0%,100%{opacity:1}50%{opacity:.4}}
 
-.bot-head{position:absolute;top:18px;left:50%;transform:translateX(-50%);width:40px;height:22px;border-radius:12px;
-  background:#0a0a0c;display:flex;align-items:center;justify-content:center;gap:8px; border:1px solid rgba(0,242,254,0.2);}
-.bot-eye{width:10px;height:10px;border-radius:50%;background:var(--cyber-cyan);display:grid;place-items:center;transition:transform .1s ease; box-shadow:0 0 8px var(--cyber-cyan);}
-.bot-pupil{width:4px;height:4px;border-radius:50%;background:#000;transition:transform .08s linear}
+.bot-head{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:40px;height:22px;border-radius:12px;
+  background:#0a0a0c;display:flex;align-items:center;justify-content:center;gap:8px; border:1px solid rgba(0,255,102,0.2);}
 
-/* Манипуляторы */
-.bot-arm{position:absolute;top:32px;width:10px;height:18px;border-radius:5px;background:#2a2b36; border:1px solid rgba(0,242,254,0.3);
-  transform-origin:top center;animation:armWave 3s ease-in-out infinite}
-.bot-arm-l{left:-2px;transform:rotate(20deg);animation-delay:0s}
-.bot-arm-r{right:-2px;transform:rotate(-20deg);animation-delay:.4s}
+/* Живые глаза */
+.bot-eye {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--neon-green);
+  box-shadow: 0 0 8px var(--neon-green);
+  overflow: hidden; position: relative;
+  transition: transform .1s ease;
+}
+.bot-eye::after {
+  content: ""; position: absolute; top: -5px; left: 0; right: 0; height: 6px;
+  background: #0a0a0c;
+  animation: eyeSquint 5s infinite alternate;
+}
+@keyframes eyeSquint {
+  0%, 85% { transform: translateY(0); }
+  90%, 100% { transform: translateY(3px); }
+}
+.bot-pupil{width:4px;height:4px;border-radius:50%;background:#000;transition:transform .08s linear; position:relative; z-index:2;}
+
+/* Логотип i/e */
+.bot-logo-text {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--neon-green);
+  text-shadow: 0 0 5px var(--neon-green);
+  z-index: 5;
+}
+
+/* Механические руки */
+.bot-arm {
+  position: absolute; top: 32px; width: 10px; height: 18px; border-radius: 3px;
+  background: transparent; border: 2px solid var(--neon-green);
+  box-shadow: inset 0 0 4px var(--neon-green), 0 0 4px rgba(0,255,102,0.4);
+  transform-origin: top center; animation: armWave 3s ease-in-out infinite;
+}
+.bot-arm::after {
+  content:""; position: absolute; bottom: -4px; left: -2px; width: 10px; height: 4px;
+  background: var(--neon-green); border-radius: 2px;
+}
+.bot-arm-l{left:4px;transform:rotate(20deg);animation-delay:0s}
+.bot-arm-r{right:4px;transform:rotate(-20deg);animation-delay:.4s}
 @keyframes armWave{0%,100%{transform:rotate(20deg)}50%{transform:rotate(35deg)}}
 .bot-arm-r{animation-name:armWaveR}
 @keyframes armWaveR{0%,100%{transform:rotate(-20deg)}50%{transform:rotate(-35deg)}}
 
-/* Плазменный двигатель (видно только в полете) */
-.bot-thruster {
-  position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%);
-  width: 18px; height: 18px; border-radius: 50%;
-  background: linear-gradient(to bottom, #fff, var(--cyber-cyan), transparent);
-  filter: blur(3px); opacity: 0; transition: opacity 0.4s;
+/* Плазменный след (длинный шлейф при полете) */
+.bot-trail {
+  position: absolute; top: 100%; left: 50%;
+  width: 14px; height: 60px;
+  background: linear-gradient(to bottom, var(--neon-green), transparent);
+  transform: translateX(-50%);
+  filter: blur(6px); opacity: 0;
+  transition: opacity 0.3s, height 0.3s;
+  pointer-events: none;
 }
-#bot-toggle-wrap.flying .bot-thruster { opacity: 1; animation: thrustPulse 0.3s infinite alternate; }
-@keyframes thrustPulse { from { height: 18px; opacity: 0.8; } to { height: 26px; opacity: 1; filter: blur(4px); } }
+#bot-toggle-wrap.flying .bot-trail {
+  opacity: 0.6; height: 110px;
+  animation: trailFlicker 0.15s infinite alternate;
+}
+@keyframes trailFlicker {
+  from { opacity: 0.4; height: 90px; }
+  to { opacity: 0.7; height: 120px; filter: blur(8px); }
+}
 
 /* Окно чата */
 #bot{position:fixed;right:22px;bottom:100px;z-index:90;width:340px;max-width:calc(100vw - 36px);height:460px;
   display:flex;flex-direction:column;overflow:hidden;background:rgba(12,12,14,.95);border:1px solid var(--card-border);
-  border-radius:24px;box-shadow:0 24px 60px rgba(0,242,254,.15);backdrop-filter:blur(18px);
+  border-radius:24px;box-shadow:0 24px 60px rgba(0,255,102,.15);backdrop-filter:blur(18px);
   opacity:0;transform:translateY(14px);pointer-events:none;transition:.28s cubic-bezier(.22,1,.36,1)}
-#bot.open{opacity:1;transform:none;pointer-events:auto; box-shadow:0 24px 60px rgba(0,242,254,.25), 0 0 0 1px rgba(0,242,254,0.2);}
+#bot.open{opacity:1;transform:none;pointer-events:auto; box-shadow:0 24px 60px rgba(0,255,102,.25), 0 0 0 1px rgba(0,255,102,0.2);}
 #bot header{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;
-  border-bottom:1px solid rgba(255,255,255,0.08);font-size:14.5px;font-weight:600; color:var(--cyber-cyan);}
+  border-bottom:1px solid rgba(255,255,255,0.08);font-size:14.5px;font-weight:600; color:var(--neon-green);}
 #bot header button{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer; transition:.2s;}
 #bot header button:hover{color:#fff;}
 #bot-log{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
 .msg{max-width:88%;padding:11px 15px;border-radius:16px;font-size:13.5px;line-height:1.45;white-space:pre-wrap}
-.msg.bot{background:rgba(0,242,254,.08);border:1px solid rgba(0,242,254,.15); border-bottom-left-radius:4px;align-self:flex-start}
-.msg.me{background:var(--cyber-cyan);color:#000;border-bottom-right-radius:4px;align-self:flex-end; font-weight:500;}
-.bot-action-btn { display:inline-block; background:rgba(255,255,255,.05); border:1px solid rgba(0,242,254,.3); border-radius:12px; padding:7px 12px; margin:6px 6px 0 0; color:var(--cyber-cyan); cursor:pointer; font-size:12.5px; transition:0.2s; font-weight:500;}
-.bot-action-btn:hover { background:var(--cyber-cyan); color:#000; transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,242,254,.3);}
+.msg.bot{background:rgba(0,255,102,.08);border:1px solid rgba(0,255,102,.15); border-bottom-left-radius:4px;align-self:flex-start}
+.msg.me{background:var(--neon-green);color:#000;border-bottom-right-radius:4px;align-self:flex-end; font-weight:500;}
+.bot-action-btn { display:inline-block; background:rgba(255,255,255,.05); border:1px solid rgba(0,255,102,.3); border-radius:12px; padding:7px 12px; margin:6px 6px 0 0; color:var(--neon-green); cursor:pointer; font-size:12.5px; transition:0.2s; font-weight:500;}
+.bot-action-btn:hover { background:var(--neon-green); color:#000; transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,255,102,.3);}
 #bot-form{display:flex;align-items:center;gap:8px;padding:12px;border-top:1px solid rgba(255,255,255,0.08)}
 #bot-input{background:rgba(255,255,255,0.05);border:1px solid transparent;border-radius:12px;padding:10px 14px;font-size:13.5px;color:#fff;flex:1; transition:0.2s;}
-#bot-input:focus{border-color:var(--cyber-cyan); outline:none;}
-#bot-form button{background:none;border:none;color:var(--cyber-cyan);font-size:18px;cursor:pointer; padding:4px 8px; transition:0.2s;}
+#bot-input:focus{border-color:var(--neon-green); outline:none;}
+#bot-form button{background:none;border:none;color:var(--neon-green);font-size:18px;cursor:pointer; padding:4px 8px; transition:0.2s;}
 #bot-form button:hover{transform:scale(1.1);}
  
 /* ---------- адаптив ---------- */
@@ -562,11 +609,12 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
  
     <div class="profile" id="profile-block" hidden>
       <button class="profile-pill" onclick="toggleDropdown(event)">
-        <span class="profile-avatar" id="profile-avatar">😎</span>
+        <span class="profile-avatar" id="profile-avatar">S</span>
         <span class="profile-name" id="profile-name">Профиль</span>
       </button>
       <div class="dropdown" id="dropdown">
-        <button onclick="openAvatarModal(event)">Сменить аватар</button>
+        <button onclick="changeNickname(event)">Сменить имя</button>
+        <button onclick="openAvatarModal(event)">Сменить логотип</button>
         <button onclick="forceSync(event)">Сохранить в облако</button>
         <button class="danger" onclick="logout(event)">Выйти</button>
       </div>
@@ -836,16 +884,17 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
  
 <!-- МОДАЛКИ -->
 <div class="modal" id="auth-modal">
-  <!-- Опущено для краткости, код авто-модалок не менялся -->
   <div class="modal-box">
     <div class="modal-head"><h2 id="auth-title">Вход в аккаунт</h2><button class="x" onclick="closeModal('auth-modal')">×</button></div>
     <p class="hint" style="margin:-8px 0 18px">Аккаунт нужен, чтобы журнал синхронизировался между устройствами.</p>
+
     <div class="watchers" id="auth-watchers">
       <div class="watcher"><div class="w-eyes"><span class="w-eye"><span class="w-pupil"></span></span><span class="w-eye"><span class="w-pupil"></span></span></div><span class="w-hand w-hand-l"></span><span class="w-hand w-hand-r"></span></div>
       <div class="watcher"><div class="w-eyes"><span class="w-eye"><span class="w-pupil"></span></span><span class="w-eye"><span class="w-pupil"></span></span></div><span class="w-hand w-hand-l"></span><span class="w-hand w-hand-r"></span></div>
       <div class="watcher"><div class="w-eyes"><span class="w-eye"><span class="w-pupil"></span></span><span class="w-eye"><span class="w-pupil"></span></span></div><span class="w-hand w-hand-l"></span><span class="w-hand w-hand-r"></span></div>
     </div>
     <p class="watchers-msg" id="watchers-msg">Так, всё, глаза закрыты — пароль это личное!</p>
+
     <label class="field"><span>Почта</span><input type="email" id="email" placeholder="you@mail.ru"></label>
     <label class="field"><span>Пароль</span>
       <span class="pass-wrap"><input type="password" id="password" placeholder="Минимум 6 символов" oninput="checkPasswordStrength()">
@@ -854,6 +903,14 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     <button class="btn btn-primary" id="btn-login" style="width:100%" onclick="login()">Войти</button>
     <button class="btn btn-primary" id="btn-register" style="width:100%;display:none" onclick="register()">Создать аккаунт</button>
     <p class="link-line" id="link-toggle" onclick="toggleAuthMode()">Нет аккаунта? Создать</p>
+  </div>
+</div>
+
+<div class="modal" id="name-modal">
+  <div class="modal-box">
+    <div class="modal-head"><h2>Ваше имя</h2><button class="x" onclick="closeModal('name-modal')">×</button></div>
+    <label class="field"><span>Никнейм в профиле</span><input type="text" id="nickname-input" placeholder="Супер Староста"></label>
+    <button class="btn btn-primary" style="width:100%" onclick="saveNickname()">Сохранить</button>
   </div>
 </div>
  
@@ -869,7 +926,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
  
 <div class="modal" id="avatar-modal">
   <div class="modal-box">
-    <div class="modal-head"><h2>Аватар</h2><button class="x" onclick="closeModal('avatar-modal')">×</button></div>
+    <div class="modal-head"><h2>Логотип</h2><button class="x" onclick="closeModal('avatar-modal')">×</button></div>
     <div class="avatar-grid" id="avatar-grid"></div>
   </div>
 </div>
@@ -891,9 +948,11 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
         <span class="bot-eye"><span class="bot-pupil"></span></span>
         <span class="bot-eye"><span class="bot-pupil"></span></span>
       </div>
+      <div class="bot-logo-text">&lt;i/e&gt;</div>
       <span class="bot-arm bot-arm-l"></span>
       <span class="bot-arm bot-arm-r"></span>
       <div class="bot-thruster"></div> <!-- Плазменный след -->
+      <div class="bot-trail"></div>
     </div>
   </button>
 </div>
@@ -1020,7 +1079,7 @@ document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e =
   });
 })();
  
-/* ======================= АНОНИМЫ В ОКНЕ ВХОДА ======================= */
+/* ======================= АНОНИМЫ ======================= */
 function initWatchers(){
   const box = document.getElementById('auth-watchers');
   const modal = document.getElementById('auth-modal');
@@ -1088,7 +1147,7 @@ if (typeof firebase !== 'undefined'){
  
 /* ======================= ДАННЫЕ ======================= */
 const defaultData = {
-  currentGroup: "Моя группа", avatar: 0,
+  currentGroup: "Моя группа", avatar: 0, nickname: "",
   groups: {
     "Моя группа": {
       students: [],
@@ -1130,6 +1189,7 @@ function loadLocalData(){
         currentGroup: localStorage.getItem('ss_current_group') || Object.keys(legacy)[0],
         groups: legacy, 
         avatar: parseInt(localStorage.getItem('ss_avatar_index')) || 0,
+        nickname: localStorage.getItem('ss_nickname') || ""
       };
     } else { userData = JSON.parse(JSON.stringify(defaultData)); }
   } catch(e){ userData = JSON.parse(JSON.stringify(defaultData)); }
@@ -1145,8 +1205,10 @@ function saveToCloud(silent){
     localStorage.setItem('ss_all_groups', JSON.stringify(userData.groups));
     localStorage.setItem('ss_current_group', userData.currentGroup);
     localStorage.setItem('ss_avatar_index', userData.avatar || 0);
+    localStorage.setItem('ss_nickname', userData.nickname || "");
   } catch(e){}
   applyAvatarUI();
+  updateProfileName();
 }
  
 /* ======================= АВТОРИЗАЦИЯ ======================= */
@@ -1210,7 +1272,7 @@ function setAuthUI(user){
         bannerBtn = document.getElementById('account-banner-btn');
   if (user){
     signin.hidden = true; profile.hidden = false;
-    document.getElementById('profile-name').textContent = user.email.split('@')[0];
+    updateProfileName();
     menuBtn.textContent = 'Выйти'; menuBtn.onclick = logout;
     closeModal('auth-modal');
     bannerTitle.textContent = 'Вы вошли как ' + user.email;
@@ -1237,6 +1299,7 @@ if (auth){
           if (doc.exists){ 
             userData = doc.data(); 
             if (userData.avatar === undefined) userData.avatar = 0; 
+            if (userData.nickname === undefined) userData.nickname = "";
           }
           else { loadLocalData(); saveToCloud(true); }
           initApp(); checkFirstVisit();
@@ -1245,17 +1308,43 @@ if (auth){
     });
   }).catch(() => { clearTimeout(bootTimer); loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); });
 } else { clearTimeout(bootTimer); loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); }
+
+/* ======================= ПРОФИЛЬ (ИМЯ) ======================= */
+function changeNickname(e) {
+  if (e) e.stopPropagation();
+  document.getElementById('dropdown').classList.remove('show');
+  document.getElementById('nickname-input').value = userData.nickname || "";
+  openModal('name-modal');
+}
+function saveNickname() {
+  const newName = document.getElementById('nickname-input').value.trim();
+  userData.nickname = newName;
+  saveToCloud(true);
+  updateProfileName();
+  closeModal('name-modal');
+  showToast('Имя сохранено', 'success');
+}
+function updateProfileName() {
+  const nameEl = document.getElementById('profile-name');
+  if (userData.nickname) {
+    nameEl.textContent = userData.nickname;
+  } else if (currentUser) {
+    nameEl.textContent = currentUser.email.split('@')[0];
+  } else {
+    nameEl.textContent = "Профиль";
+  }
+}
  
-/* ======================= КАСТОМНЫЙ АВАТАР ======================= */
+/* ======================= ГРАФИЧЕСКИЙ АВАТАР ======================= */
 const avatarStyles = [
-  { emoji: "😎", bg: "linear-gradient(135deg, #f6d365 0%, #fda085 100%)" },
-  { emoji: "👽", bg: "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)" },
-  { emoji: "🦄", bg: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)" },
-  { emoji: "🦊", bg: "linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%)" },
-  { emoji: "🔥", bg: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)" },
-  { emoji: "🎓", bg: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" },
-  { emoji: "💻", bg: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)" },
-  { emoji: "👑", bg: "linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%)" },
+  { char: "S", bg: "linear-gradient(135deg, #00f2fe, #4facfe)" }, // Кибер-синий
+  { char: "S", bg: "linear-gradient(135deg, #00ff66, #0ba360)" }, // Неон-зеленый (под бота)
+  { char: "S", bg: "linear-gradient(135deg, #ff0844, #ffb199)" }, // Огненно-красный
+  { char: "S", bg: "linear-gradient(135deg, #f093fb, #f5576c)" }, // Маджента
+  { char: "S", bg: "linear-gradient(135deg, #fa709a, #fee140)" }, // Закат
+  { char: "S", bg: "linear-gradient(135deg, #30cfd0, #330867)" }, // Космос
+  { char: "S", bg: "linear-gradient(135deg, #cfd9df, #e2ebf0)", col: "#111" }, // Серебро
+  { char: "S", bg: "linear-gradient(135deg, #f6d365, #fda085)" }  // Персик
 ];
 
 function applyAvatarUI() {
@@ -1263,8 +1352,9 @@ function applyAvatarUI() {
   const style = avatarStyles[index] || avatarStyles[0];
   const av = document.getElementById('profile-avatar');
   if (av) {
-    av.textContent = style.emoji;
+    av.textContent = style.char;
     av.style.background = style.bg;
+    av.style.color = style.col || "#fff";
   }
 }
 
@@ -1274,8 +1364,9 @@ function openAvatarModal(e){
   avatarStyles.forEach((a, i) => {
     const d = document.createElement('div');
     d.className = 'avatar-opt' + (userData.avatar === i ? ' selected' : '');
-    d.textContent = a.emoji;
+    d.textContent = a.char;
     d.style.background = a.bg;
+    d.style.color = a.col || "#fff";
     d.onclick = () => selectAvatar(i);
     grid.appendChild(d);
   });
@@ -1290,6 +1381,7 @@ function initApp(){
     const g = getActiveGroupData();
     document.getElementById('page-title').textContent = 'StaroSTATT — ' + (userData.currentGroup || '');
     applyAvatarUI();
+    updateProfileName();
  
     const sel = document.getElementById('group-selector'); sel.innerHTML = '';
     Object.keys(userData.groups).forEach(name => {
@@ -1354,7 +1446,6 @@ function insertScheduleTemplate(){
   document.getElementById('sched-even-mon').value = "8:30 - Название предмета (Л)";
   switchScheduleTab('even');
 }
- 
 function switchScheduleTab(tab){
   if (tab === 'even') {
     document.getElementById('sched-even-container').style.display = 'block';
@@ -1368,7 +1459,6 @@ function switchScheduleTab(tab){
     document.getElementById('btn-tab-odd').className = 'btn btn-primary';
   }
 }
- 
 function saveGroup(){
   const name = document.getElementById('setup-group-name').value.trim();
   if (!name) return showToast('Впишите название группы — по нему подписаны все отчёты.');
@@ -1695,59 +1785,35 @@ function exportCuratorCSV(){
   a.click();
 }
 
-/* ======================= БОТ ЭКСКУРСИЯ (FLYING DRONE) ======================= */
+/* ======================= БОТ ЭКСКУРСИЯ И ЖЁСТКОЕ ПОЗИЦИОНИРОВАНИЕ ======================= */
 const tourSteps = [
-  {
-    text: "Привет! 👋 Я твой кибер-помощник StaroBot. Давай я проведу быструю экскурсию по твоему новому журналу!",
-    page: 'landing', target: null
-  },
-  {
-    text: "Это главная навигация. Отсюда можно переходить между журналом, настройками группы и отчётами.",
-    page: 'landing', target: '#tour-nav'
-  },
-  {
-    text: "Тут настраивается расписание. Введи студентов и расписание на чётную/нечётную неделю всего один раз.",
-    page: 'group', target: '#group-editor'
-  },
-  {
-    text: "В журнале магия! Пары и даты подставляются сами. Кликай чекбоксы и пиши долги студентов прямо в строку.",
-    page: 'journal', target: '#tour-journal-schedule'
-  },
-  {
-    text: "А здесь в пару кликов собирается смотр для куратора. Можно выгрузить всё в CSV-файл.",
-    page: 'reports', target: '#tour-reports-csv'
-  },
-  {
-    text: "Я всегда буду здесь внизу! Жми на меня, если нужно узнать расписание, долги студентов или какая сейчас неделя. Удачи! 🚀",
-    page: 'landing', target: 'home', isEnd: true
-  }
+  { text: "Привет! 👋 Я твой кибер-помощник StaroBot. Давай я проведу быструю экскурсию по твоему новому журналу!", page: 'landing', target: null },
+  { text: "Это главная навигация. Отсюда можно переходить между журналом, настройками группы и отчётами.", page: 'landing', target: '#tour-nav' },
+  { text: "Тут настраивается расписание. Введи студентов и расписание на чётную/нечётную неделю всего один раз.", page: 'group', target: '#group-editor' },
+  { text: "В журнале магия! Пары и даты подставляются сами. Кликай чекбоксы и пиши долги студентов прямо в строку.", page: 'journal', target: '#tour-journal-schedule' },
+  { text: "А здесь в пару кликов собирается смотр для куратора. Можно выгрузить всё в CSV-файл.", page: 'reports', target: '#tour-reports-csv' },
+  { text: "Я всегда буду здесь внизу! Жми на меня, если нужно узнать расписание, долги студентов или какая сейчас неделя. Удачи! 🚀", page: 'landing', target: 'home', isEnd: true }
 ];
 
 let currentTourStep = 0;
 
 function checkFirstVisit() {
-  if (!localStorage.getItem('bot_tour_v3')) {
+  if (!localStorage.getItem('bot_tour_v4')) {
     setTimeout(startTour, 1000);
   } else {
-    // Обычный старт
     document.getElementById('bot-log').innerHTML = ''; 
-    addMsg('Привет! Я StaroBot ✦\nГотов подсказать расписание, дедлайны или долги.', 'bot', ['Расписание', 'Дедлайны', 'Долги студентов', 'Какая неделя?']);
+    addMsg('Привет! Как твои дела? Я ваш помощник StaroBot ✦\nГотов подсказать расписание, дедлайны или долги.', 'bot', ['Расписание', 'Дедлайны', 'Долги студентов', 'Какая неделя?']);
   }
 }
 
 function startTour() {
   currentTourStep = 0;
   document.getElementById('tour-overlay').classList.add('show');
-  
   const botWrap = document.getElementById('bot-toggle-wrap');
   botWrap.classList.add('flying');
-  
-  if(document.getElementById('bot').classList.contains('open')) {
-    toggleBot();
-  }
-  
+  if(document.getElementById('bot').classList.contains('open')) toggleBot();
   goToTourStep(0);
-  localStorage.setItem('bot_tour_v3', 'true');
+  localStorage.setItem('bot_tour_v4', 'true');
 }
 
 function nextTourStep() {
@@ -1761,39 +1827,39 @@ function goToTourStep(index) {
   const botWrap = document.getElementById('bot-toggle-wrap');
   const bubble = document.getElementById('tour-bubble');
   
-  // Убираем старую подсветку
   document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
   bubble.classList.remove('show');
   
-  // Переключаем страницу
   switchPage(step.page);
   
   setTimeout(() => {
     if (step.target === null) {
-      // Летим в центр
       botWrap.style.left = '50vw';
       botWrap.style.top = '50vh';
     } else if (step.target === 'home') {
-      // Летим домой (на место)
       botWrap.style.left = '';
       botWrap.style.top = '';
       botWrap.classList.remove('flying');
     } else {
-      // Летим к элементу
       const targetEl = document.querySelector(step.target);
       if (targetEl) {
-        // Подкручиваем скролл если надо (на мобилках)
         if(window.innerWidth <= 720) targetEl.scrollIntoView({behavior: 'smooth', block: 'center'});
         
         setTimeout(() => {
           const rect = targetEl.getBoundingClientRect();
           let targetX = rect.left + rect.width / 2;
-          let targetY = rect.bottom + 80;
+          let targetY = rect.bottom + 100; // Робот всегда ниже элемента
           
-          // Ограничители чтобы не вылетал за края
-          if (targetX < 150) targetX = 150;
-          if (targetX > window.innerWidth - 150) targetX = window.innerWidth - 150;
-          if (targetY > window.innerHeight - 100) targetY = window.innerHeight - 100;
+          // ЖЁСТКИЕ ОГРАНИЧЕНИЯ (чтобы робот и пузырь всегда были в экране)
+          const minX = 160; 
+          const maxX = window.innerWidth - 160;
+          if (targetX < minX) targetX = minX;
+          if (targetX > maxX) targetX = maxX;
+          
+          const minY = 220; // Оставляем 220px сверху для текстового пузыря
+          const maxY = window.innerHeight - 80;
+          if (targetY < minY) targetY = minY;
+          if (targetY > maxY) targetY = maxY;
           
           botWrap.style.left = targetX + 'px';
           botWrap.style.top = targetY + 'px';
@@ -1812,8 +1878,8 @@ function goToTourStep(index) {
         document.querySelector('.tour-btn-skip').style.display = 'block';
       }
       bubble.classList.add('show');
-    }, 400); // Ждем пока долетит
-  }, 100); // Ждем отрисовку страницы
+    }, 400);
+  }, 100);
 }
 
 function endTour() {
@@ -1828,9 +1894,8 @@ function endTour() {
   botWrap.style.top = '';
   botWrap.classList.remove('flying');
   
-  // Добавляем стартовое сообщение в чат
   document.getElementById('bot-log').innerHTML = ''; 
-  addMsg('Экскурсия завершена! Если что-то забудешь — я всегда тут.', 'bot', ['Что ты умеешь?', 'Открой журнал', 'Покажи долги']);
+  addMsg('Привет! Как твои дела? Экскурсия завершена. Если что-то забудешь — я всегда тут.', 'bot', ['Что ты умеешь?', 'Открой журнал', 'Покажи долги']);
 }
 
 /* ======================= ЛОГИКА ЧАТА БОТА ======================= */
@@ -1848,7 +1913,7 @@ function toggleBot(){
     const r = btn.getBoundingClientRect();
     const cx = r.left + r.width / 2, cy = r.top + r.height / 2 - 8;
     let dx = e.clientX - cx, dy = e.clientY - cy;
-    const dist = Math.hypot(dx, dy) || 1, max = 2;
+    const dist = Math.hypot(dx, dy) || 1, max = 2.5;
     dx = (dx / dist) * Math.min(max, dist / 20);
     dy = (dy / dist) * Math.min(max, dist / 20);
     pupils.forEach(p => { p.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px)'; });
@@ -1891,7 +1956,7 @@ function answer(q){
   const g = getActiveGroupData();
   if (q.includes('привет') || q.includes('помощь') || q.includes('умеешь') || q.includes('функции')) {
     return {
-      text: 'Я умею многое! Выберите, что вам подсказать:',
+      text: 'Привет! Как твои дела? Я умею многое! Выберите, что вам подсказать:',
       buttons: ['Расписание', 'Какая неделя?', 'Долги студентов', 'Сколько человек в группе?', 'Дедлайны', 'Где скачать CSV?']
     };
   }
@@ -1905,7 +1970,7 @@ function answer(q){
   }
   if (q.includes('человек') || q.includes('студент') && !q.includes('долг')) return { text: 'В текущей группе ' + g.students.length + ' человек.', buttons: ['Покажи статистику'] };
   if ((q.includes('открой') || q.includes('перейди')) && q.includes('групп')){ switchPage('group'); return { text: 'Открываю страницу группы.', buttons: [] }; }
-  if (q.includes('аватар')) return { text: 'Аватар меняется через профиль в правом верхнем углу — кнопка «Сменить аватар».', buttons: [] };
+  if (q.includes('аватар')) return { text: 'Аватар меняется через профиль в правом верхнем углу — кнопка «Сменить логотип».', buttons: [] };
   if (q.includes('csv') || q.includes('экспорт') || q.includes('скач')) {
     switchPage('reports');
     return { text: 'Я открыл вам раздел отчётов. Выгрузка смотра — кнопка «Скачать CSV» прямо над таблицей.', buttons: [] };
