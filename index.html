@@ -50,9 +50,10 @@
   --apple-border: rgba(255, 255, 255, 0.15);
   --apple-border-light: rgba(255, 255, 255, 0.25);
   --apple-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  --neon-green: #00ff66;
 }
 *,*::before,*::after{box-sizing:border-box}
-html,body{margin:0;padding:0}
+html,body{margin:0;padding:0; overflow-x:hidden;}
 body{
   background:var(--bg);color:var(--text);font-family:var(--font-sans);
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
@@ -385,55 +386,79 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .toast{padding:14px 16px;border-radius:16px;background:rgba(18,18,20,.96);border:1px solid var(--card-border);
   border-left:3px solid var(--bad);font-size:13.5px;line-height:1.45;box-shadow:0 16px 40px rgba(0,0,0,.5);
   animation:toastIn .3s cubic-bezier(.22,1,.36,1)}
-.toast.success{border-left-color:#fff}
+.toast.success{border-left-color:var(--neon-green)}
 .toast b{display:block;margin-bottom:3px;font-weight:600}
 @keyframes toastIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
 @keyframes toastOut{to{opacity:0}}
  
-/* ---------- БОТ APPLE GLASS STYLE (Экскурсия / Ходьба) ---------- */
+/* ---------- БОТ APPLE GLASS STYLE (Умный Адаптив) ---------- */
 #tour-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 9997; /* Легкое прозрачное затемнение */
-  backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); opacity: 0; pointer-events: none; transition: 0.5s ease;
+  position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 9997; /* Сильное затемнение */
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: 0.5s ease;
 }
 #tour-overlay.show { opacity: 1; pointer-events: auto; }
 
 .tour-highlight {
   position: relative; z-index: 9998 !important;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8), 0 0 25px rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 0 0 3px rgba(0, 255, 102, 0.8), 0 0 35px rgba(0, 255, 102, 0.4) !important;
   border-radius: inherit; transition: box-shadow 0.3s ease;
-  background: rgba(30, 30, 32, 0.8);
+  background: rgba(20, 20, 22, 0.95);
 }
 
 #bot-toggle-wrap {
-  position: fixed; bottom: 22px; right: 22px; z-index: 9999;
-  display: flex; flex-direction: column; align-items: center; gap: 14px;
-  /* Плавное перемещение только по горизонтали */
-  transition: left 0.7s cubic-bezier(0.34, 1.3, 0.64, 1), transform 0.4s;
+  position: fixed; z-index: 9999;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 14px;
+  /* Перемещается только по JS, изначально скрыт до инициализации */
+  transform: translateX(-50%);
+  width: 60px;
 }
 
-/* Пузырь во время обучения и пасхалок */
+/* Умный пузырь в стиле Apple iMessage */
 .tour-bubble {
-  position: absolute; bottom: calc(100% + 15px); left: 50%;
-  transform: translateX(-50%) scale(0.9);
-  background: rgba(30, 30, 32, 0.7);
+  position: absolute; bottom: calc(100% + 15px);
+  background: rgba(30, 30, 32, 0.85);
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--apple-border-light);
   box-shadow: var(--apple-shadow);
-  color: #fff; padding: 18px; border-radius: 16px;
+  color: #fff; padding: 18px; 
   width: 280px; text-align: left;
   opacity: 0; pointer-events: none;
-  transition: 0.3s cubic-bezier(0.22,1,0.36,1);
+  transition: opacity 0.3s, transform 0.3s cubic-bezier(0.22,1,0.36,1);
 }
-.tour-bubble.show { opacity: 1; transform: translateX(-50%) scale(1); pointer-events: auto; }
-.tour-bubble::after {
-  content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-  border-width: 8px; border-style: solid; border-color: rgba(255,255,255,0.2) transparent transparent transparent;
+
+/* Варианты позиционирования пузыря (меняются через JS) */
+.bubble-center {
+  border-radius: 18px; left: 50%; transform: translateX(-50%) scale(0.9); transform-origin: bottom center;
 }
+.bubble-center.show { transform: translateX(-50%) scale(1); pointer-events: auto; }
+.bubble-center::after {
+  content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  border: 8px solid transparent; border-top-color: rgba(30, 30, 32, 0.85);
+}
+
+.bubble-left {
+  border-radius: 18px 18px 18px 0; left: -10px; transform: scale(0.9); transform-origin: bottom left;
+}
+.bubble-left.show { transform: scale(1); pointer-events: auto; }
+.bubble-left::after {
+  content: ''; position: absolute; top: 100%; left: 30px; transform: translateX(-50%);
+  border: 8px solid transparent; border-top-color: rgba(30, 30, 32, 0.85);
+}
+
+.bubble-right {
+  border-radius: 18px 18px 0 18px; right: -10px; transform: scale(0.9); transform-origin: bottom right;
+}
+.bubble-right.show { transform: scale(1); pointer-events: auto; }
+.bubble-right::after {
+  content: ''; position: absolute; top: 100%; right: 30px; transform: translateX(50%);
+  border: 8px solid transparent; border-top-color: rgba(30, 30, 32, 0.85);
+}
+
 #tour-text { font-size: 14px; line-height: 1.5; margin-bottom: 14px; font-weight:500; font-family:-apple-system, sans-serif;}
 .tour-btns { display: flex; justify-content: space-between; gap: 8px; }
 .tour-btn { flex: 1; padding: 8px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.2s; }
-.tour-btn-next { background: #fff; color: #000; }
-.tour-btn-next:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,255,255,0.2); }
+.tour-btn-next { background: var(--neon-green); color: #000; box-shadow: 0 4px 12px rgba(0,255,102,0.2); }
+.tour-btn-next:hover { transform: translateY(-1px); box-shadow: 0 6px 15px rgba(0,255,102,0.4); }
 .tour-btn-skip { background: transparent; color: var(--muted); border: 1px solid #555; }
 .tour-btn-skip:hover { color: #fff; border-color: #888; }
 
@@ -443,6 +468,10 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   background: transparent; box-shadow: none; transition: transform .25s ease;
 }
 #bot-toggle:hover { transform: scale(1.05); }
+
+/* Зеркалирование робота при ходьбе влево */
+.bot-flipped { transform: scaleX(-1); }
+.bot-flipped .bot-logo-text { transform: scaleX(-1); } /* Чтобы текст i/e не читался задом наперед */
 
 .bot-robot {
   position: relative; width: 100%; height: 100%;
@@ -465,12 +494,12 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   margin-top: -6px; z-index: 2; position: relative;
   display: grid; place-items: center;
 }
-.bot-logo-text { font-family: monospace; font-size: 12px; font-weight: bold; color: #fff; opacity: 0.9; letter-spacing: 0.5px;}
+.bot-logo-text { font-family: monospace; font-size: 13px; font-weight: bold; color: var(--neon-green); opacity: 0.9; text-shadow: 0 0 4px var(--neon-green);}
 
 .bot-limbs { position: absolute; inset: 0; pointer-events: none;}
 .bot-arm, .bot-leg {
-  position: absolute; background: var(--apple-glass-strong); border: 1px solid var(--apple-border-light);
-  border-radius: 4px; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  position: absolute; background: rgba(30,30,32,0.8); border: 1px solid var(--apple-border-light);
+  border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
 .bot-arm { width: 9px; height: 24px; top: 34px; transform-origin: top center; z-index: 1;}
 .bot-arm-l { left: 2px; transform: rotate(15deg); }
@@ -480,17 +509,17 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .bot-leg-r { right: 14px; }
 
 /* Анимация ходьбы (ограничена по низу) */
-#bot-toggle-wrap.walking .bot-leg-l { animation: walkLegL 0.4s infinite alternate linear; }
-#bot-toggle-wrap.walking .bot-leg-r { animation: walkLegR 0.4s infinite alternate linear; }
-#bot-toggle-wrap.walking .bot-robot { animation: walkBob 0.4s infinite alternate linear; }
-@keyframes walkLegL { from { transform: rotate(25deg); } to { transform: rotate(-25deg); } }
-@keyframes walkLegR { from { transform: rotate(-25deg); } to { transform: rotate(25deg); } }
+#bot-toggle-wrap.is-walking .bot-leg-l { animation: walkLegL 0.3s infinite alternate linear; }
+#bot-toggle-wrap.is-walking .bot-leg-r { animation: walkLegR 0.3s infinite alternate linear; }
+#bot-toggle-wrap.is-walking .bot-robot { animation: walkBob 0.3s infinite alternate linear; }
+@keyframes walkLegL { from { transform: rotate(30deg); } to { transform: rotate(-30deg); } }
+@keyframes walkLegR { from { transform: rotate(-30deg); } to { transform: rotate(30deg); } }
 @keyframes walkBob { from { transform: translateY(0); } to { transform: translateY(-4px); } }
 
 /* Живые глазки */
 .bot-eye {
   width: 9px; height: 9px; border-radius: 50%;
-  background: rgba(255,255,255,0.9); box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  background: var(--neon-green); box-shadow: inset 0 1px 3px rgba(0,0,0,0.5), 0 0 6px var(--neon-green);
   overflow: hidden; position: relative;
   animation: blinkEye 4s infinite;
 }
@@ -519,22 +548,22 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 #bot header button { background: none; border: none; color: var(--muted); font-size: 22px; cursor: pointer; transition: .2s; }
-#bot header button:hover { color: #fff; }
+#bot header button:hover { color: var(--neon-green); }
 #bot-log { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
 .msg { max-width: 88%; padding: 11px 15px; border-radius: 16px; font-size: 13.5px; line-height: 1.45; white-space: pre-wrap; font-family:-apple-system, sans-serif;}
 .msg.bot { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.05); color: #fff; border-bottom-left-radius: 4px; align-self: flex-start; }
-.msg.me { background: #fff; color: #000; border-bottom-right-radius: 4px; align-self: flex-end; font-weight: 500; }
+.msg.me { background: var(--neon-green); color: #000; border-bottom-right-radius: 4px; align-self: flex-end; font-weight: 500; }
 .bot-action-btn { display: inline-block; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 7px 12px; margin: 6px 6px 0 0; color: #fff; cursor: pointer; font-size: 12.5px; transition: 0.2s; font-weight: 500; }
-.bot-action-btn:hover { background: #fff; color: #000; transform: translateY(-1px); }
+.bot-action-btn:hover { background: var(--neon-green); color: #000; border-color:var(--neon-green); transform: translateY(-1px); }
 #bot-form { display: flex; align-items: center; gap: 8px; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); }
 #bot-input { background: rgba(255,255,255,0.08); border: 1px solid transparent; border-radius: 12px; padding: 10px 14px; font-size: 13.5px; color: #fff; flex: 1; transition: 0.2s; }
-#bot-input:focus { border-color: rgba(255,255,255,0.4); outline: none; }
-#bot-form button { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; padding: 4px 8px; transition: 0.2s; }
+#bot-input:focus { border-color: var(--neon-green); outline: none; }
+#bot-form button { background: none; border: none; color: var(--neon-green); font-size: 18px; cursor: pointer; padding: 4px 8px; transition: 0.2s; }
 #bot-form button:hover { transform: scale(1.1); }
 
 /* Мини игра (пасхалка) */
 #game-area { position:relative; width:100%; height:260px; background:rgba(255,255,255,0.05); border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); }
-#game-target { position:absolute; width:44px; height:44px; background:#fff; border-radius:12px; top:50px; left:50px; cursor:pointer; display:grid; place-items:center; color:#000; font-family:var(--font-display); font-weight:bold; font-size:22px; transition:transform 0.1s; box-shadow:0 4px 12px rgba(0,0,0,0.3); }
+#game-target { position:absolute; width:44px; height:44px; background:var(--neon-green); border-radius:12px; top:50px; left:50px; cursor:pointer; display:grid; place-items:center; color:#000; font-family:var(--font-display); font-weight:bold; font-size:22px; transition:transform 0.1s; box-shadow:0 4px 12px rgba(0,255,102,0.4); }
 #game-target:active { transform:scale(0.9); }
  
 /* ---------- адаптив ---------- */
@@ -932,9 +961,9 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   </div>
 </div>
  
-<!-- БОТ-APPLE-GLASS (ХОДЯЩИЙ ПО НИЗУ) -->
+<!-- БОТ-APPLE-GLASS -->
 <div id="bot-toggle-wrap">
-  <div class="tour-bubble" id="tour-bubble">
+  <div class="tour-bubble bubble-center" id="tour-bubble">
     <div id="tour-text"></div>
     <div class="tour-btns">
       <button class="tour-btn tour-btn-skip" onclick="endTour()">Пропустить</button>
@@ -998,7 +1027,7 @@ function initMagicNav(){
  
   links.forEach(link => {
     link.addEventListener('mouseenter', () => {
-      if(window.innerWidth <= 720) return; // Выключаем на мобилках
+      if(window.innerWidth <= 720) return;
       const rect = link.getBoundingClientRect();
       const pillRect = pill.getBoundingClientRect();
       hoverPill.style.width = rect.width + 'px';
@@ -1006,9 +1035,7 @@ function initMagicNav(){
       hoverPill.style.opacity = '1';
     });
   });
-  pill.addEventListener('mouseleave', () => {
-    hoverPill.style.opacity = '0';
-  });
+  pill.addEventListener('mouseleave', () => { hoverPill.style.opacity = '0'; });
 }
 initMagicNav();
 
@@ -1155,10 +1182,7 @@ const defaultData = {
   groups: {
     "Моя группа": {
       students: [],
-      schedule: {
-        "even": { "mon":[], "tue":[], "wed":[], "thu":[], "fri":[], "sat":[] },
-        "odd":  { "mon":[], "tue":[], "wed":[], "thu":[], "fri":[], "sat":[] }
-      },
+      schedule: { "even": { "mon":[], "tue":[], "wed":[], "thu":[], "fri":[], "sat":[] }, "odd": { "mon":[], "tue":[], "wed":[], "thu":[], "fri":[], "sat":[] } },
       attendance: {}, notesList: []
     }
   }
@@ -1171,8 +1195,7 @@ let currentExportData = [];
 function getActiveGroupData(){
   if (!userData) userData = JSON.parse(JSON.stringify(defaultData));
   if (!userData.groups) userData.groups = { "Новая группа": { students: [], schedule:{even:{},odd:{}}, attendance:{}, notesList:[] } };
-  if (!userData.currentGroup || !userData.groups[userData.currentGroup])
-    userData.currentGroup = Object.keys(userData.groups)[0] || "Новая группа";
+  if (!userData.currentGroup || !userData.groups[userData.currentGroup]) userData.currentGroup = Object.keys(userData.groups)[0] || "Новая группа";
   let g = userData.groups[userData.currentGroup];
   if (!g) g = {};
   if (!g.schedule) g.schedule = {};
@@ -1219,14 +1242,12 @@ function saveToCloud(silent){
 let isLoginMode = true;
 function openAuthModal(){ openModal('auth-modal'); closeMenu(); }
 function togglePassword(){
-  const p = document.getElementById('password');
-  p.type = p.type === 'password' ? 'text' : 'password';
+  const p = document.getElementById('password'); p.type = p.type === 'password' ? 'text' : 'password';
 }
 function checkPasswordStrength(){
   if (isLoginMode) return;
   const err = document.getElementById('auth-error'), v = document.getElementById('password').value;
-  if (v.length > 0 && v.length < 6){ err.textContent = 'Пароль короче шести символов.'; err.style.display = 'block'; }
-  else err.style.display = 'none';
+  if (v.length > 0 && v.length < 6){ err.textContent = 'Пароль короче шести символов.'; err.style.display = 'block'; } else err.style.display = 'none';
 }
 function toggleAuthMode(){
   isLoginMode = !isLoginMode;
@@ -1243,25 +1264,20 @@ function handleAuthError(error){
   else if (c === 'auth/weak-password') msg = 'Нужен пароль минимум из шести символов.';
   else if (c === 'auth/invalid-email') msg = 'Проверьте формат почты.';
   else if (c === 'auth/invalid-credential' || c === 'auth/wrong-password' || c === 'auth/user-not-found') msg = 'Неверная почта или пароль.';
-  const el = document.getElementById('auth-error');
-  el.textContent = msg; el.style.display = 'block';
+  const el = document.getElementById('auth-error'); el.textContent = msg; el.style.display = 'block';
 }
 function login(){
   const email = document.getElementById('email').value.trim(), pass = document.getElementById('password').value;
   if (!email || !pass) return handleAuthError({ message: 'Введите почту и пароль.' });
   const b = document.getElementById('btn-login'); b.textContent = 'Входим…'; b.disabled = true;
-  auth && auth.signInWithEmailAndPassword(email, pass)
-    .then(() => { b.textContent = 'Войти'; b.disabled = false; })
-    .catch(err => { b.textContent = 'Войти'; b.disabled = false; handleAuthError(err); });
+  auth && auth.signInWithEmailAndPassword(email, pass).then(() => { b.textContent = 'Войти'; b.disabled = false; }).catch(err => { b.textContent = 'Войти'; b.disabled = false; handleAuthError(err); });
 }
 function register(){
   const email = document.getElementById('email').value.trim(), pass = document.getElementById('password').value;
   if (!email || !pass) return handleAuthError({ message: 'Введите почту и пароль.' });
   if (pass.length < 6) return handleAuthError({ code: 'auth/weak-password' });
   const b = document.getElementById('btn-register'); b.textContent = 'Создаём…'; b.disabled = true;
-  auth && auth.createUserWithEmailAndPassword(email, pass)
-    .then(() => { b.textContent = 'Создать аккаунт'; b.disabled = false; })
-    .catch(err => { b.textContent = 'Создать аккаунт'; b.disabled = false; handleAuthError(err); });
+  auth && auth.createUserWithEmailAndPassword(email, pass).then(() => { b.textContent = 'Создать аккаунт'; b.disabled = false; }).catch(err => { b.textContent = 'Создать аккаунт'; b.disabled = false; handleAuthError(err); });
 }
 function logout(e){ if (e) e.stopPropagation(); auth && auth.signOut(); document.getElementById('dropdown').classList.remove('show'); showToast('Вы вышли из аккаунта', 'success'); }
 function forceSync(e){ if (e) e.stopPropagation(); saveToCloud(); document.getElementById('dropdown').classList.remove('show'); }
@@ -1269,16 +1285,11 @@ function toggleDropdown(e){ if (e) e.stopPropagation(); document.getElementById(
 document.addEventListener('click', e => { if (!e.target.closest('.profile')) document.getElementById('dropdown').classList.remove('show'); });
  
 function setAuthUI(user){
-  const signin = document.getElementById('signin-btn'), profile = document.getElementById('profile-block'),
-        menuBtn = document.getElementById('menu-auth-btn');
-  const bannerTitle = document.getElementById('account-banner-title'),
-        bannerText = document.getElementById('account-banner-text'),
-        bannerBtn = document.getElementById('account-banner-btn');
+  const signin = document.getElementById('signin-btn'), profile = document.getElementById('profile-block'), menuBtn = document.getElementById('menu-auth-btn');
+  const bannerTitle = document.getElementById('account-banner-title'), bannerText = document.getElementById('account-banner-text'), bannerBtn = document.getElementById('account-banner-btn');
   if (user){
-    signin.hidden = true; profile.hidden = false;
-    updateProfileName();
-    menuBtn.textContent = 'Выйти'; menuBtn.onclick = logout;
-    closeModal('auth-modal');
+    signin.hidden = true; profile.hidden = false; updateProfileName();
+    menuBtn.textContent = 'Выйти'; menuBtn.onclick = logout; closeModal('auth-modal');
     bannerTitle.textContent = 'Вы вошли как ' + user.email;
     bannerText.textContent = 'Эта группа сохраняется за вашим аккаунтом и откроется на любом устройстве после входа.';
     bannerBtn.textContent = 'Выйти'; bannerBtn.onclick = logout;
@@ -1290,28 +1301,6 @@ function setAuthUI(user){
     bannerBtn.textContent = 'Войти'; bannerBtn.onclick = openAuthModal;
   }
 }
- 
-let bootTimer = setTimeout(() => { loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); }, 1500);
-if (auth){
-  auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
-    auth.onAuthStateChanged(user => {
-      clearTimeout(bootTimer);
-      setAuthUI(user);
-      if (user){
-        currentUser = user;
-        db.collection('users').doc(user.uid).get().then(doc => {
-          if (doc.exists){ 
-            userData = doc.data(); 
-            if (userData.avatar === undefined) userData.avatar = 0; 
-            if (userData.nickname === undefined) userData.nickname = "";
-          }
-          else { loadLocalData(); saveToCloud(true); }
-          initApp(); checkFirstVisit();
-        }).catch(() => { loadLocalData(); initApp(); checkFirstVisit(); });
-      } else { currentUser = null; loadLocalData(); initApp(); checkFirstVisit(); }
-    });
-  }).catch(() => { clearTimeout(bootTimer); loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); });
-} else { clearTimeout(bootTimer); loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); }
 
 /* ======================= ПРОФИЛЬ (ИМЯ) ======================= */
 function changeNickname(e) {
@@ -1322,21 +1311,13 @@ function changeNickname(e) {
 }
 function saveNickname() {
   const newName = document.getElementById('nickname-input').value.trim();
-  userData.nickname = newName;
-  saveToCloud(true);
-  updateProfileName();
-  closeModal('name-modal');
-  showToast('Имя сохранено', 'success');
+  userData.nickname = newName; saveToCloud(true); updateProfileName(); closeModal('name-modal'); showToast('Имя сохранено', 'success');
 }
 function updateProfileName() {
   const nameEl = document.getElementById('profile-name');
-  if (userData.nickname) {
-    nameEl.textContent = userData.nickname;
-  } else if (currentUser) {
-    nameEl.textContent = currentUser.email.split('@')[0];
-  } else {
-    nameEl.textContent = "Профиль";
-  }
+  if (userData.nickname) nameEl.textContent = userData.nickname;
+  else if (currentUser) nameEl.textContent = currentUser.email.split('@')[0];
+  else nameEl.textContent = "Профиль";
 }
  
 /* ======================= ГРАФИЧЕСКИЙ АВАТАР ======================= */
@@ -1355,11 +1336,7 @@ function applyAvatarUI() {
   const index = userData.avatar !== undefined ? userData.avatar : 0;
   const style = avatarStyles[index] || avatarStyles[0];
   const av = document.getElementById('profile-avatar');
-  if (av) {
-    av.textContent = style.char;
-    av.style.background = style.bg;
-    av.style.color = style.col || "#fff";
-  }
+  if (av) { av.textContent = style.char; av.style.background = style.bg; av.style.color = style.col || "#fff"; }
 }
 
 function openAvatarModal(e){
@@ -1368,11 +1345,8 @@ function openAvatarModal(e){
   avatarStyles.forEach((a, i) => {
     const d = document.createElement('div');
     d.className = 'avatar-opt' + (userData.avatar === i ? ' selected' : '');
-    d.textContent = a.char;
-    d.style.background = a.bg;
-    d.style.color = a.col || "#fff";
-    d.onclick = () => selectAvatar(i);
-    grid.appendChild(d);
+    d.textContent = a.char; d.style.background = a.bg; d.style.color = a.col || "#fff";
+    d.onclick = () => selectAvatar(i); grid.appendChild(d);
   });
   document.getElementById('dropdown').classList.remove('show');
   openModal('avatar-modal');
@@ -1384,8 +1358,7 @@ function initApp(){
   try{
     const g = getActiveGroupData();
     document.getElementById('page-title').textContent = 'StaroSTATT — ' + (userData.currentGroup || '');
-    applyAvatarUI();
-    updateProfileName();
+    applyAvatarUI(); updateProfileName();
  
     const sel = document.getElementById('group-selector'); sel.innerHTML = '';
     Object.keys(userData.groups).forEach(name => {
@@ -1398,7 +1371,6 @@ function initApp(){
     document.getElementById('setup-group-name').value = userData.currentGroup || '';
     document.getElementById('setup-students').value = g.students.join('\n');
     
-    // Загрузка расписания
     ['even', 'odd'].forEach(wt => {
       ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'].forEach(day => {
         const arr = (g.schedule[wt] && g.schedule[wt][day]) ? g.schedule[wt][day] : [];
@@ -1425,49 +1397,36 @@ function initApp(){
 function initWeekSelects(){
   if (weekSelect.children.length) return;
   for (let i = 1; i <= 18; i++){
-    const o = document.createElement('option');
-    o.value = i; o.textContent = i + ' неделя (' + (i % 2 !== 0 ? 'чётная' : 'нечётная') + ')';
+    const o = document.createElement('option'); o.value = i; o.textContent = i + ' неделя (' + (i % 2 !== 0 ? 'чётная' : 'нечётная') + ')';
     weekSelect.appendChild(o);
-    const o2 = o.cloneNode(true);
-    document.getElementById('curator-week-select').appendChild(o2);
+    const o2 = o.cloneNode(true); document.getElementById('curator-week-select').appendChild(o2);
   }
 }
  
 function changeActiveGroup(){ userData.currentGroup = document.getElementById('group-selector').value; saveToCloud(true); initApp(); }
 function startNewGroup(){
-  document.getElementById('setup-group-name').value = 'Новая группа';
-  document.getElementById('setup-students').value = '';
-  insertScheduleTemplate();
-  document.getElementById('group-editor').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('setup-group-name').value = 'Новая группа'; document.getElementById('setup-students').value = '';
+  insertScheduleTemplate(); document.getElementById('group-editor').scrollIntoView({ behavior: 'smooth' });
 }
 function insertScheduleTemplate(){
   ['even', 'odd'].forEach(wt => {
-    ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'].forEach(day => {
-      const el = document.getElementById('sched-' + wt + '-' + day);
-      if (el) el.value = '';
-    });
+    ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'].forEach(day => { const el = document.getElementById('sched-' + wt + '-' + day); if (el) el.value = ''; });
   });
-  document.getElementById('sched-even-mon').value = "8:30 - Название предмета (Л)";
-  switchScheduleTab('even');
+  document.getElementById('sched-even-mon').value = "8:30 - Название предмета (Л)"; switchScheduleTab('even');
 }
 function switchScheduleTab(tab){
   if (tab === 'even') {
-    document.getElementById('sched-even-container').style.display = 'block';
-    document.getElementById('sched-odd-container').style.display = 'none';
-    document.getElementById('btn-tab-even').className = 'btn btn-primary';
-    document.getElementById('btn-tab-odd').className = 'btn btn-ghost';
+    document.getElementById('sched-even-container').style.display = 'block'; document.getElementById('sched-odd-container').style.display = 'none';
+    document.getElementById('btn-tab-even').className = 'btn btn-primary'; document.getElementById('btn-tab-odd').className = 'btn btn-ghost';
   } else {
-    document.getElementById('sched-even-container').style.display = 'none';
-    document.getElementById('sched-odd-container').style.display = 'block';
-    document.getElementById('btn-tab-even').className = 'btn btn-ghost';
-    document.getElementById('btn-tab-odd').className = 'btn btn-primary';
+    document.getElementById('sched-even-container').style.display = 'none'; document.getElementById('sched-odd-container').style.display = 'block';
+    document.getElementById('btn-tab-even').className = 'btn btn-ghost'; document.getElementById('btn-tab-odd').className = 'btn btn-primary';
   }
 }
 function saveGroup(){
   const name = document.getElementById('setup-group-name').value.trim();
   if (!name) return showToast('Впишите название группы — по нему подписаны все отчёты.');
   const students = document.getElementById('setup-students').value.split('\n').map(s => s.trim()).filter(Boolean);
-  
   let schedule = { even: {}, odd: {} };
   ['even', 'odd'].forEach(wt => {
     ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'].forEach(day => {
@@ -1476,13 +1435,9 @@ function saveGroup(){
       schedule[wt][day] = lines.map((line, idx) => ({ id: String(idx + 1), text: line }));
     });
   });
- 
   const old = userData.groups[name] || {};
   userData.groups[name] = { students, schedule, attendance: old.attendance || {}, notesList: old.notesList || [] };
-  userData.currentGroup = name;
-  saveToCloud(true);
-  initApp();
-  showToast('Группа сохранена', 'success');
+  userData.currentGroup = name; saveToCloud(true); initApp(); showToast('Группа сохранена', 'success');
 }
  
 /* ======================= ЖУРНАЛ ======================= */
@@ -1494,34 +1449,24 @@ function getAcademicWeek(d){
   return weeks > 0 && weeks <= 18 ? weeks : 1;
 }
 function syncDateToDay(){
-  const d = new Date(datePicker.value);
-  if (isNaN(d)) return updateInterface();
-  const codes = ['sun','mon','tue','wed','thu','fri','sat'];
-  const code = codes[d.getDay()];
+  const d = new Date(datePicker.value); if (isNaN(d)) return updateInterface();
+  const codes = ['sun','mon','tue','wed','thu','fri','sat'], code = codes[d.getDay()];
   if (document.querySelector('#day option[value="' + code + '"]')) daySelect.value = code;
-  weekSelect.value = getAcademicWeek(d);
-  updateInterface();
+  weekSelect.value = getAcademicWeek(d); updateInterface();
 }
 function updateInterface(){
-  const g = getActiveGroupData();
-  const weekType = (parseInt(weekSelect.value) % 2 !== 0) ? 'even' : 'odd';
+  const g = getActiveGroupData(), weekType = (parseInt(weekSelect.value) % 2 !== 0) ? 'even' : 'odd';
   const lessons = (g.schedule[weekType] && g.schedule[weekType][daySelect.value]) || [];
   const dayNames = { mon:'Понедельник', tue:'Вторник', wed:'Среда', thu:'Четверг', fri:'Пятница', sat:'Суббота' };
-  document.getElementById('card-title').innerHTML = dayNames[daySelect.value] +
-    ' <span style="color:var(--muted);font-weight:400">· ' + weekSelect.value + ' неделя</span>';
- 
-  const list = document.getElementById('schedule-display-cards'); list.innerHTML = '';
-  lessonSelect.innerHTML = '';
+  document.getElementById('card-title').innerHTML = dayNames[daySelect.value] + ' <span style="color:var(--muted);font-weight:400">· ' + weekSelect.value + ' неделя</span>';
+  const list = document.getElementById('schedule-display-cards'); list.innerHTML = ''; lessonSelect.innerHTML = '';
   if (!lessons.length){
-    list.innerHTML = '<div class="empty">В этот день пар нет</div>';
-    lessonSelect.innerHTML = '<option value="none">Нет пар</option>';
+    list.innerHTML = '<div class="empty">В этот день пар нет</div>'; lessonSelect.innerHTML = '<option value="none">Нет пар</option>';
   } else {
     lessons.forEach(l => {
-      const parts = String(l.text).split(' - ');
-      const time = parts[0], name = parts.slice(1).join(' - ');
+      const parts = String(l.text).split(' - '), time = parts[0], name = parts.slice(1).join(' - ');
       const row = document.createElement('div'); row.className = 'lesson-row';
-      row.innerHTML = '<span class="lesson-time">' + time + '</span><span class="lesson-name">' + name + '</span>';
-      list.appendChild(row);
+      row.innerHTML = '<span class="lesson-time">' + time + '</span><span class="lesson-name">' + name + '</span>'; list.appendChild(row);
       const o = document.createElement('option'); o.value = l.id; o.textContent = l.text; lessonSelect.appendChild(o);
     });
   }
@@ -1531,24 +1476,15 @@ function key(w, d, l, s){ return 'w' + w + '_d' + d + '_l' + l + '_s' + s; }
 function currentKey(i){ return key(weekSelect.value, daySelect.value, lessonSelect.value, i); }
  
 function renderTable(){
-  const tbody = document.getElementById('students-body'); tbody.innerHTML = '';
-  const g = getActiveGroupData();
-  if (lessonSelect.value === 'none' || !lessonSelect.value){
-    tbody.innerHTML = '<tr><td colspan="5" class="empty">Выберите день, в котором есть пары</td></tr>'; return;
-  }
-  if (!g.students.length){
-    tbody.innerHTML = '<tr><td colspan="5" class="empty">Список пуст — добавьте студентов на вкладке «Группа»</td></tr>'; return;
-  }
+  const tbody = document.getElementById('students-body'); tbody.innerHTML = ''; const g = getActiveGroupData();
+  if (lessonSelect.value === 'none' || !lessonSelect.value){ tbody.innerHTML = '<tr><td colspan="5" class="empty">Выберите день, в котором есть пары</td></tr>'; return; }
+  if (!g.students.length){ tbody.innerHTML = '<tr><td colspan="5" class="empty">Список пуст — добавьте студентов на вкладке «Группа»</td></tr>'; return; }
   g.students.forEach((name, i) => {
     const d = g.attendance[currentKey(i)] || { present:false, answers:0, notes:'' };
     const tr = document.createElement('tr');
-    tr.innerHTML =
-      '<td class="num">' + (i + 1) + '</td>' +
-      '<td>' + name + '</td>' +
+    tr.innerHTML = '<td class="num">' + (i + 1) + '</td><td>' + name + '</td>' +
       '<td class="center"><input type="checkbox" ' + (d.present ? 'checked' : '') + ' onchange="saveData(' + i + ',\'present\',this.checked)"></td>' +
-      '<td class="center"><span class="counter"><button class="btn-count" onclick="updateCount(this,-1,' + i + ')">−</button>' +
-      '<span class="count-val">' + (d.answers || 0) + '</span>' +
-      '<button class="btn-count" onclick="updateCount(this,1,' + i + ')">+</button></span></td>' +
+      '<td class="center"><span class="counter"><button class="btn-count" onclick="updateCount(this,-1,' + i + ')">−</button><span class="count-val">' + (d.answers || 0) + '</span><button class="btn-count" onclick="updateCount(this,1,' + i + ')">+</button></span></td>' +
       '<td><input type="text" class="notes-input" placeholder="долг, справка…" value="' + String(d.notes || '').replace(/"/g,'&quot;') + '" oninput="saveData(' + i + ',\'notes\',this.value)"></td>';
     tbody.appendChild(tr);
   });
@@ -1557,83 +1493,43 @@ function saveData(i, field, value){
   if (lessonSelect.value === 'none') return;
   const g = getActiveGroupData(), k = currentKey(i);
   if (!g.attendance[k]) g.attendance[k] = { present:false, answers:0, notes:'' };
-  g.attendance[k][field] = value;
-  saveToCloud(true);
+  g.attendance[k][field] = value; saveToCloud(true);
 }
 function updateCount(btn, delta, i){
-  const span = btn.parentElement.querySelector('.count-val');
-  const v = Math.max(0, parseInt(span.textContent) + delta);
+  const span = btn.parentElement.querySelector('.count-val'), v = Math.max(0, parseInt(span.textContent) + delta);
   span.textContent = v; saveData(i, 'answers', v);
 }
 function markAllPresent(){
   if (lessonSelect.value === 'none' || !lessonSelect.value) return showToast('В этот день пар нет.');
   const g = getActiveGroupData();
-  g.students.forEach((_, i) => {
-    const k = currentKey(i);
-    if (!g.attendance[k]) g.attendance[k] = { present:false, answers:0, notes:'' };
-    g.attendance[k].present = true;
-  });
+  g.students.forEach((_, i) => { const k = currentKey(i); if (!g.attendance[k]) g.attendance[k] = { present:false, answers:0, notes:'' }; g.attendance[k].present = true; });
   saveToCloud(true); renderTable(); showToast('Вся группа отмечена', 'success');
 }
  
 /* ======================= КАРТОЧКИ И КАЛЕНДАРЬ ======================= */
-function openNoteModal(){
-  document.getElementById('note-title-input').value = '';
-  document.getElementById('note-text-input').value = '';
-  document.getElementById('note-date-input').value = '';
-  openModal('note-modal');
-}
+function openNoteModal(){ document.getElementById('note-title-input').value = ''; document.getElementById('note-text-input').value = ''; document.getElementById('note-date-input').value = ''; openModal('note-modal'); }
 function exportToCal(title, text, dateStr){
-  const t = decodeURIComponent(title);
-  const x = decodeURIComponent(text);
-  const d = new Date(dateStr);
-  if (isNaN(d)) return;
-  const start = d.toISOString().split('T')[0].replace(/-/g, '');
-  d.setDate(d.getDate() + 1);
-  const end = d.toISOString().split('T')[0].replace(/-/g, '');
-  const url = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(t) + '&details=' + encodeURIComponent(x) + '&dates=' + start + '/' + end;
-  window.open(url, '_blank');
+  const t = decodeURIComponent(title), x = decodeURIComponent(text), d = new Date(dateStr); if (isNaN(d)) return;
+  const start = d.toISOString().split('T')[0].replace(/-/g, ''); d.setDate(d.getDate() + 1); const end = d.toISOString().split('T')[0].replace(/-/g, '');
+  window.open('https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(t) + '&details=' + encodeURIComponent(x) + '&dates=' + start + '/' + end, '_blank');
 }
 function saveNewNote(){
-  const t = document.getElementById('note-title-input').value.trim();
-  const x = document.getElementById('note-text-input').value.trim();
-  const d = document.getElementById('note-date-input').value;
+  const t = document.getElementById('note-title-input').value.trim(), x = document.getElementById('note-text-input').value.trim(), d = document.getElementById('note-date-input').value;
   if (!t || !x) return showToast('Заполните заголовок и текст карточки.');
   getActiveGroupData().notesList.push({ id: Date.now(), title: t, text: x, eventDate: d, isPinned: false });
   saveToCloud(true); renderNotes(); closeModal('note-modal'); showToast('Карточка добавлена', 'success');
 }
-function togglePin(id){
-  const list = getActiveGroupData().notesList;
-  const n = list.find(n => n.id === id); if (n) n.isPinned = !n.isPinned;
-  saveToCloud(true); renderNotes();
-}
-function deleteNote(id){
-  const g = getActiveGroupData();
-  g.notesList = g.notesList.filter(n => n.id !== id);
-  saveToCloud(true); renderNotes(); showToast('Карточка удалена', 'success');
-}
+function togglePin(id){ const list = getActiveGroupData().notesList, n = list.find(n => n.id === id); if (n) n.isPinned = !n.isPinned; saveToCloud(true); renderNotes(); }
+function deleteNote(id){ const g = getActiveGroupData(); g.notesList = g.notesList.filter(n => n.id !== id); saveToCloud(true); renderNotes(); showToast('Карточка удалена', 'success'); }
 function renderNotes(){
   const box = document.getElementById('notes-grid-container'); box.innerHTML = '';
-  const list = (getActiveGroupData().notesList || []).slice()
-    .sort((a, b) => (a.isPinned === b.isPinned) ? b.id - a.id : (a.isPinned ? -1 : 1));
-  if (!list.length){
-    box.innerHTML = '<div class="card" style="grid-column:1/-1"><div class="empty">Пока пусто. Добавьте первый дедлайн или объявление.</div></div>';
-    return;
-  }
+  const list = (getActiveGroupData().notesList || []).slice().sort((a, b) => (a.isPinned === b.isPinned) ? b.id - a.id : (a.isPinned ? -1 : 1));
+  if (!list.length){ box.innerHTML = '<div class="card" style="grid-column:1/-1"><div class="empty">Пока пусто. Добавьте первый дедлайн или объявление.</div></div>'; return; }
   list.forEach(n => {
-    const el = document.createElement('article');
-    el.className = 'note' + (n.isPinned ? ' pinned' : '');
-    
+    const el = document.createElement('article'); el.className = 'note' + (n.isPinned ? ' pinned' : '');
     let dateHtml = '<span>' + new Date(n.id).toLocaleDateString('ru-RU') + '</span>';
-    if (n.eventDate) {
-       dateHtml = '<span>📅 ' + new Date(n.eventDate).toLocaleDateString('ru-RU') + '</span>' + 
-                  '<button class="btn-ghost" style="padding:4px 8px;font-size:11px;margin-left:8px;border-radius:6px;" onclick="exportToCal(\'' + encodeURIComponent(n.title) + '\', \'' + encodeURIComponent(n.text) + '\', \'' + n.eventDate + '\')">В календарь</button>';
-    }
-
-    el.innerHTML = '<button class="pin" title="Закрепить" onclick="togglePin(' + n.id + ')">📌</button>' +
-      '<h4>' + n.title + '</h4><p>' + n.text + '</p>' +
-      '<footer><div style="display:flex;align-items:center">' + dateHtml + '</div>' +
-      '<button class="btn-danger" onclick="deleteNote(' + n.id + ')">Удалить</button></footer>';
+    if (n.eventDate) dateHtml = '<span>📅 ' + new Date(n.eventDate).toLocaleDateString('ru-RU') + '</span><button class="btn-ghost" style="padding:4px 8px;font-size:11px;margin-left:8px;border-radius:6px;" onclick="exportToCal(\'' + encodeURIComponent(n.title) + '\', \'' + encodeURIComponent(n.text) + '\', \'' + n.eventDate + '\')">В календарь</button>';
+    el.innerHTML = '<button class="pin" title="Закрепить" onclick="togglePin(' + n.id + ')">📌</button><h4>' + n.title + '</h4><p>' + n.text + '</p><footer><div style="display:flex;align-items:center">' + dateHtml + '</div><button class="btn-danger" onclick="deleteNote(' + n.id + ')">Удалить</button></footer>';
     box.appendChild(el);
   });
 }
@@ -1642,154 +1538,176 @@ function renderNotes(){
 function renderReports(){ renderCuratorTable(); renderGroupStats(); initSubjects(); }
 function tone(p){ return p >= 80 ? 'var(--ok)' : (p < 50 ? 'var(--bad)' : '#fff'); }
 function renderCuratorTable(){
-  const g = getActiveGroupData();
-  const target = parseInt(document.getElementById('curator-week-select').value) || 1;
-  const tbody = document.getElementById('curator-tbody'); tbody.innerHTML = '';
-  currentExportData = [];
-  if (!g.students.length){
-    tbody.innerHTML = '<tr><td colspan="4" class="empty">Сначала добавьте студентов на вкладке «Группа»</td></tr>';
-    document.getElementById('curator-summary').textContent = ''; return;
-  }
+  const g = getActiveGroupData(), target = parseInt(document.getElementById('curator-week-select').value) || 1;
+  const tbody = document.getElementById('curator-tbody'); tbody.innerHTML = ''; currentExportData = [];
+  if (!g.students.length){ tbody.innerHTML = '<tr><td colspan="4" class="empty">Сначала добавьте студентов на вкладке «Группа»</td></tr>'; document.getElementById('curator-summary').textContent = ''; return; }
   let totalLec = 0, totalSem = 0;
   for (let w = 1; w <= target; w++){
     const wt = (w % 2 !== 0) ? 'even' : 'odd';
-    for (const day in g.schedule[wt]){
-      (g.schedule[wt][day] || []).forEach(l => {
-        if (String(l.text).includes('(Л)')) totalLec++;
-        if (String(l.text).includes('(С)')) totalSem++;
-      });
-    }
+    for (const day in g.schedule[wt]) (g.schedule[wt][day] || []).forEach(l => { if (String(l.text).includes('(Л)')) totalLec++; if (String(l.text).includes('(С)')) totalSem++; });
   }
-  document.getElementById('curator-summary').innerHTML =
-    'С первой по ' + target + '-ю неделю: семинаров ' + totalSem + ' пар (' + totalSem * 2 + ' ак. ч.), лекций ' +
-    totalLec + ' пар (' + totalLec * 2 + ' ак. ч.).';
- 
+  document.getElementById('curator-summary').innerHTML = 'С первой по ' + target + '-ю неделю: семинаров ' + totalSem + ' пар (' + totalSem * 2 + ' ак. ч.), лекций ' + totalLec + ' пар (' + totalLec * 2 + ' ак. ч.).';
   g.students.forEach((name, s) => {
     let attLec = 0, attSem = 0;
     for (let w = 1; w <= target; w++){
       const wt = (w % 2 !== 0) ? 'even' : 'odd';
-      for (const day in g.schedule[wt]){
-        (g.schedule[wt][day] || []).forEach(l => {
-          const cell = g.attendance[key(w, day, l.id, s)];
-          if (cell && cell.present){
-            if (String(l.text).includes('(Л)')) attLec++;
-            if (String(l.text).includes('(С)')) attSem++;
-          }
-        });
-      }
+      for (const day in g.schedule[wt]) (g.schedule[wt][day] || []).forEach(l => {
+        const cell = g.attendance[key(w, day, l.id, s)];
+        if (cell && cell.present){ if (String(l.text).includes('(Л)')) attLec++; if (String(l.text).includes('(С)')) attSem++; }
+      });
     }
-    const pSem = totalSem ? Math.round(attSem / totalSem * 100) : 0;
-    const pLec = totalLec ? Math.round(attLec / totalLec * 100) : 0;
-    const pTot = (totalSem + totalLec) ? Math.round((attSem + attLec) / (totalSem + totalLec) * 100) : 0;
+    const pSem = totalSem ? Math.round(attSem / totalSem * 100) : 0, pLec = totalLec ? Math.round(attLec / totalLec * 100) : 0, pTot = (totalSem + totalLec) ? Math.round((attSem + attLec) / (totalSem + totalLec) * 100) : 0;
     currentExportData.push({ name, attSem, totalSem, pSem, attLec, totalLec, pLec, pTot });
     const tr = document.createElement('tr');
-    tr.innerHTML = '<td>' + name + '</td>' +
-      '<td class="center"><span class="mono-num">' + attSem + '/' + totalSem + '</span>' +
-        '<span class="sub">' + attSem * 2 + '/' + totalSem * 2 + ' ак. ч. · <span style="color:' + tone(pSem) + '">' + pSem + '%</span></span></td>' +
-      '<td class="center"><span class="mono-num">' + attLec + '/' + totalLec + '</span>' +
-        '<span class="sub">' + attLec * 2 + '/' + totalLec * 2 + ' ак. ч. · <span style="color:' + tone(pLec) + '">' + pLec + '%</span></span></td>' +
-      '<td class="center mono-num" style="color:' + tone(pTot) + '">' + pTot + '%</td>';
+    tr.innerHTML = '<td>' + name + '</td><td class="center"><span class="mono-num">' + attSem + '/' + totalSem + '</span><span class="sub">' + attSem * 2 + '/' + totalSem * 2 + ' ак. ч. · <span style="color:' + tone(pSem) + '">' + pSem + '%</span></span></td><td class="center"><span class="mono-num">' + attLec + '/' + totalLec + '</span><span class="sub">' + attLec * 2 + '/' + totalLec * 2 + ' ак. ч. · <span style="color:' + tone(pLec) + '">' + pLec + '%</span></span></td><td class="center mono-num" style="color:' + tone(pTot) + '">' + pTot + '%</td>';
     tbody.appendChild(tr);
   });
 }
 function renderGroupStats(){
-  const g = getActiveGroupData();
-  const tbody = document.getElementById('stats-body'); tbody.innerHTML = '';
+  const g = getActiveGroupData(), tbody = document.getElementById('stats-body'); tbody.innerHTML = '';
   if (!g.students.length){ tbody.innerHTML = '<tr><td colspan="5" class="empty">Нет данных</td></tr>'; return; }
   let totalLec = 0, totalSem = 0;
-  for (let w = 1; w <= 18; w++){
-    const wt = (w % 2 !== 0) ? 'even' : 'odd';
-    for (const day in g.schedule[wt]) (g.schedule[wt][day] || []).forEach(l => {
-      if (String(l.text).includes('(Л)')) totalLec++;
-      if (String(l.text).includes('(С)')) totalSem++;
-    });
-  }
+  for (let w = 1; w <= 18; w++){ const wt = (w % 2 !== 0) ? 'even' : 'odd'; for (const day in g.schedule[wt]) (g.schedule[wt][day] || []).forEach(l => { if (String(l.text).includes('(Л)')) totalLec++; if (String(l.text).includes('(С)')) totalSem++; }); }
   g.students.forEach((name, s) => {
     let lec = 0, sem = 0;
     for (let w = 1; w <= 18; w++){
       const wt = (w % 2 !== 0) ? 'even' : 'odd';
-      for (const day in g.schedule[wt]) (g.schedule[wt][day] || []).forEach(l => {
-        const cell = g.attendance[key(w, day, l.id, s)];
-        if (cell && cell.present){
-          if (String(l.text).includes('(Л)')) lec++;
-          if (String(l.text).includes('(С)')) sem++;
-        }
-      });
+      for (const day in g.schedule[wt]) (g.schedule[wt][day] || []).forEach(l => { const cell = g.attendance[key(w, day, l.id, s)]; if (cell && cell.present){ if (String(l.text).includes('(Л)')) lec++; if (String(l.text).includes('(С)')) sem++; } });
     }
-    const pl = totalLec ? Math.round(lec / totalLec * 100) : 0;
-    const ps = totalSem ? Math.round(sem / totalSem * 100) : 0;
-    const tr = document.createElement('tr');
-    tr.innerHTML = '<td>' + name + '</td>' +
-      '<td class="center mono-num">' + lec + '/' + totalLec + '</td>' +
-      '<td class="center mono-num" style="color:' + tone(pl) + '">' + pl + '%</td>' +
-      '<td class="center mono-num">' + sem + '/' + totalSem + '</td>' +
-      '<td class="center mono-num" style="color:' + tone(ps) + '">' + ps + '%</td>';
+    const pl = totalLec ? Math.round(lec / totalLec * 100) : 0, ps = totalSem ? Math.round(sem / totalSem * 100) : 0;
+    const tr = document.createElement('tr'); tr.innerHTML = '<td>' + name + '</td><td class="center mono-num">' + lec + '/' + totalLec + '</td><td class="center mono-num" style="color:' + tone(pl) + '">' + pl + '%</td><td class="center mono-num">' + sem + '/' + totalSem + '</td><td class="center mono-num" style="color:' + tone(ps) + '">' + ps + '%</td>';
     tbody.appendChild(tr);
   });
 }
 function initSubjects(){
-  const g = getActiveGroupData();
-  const grid = document.getElementById('subject-grid'); grid.innerHTML = '';
-  const found = new Set();
-  ['even','odd'].forEach(wt => {
-    for (const day in g.schedule[wt]) (g.schedule[wt][day] || []).forEach(l => {
-      const parts = String(l.text).split(' - ');
-      const nm = (parts[1] || parts[0]).replace(/\(Л\)|\(С\)/g, '').trim();
-      if (nm) found.add(nm);
-    });
-  });
+  const g = getActiveGroupData(), grid = document.getElementById('subject-grid'); grid.innerHTML = ''; const found = new Set();
+  ['even','odd'].forEach(wt => { for (const day in g.schedule[wt]) (g.schedule[wt][day] || []).forEach(l => { const parts = String(l.text).split(' - '), nm = (parts[1] || parts[0]).replace(/\(Л\)|\(С\)/g, '').trim(); if (nm) found.add(nm); }); });
   if (!found.size){ grid.innerHTML = '<div class="empty">Добавьте расписание — предметы появятся здесь</div>'; return; }
   found.forEach(subject => {
-    const c = document.createElement('button');
-    c.className = 'chip'; c.textContent = subject;
+    const c = document.createElement('button'); c.className = 'chip'; c.textContent = subject;
     c.onclick = () => { grid.querySelectorAll('.chip').forEach(x => x.classList.remove('active')); c.classList.add('active'); buildSubjectStats(subject); };
     grid.appendChild(c);
   });
 }
 function buildSubjectStats(subject){
-  const g = getActiveGroupData();
-  document.getElementById('teacher-table-wrapper').style.display = 'block';
-  document.getElementById('teacher-subject-title').textContent = subject;
-  const stats = g.students.map(() => 0);
-  let total = 0;
+  const g = getActiveGroupData(), tbody = document.getElementById('teacher-tbody');
+  document.getElementById('teacher-table-wrapper').style.display = 'block'; document.getElementById('teacher-subject-title').textContent = subject;
+  const stats = g.students.map(() => 0); let total = 0;
   for (let w = 1; w <= 18; w++){
     const wt = (w % 2 !== 0) ? 'even' : 'odd';
-    for (const day in g.schedule[wt]) (g.schedule[wt][day] || []).forEach(l => {
-      if (String(l.text).includes(subject)){
-        total++;
-        g.students.forEach((_, s) => {
-          const cell = g.attendance[key(w, day, l.id, s)];
-          if (cell && cell.present) stats[s]++;
-        });
-      }
-    });
+    for (const day in g.schedule[wt]) (g.schedule[wt][day] || []).forEach(l => { if (String(l.text).includes(subject)){ total++; g.students.forEach((_, s) => { const cell = g.attendance[key(w, day, l.id, s)]; if (cell && cell.present) stats[s]++; }); } });
   }
-  const tbody = document.getElementById('teacher-tbody'); tbody.innerHTML = '';
+  tbody.innerHTML = '';
   g.students.forEach((name, i) => {
-    const p = total ? Math.round(stats[i] / total * 100) : 0;
-    const tr = document.createElement('tr');
-    tr.innerHTML = '<td>' + name + '</td><td class="center mono-num">' + stats[i] + '</td>' +
-      '<td class="center mono-num">' + total + '</td>' +
-      '<td class="center mono-num" style="color:' + tone(p) + '">' + p + '%</td>';
+    const p = total ? Math.round(stats[i] / total * 100) : 0, tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + name + '</td><td class="center mono-num">' + stats[i] + '</td><td class="center mono-num">' + total + '</td><td class="center mono-num" style="color:' + tone(p) + '">' + p + '%</td>';
     tbody.appendChild(tr);
   });
 }
 function exportCuratorCSV(){
   if (!currentExportData.length) return showToast('Нечего выгружать — сначала заполните журнал.');
-  let csv = '\uFEFFСмотр группы ' + userData.currentGroup + '\nПо неделю: ' +
-    document.getElementById('curator-week-select').value +
-    '\n\nСтудент;Семинары (пары);Семинары (ак. ч.);Семинары %;Лекции (пары);Лекции (ак. ч.);Лекции %;Итого %\n';
-  currentExportData.forEach(r => {
-    csv += r.name + ';' + r.attSem + '/' + r.totalSem + ';' + r.attSem * 2 + '/' + r.totalSem * 2 + ';' + r.pSem + '%;' +
-           r.attLec + '/' + r.totalLec + ';' + r.attLec * 2 + '/' + r.totalLec * 2 + ';' + r.pLec + '%;' + r.pTot + '%\n';
-  });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
-  a.download = 'Смотр_' + userData.currentGroup + '.csv';
-  a.click();
+  let csv = '\uFEFFСмотр группы ' + userData.currentGroup + '\nПо неделю: ' + document.getElementById('curator-week-select').value + '\n\nСтудент;Семинары (пары);Семинары (ак. ч.);Семинары %;Лекции (пары);Лекции (ак. ч.);Лекции %;Итого %\n';
+  currentExportData.forEach(r => { csv += r.name + ';' + r.attSem + '/' + r.totalSem + ';' + r.attSem * 2 + '/' + r.totalSem * 2 + ';' + r.pSem + '%;' + r.attLec + '/' + r.totalLec + ';' + r.attLec * 2 + '/' + r.totalLec * 2 + ';' + r.pLec + '%;' + r.pTot + '%\n'; });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' })); a.download = 'Смотр_' + userData.currentGroup + '.csv'; a.click();
 }
 
-/* ======================= БОТ ЭКСКУРСИЯ (ХОДИТ ПО НИЗУ) ======================= */
+/* ======================= УМНАЯ СИСТЕМА ПЕРЕДВИЖЕНИЯ РОБОТА ======================= */
+let botState = 'idle'; // idle, tour, chat, easter
+let botX = 0;
+let botY = 22;
+let idleTimer;
+
+// Инициализация стартовой позиции (вызывается 1 раз при загрузке)
+window.addEventListener('DOMContentLoaded', () => {
+    const wrap = document.getElementById('bot-toggle-wrap');
+    botX = window.innerWidth - 60; // 60px ширина бота
+    botY = 22; // высота от пола
+    wrap.style.left = botX + 'px';
+    wrap.style.bottom = botY + 'px';
+    
+    // Подключаем слушатели для окна
+    window.addEventListener('resize', () => {
+        if (botX > window.innerWidth - 60) {
+            botX = window.innerWidth - 60;
+            wrap.style.left = botX + 'px';
+        }
+    });
+});
+
+// Центральная функция передвижения
+function walkBotTo(targetX, targetY, callback) {
+    const wrap = document.getElementById('bot-toggle-wrap');
+    const robot = document.querySelector('.bot-robot');
+    const bubble = document.getElementById('tour-bubble');
+
+    // ЖЕСТКИЕ ГРАНИЦЫ
+    const minX = 40;
+    const maxX = window.innerWidth - 80;
+    targetX = Math.max(minX, Math.min(targetX, maxX));
+
+    const minY = 22;
+    const maxY = window.innerHeight - 180; // Место для пузыря
+    targetY = Math.max(minY, Math.min(targetY, maxY));
+
+    // Поворачиваем лицо в нужную сторону
+    if (targetX < botX - 5) {
+        wrap.classList.add('bot-flipped');
+    } else if (targetX > botX + 5) {
+        wrap.classList.remove('bot-flipped');
+    }
+
+    // Рассчитываем время пути (примерно 300px за секунду, но минимум 400мс)
+    const distance = Math.hypot(targetX - botX, targetY - botY);
+    const duration = Math.max(400, (distance / 400) * 1000);
+
+    // Применяем CSS анимацию
+    wrap.style.transitionDuration = `${duration}ms`;
+    wrap.style.left = targetX + 'px';
+    wrap.style.bottom = targetY + 'px';
+    wrap.classList.add('is-walking');
+
+    botX = targetX;
+    botY = targetY;
+
+    // Умное позиционирование пузыря (чтобы не резался экраном)
+    bubble.className = 'tour-bubble'; // reset
+    if (targetX < 160) {
+        bubble.classList.add('bubble-left');
+    } else if (targetX > window.innerWidth - 160) {
+        bubble.classList.add('bubble-right');
+    } else {
+        bubble.classList.add('bubble-center');
+    }
+
+    clearTimeout(wrap.walkTimer);
+    wrap.walkTimer = setTimeout(() => {
+        wrap.classList.remove('is-walking');
+        if (callback) callback();
+    }, duration);
+}
+
+/* --- Логика патрулирования (гуляет по низу) --- */
+function startIdlePatrol() {
+    clearTimeout(idleTimer);
+    if (botState !== 'idle') return;
+
+    idleTimer = setTimeout(() => {
+        if (botState !== 'idle') return;
+        // Случайная точка по оси X, Y всегда 22 (пол)
+        const randomX = 50 + Math.random() * (window.innerWidth - 150);
+        walkBotTo(randomX, 22, () => {
+            startIdlePatrol(); // цикл
+        });
+    }, 4000 + Math.random() * 5000); // пауза между шагами 4-9 секунд
+}
+
+function stopIdlePatrol() {
+    clearTimeout(idleTimer);
+    const wrap = document.getElementById('bot-toggle-wrap');
+    wrap.classList.remove('is-walking');
+}
+
+/* ======================= БОТ ЭКСКУРСИЯ ======================= */
 const tourSteps = [
   { text: "Привет! 👋 Я твой кибер-помощник StaroBot. Давай я проведу быструю экскурсию по твоему новому журналу!", page: 'landing', target: null },
   { text: "Это главная навигация. Отсюда можно переходить между журналом, настройками группы и отчётами.", page: 'landing', target: '#tour-nav' },
@@ -1801,22 +1719,53 @@ const tourSteps = [
 
 let currentTourStep = 0;
 
+let authTimer = setTimeout(() => {
+    let authUser = firebase && firebase.auth().currentUser;
+    setAuthUI(authUser);
+    initApp();
+    checkFirstVisit();
+}, 1500);
+
+if (auth){
+  auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
+    auth.onAuthStateChanged(user => {
+      clearTimeout(authTimer);
+      setAuthUI(user);
+      if (user){
+        currentUser = user;
+        db.collection('users').doc(user.uid).get().then(doc => {
+          if (doc.exists){ 
+            userData = doc.data(); 
+            if (userData.avatar === undefined) userData.avatar = 0; 
+            if (userData.nickname === undefined) userData.nickname = "";
+          } else { loadLocalData(); saveToCloud(true); }
+          initApp(); checkFirstVisit();
+        }).catch(() => { loadLocalData(); initApp(); checkFirstVisit(); });
+      } else { currentUser = null; loadLocalData(); initApp(); checkFirstVisit(); }
+    });
+  }).catch(() => { clearTimeout(authTimer); loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); });
+} else { clearTimeout(authTimer); loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); }
+
 function checkFirstVisit() {
-  if (!localStorage.getItem('bot_tour_v5')) {
+  if (!localStorage.getItem('bot_tour_v6')) {
     setTimeout(startTour, 1000);
   } else {
+    botState = 'idle';
+    startIdlePatrol();
     document.getElementById('bot-log').innerHTML = ''; 
     addMsg('Привет! Как твои дела? Я ваш помощник StaroBot ✦\nГотов подсказать расписание, дедлайны или долги.', 'bot', ['Расписание', 'Дедлайны', 'Долги студентов', 'Какая неделя?']);
   }
 }
 
 function startTour() {
+  botState = 'tour';
+  stopIdlePatrol();
   currentTourStep = 0;
   document.getElementById('tour-overlay').classList.add('show');
   
   if(document.getElementById('bot').classList.contains('open')) toggleBot();
   goToTourStep(0);
-  localStorage.setItem('bot_tour_v5', 'true');
+  localStorage.setItem('bot_tour_v6', 'true');
 }
 
 function nextTourStep() {
@@ -1827,7 +1776,6 @@ function nextTourStep() {
 
 function goToTourStep(index) {
   const step = tourSteps[index];
-  const botWrap = document.getElementById('bot-toggle-wrap');
   const bubble = document.getElementById('tour-bubble');
   
   document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
@@ -1836,48 +1784,32 @@ function goToTourStep(index) {
   switchPage(step.page);
   
   setTimeout(() => {
-    // ЖЕСТКИЕ ОГРАНИЧЕНИЯ ДЛЯ ХОДЬБЫ
-    const minX = 150; 
-    const maxX = window.innerWidth - 150;
-    
     if (step.target === null) {
-      // Идем в центр
-      botWrap.classList.add('walking');
-      botWrap.style.left = Math.max(minX, Math.min(maxX, window.innerWidth / 2)) + 'px';
-      botWrap.style.right = 'auto';
-      clearTimeout(botWrap.walkTimer);
-      botWrap.walkTimer = setTimeout(() => botWrap.classList.remove('walking'), 700);
+      // Идем в центр экрана (по X), по Y стоим на полу
+      walkBotTo(window.innerWidth / 2, 22, showBubbleContent);
     } else if (step.target === 'home') {
-      // Идем домой
-      botWrap.classList.add('walking');
-      botWrap.style.left = '';
-      botWrap.style.right = '22px';
-      clearTimeout(botWrap.walkTimer);
-      botWrap.walkTimer = setTimeout(() => botWrap.classList.remove('walking'), 700);
+      // Возвращаемся в правый угол
+      walkBotTo(window.innerWidth - 60, 22, showBubbleContent);
     } else {
       const targetEl = document.querySelector(step.target);
       if (targetEl) {
         if(window.innerWidth <= 720) targetEl.scrollIntoView({behavior: 'smooth', block: 'center'});
+        
         setTimeout(() => {
           const rect = targetEl.getBoundingClientRect();
-          let targetX = rect.left + rect.width / 2;
+          let tX = rect.left + rect.width / 2;
+          // Пытаемся встать ровно под элементом
+          let distFromBottom = window.innerHeight - rect.bottom - 120;
           
-          if (targetX < minX) targetX = minX;
-          if (targetX > maxX) targetX = maxX;
-          
-          botWrap.classList.add('walking');
-          botWrap.style.left = targetX + 'px';
-          botWrap.style.right = 'auto';
-          
-          clearTimeout(botWrap.walkTimer);
-          botWrap.walkTimer = setTimeout(() => botWrap.classList.remove('walking'), 700);
-
-          targetEl.classList.add('tour-highlight');
+          walkBotTo(tX, Math.max(22, distFromBottom), () => {
+             targetEl.classList.add('tour-highlight');
+             showBubbleContent();
+          });
         }, window.innerWidth <= 720 ? 300 : 0);
       }
     }
 
-    setTimeout(() => {
+    function showBubbleContent() {
       document.getElementById('tour-text').innerHTML = step.text;
       if (step.isEnd) {
         document.querySelector('.tour-btn-next').textContent = 'Закончить';
@@ -1887,23 +1819,20 @@ function goToTourStep(index) {
         document.querySelector('.tour-btn-skip').style.display = 'block';
       }
       bubble.classList.add('show');
-    }, 500); // Ждем пока дойдет
+    }
   }, 100);
 }
 
 function endTour() {
-  const botWrap = document.getElementById('bot-toggle-wrap');
-  const bubble = document.getElementById('tour-bubble');
-  
   document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
   document.getElementById('tour-overlay').classList.remove('show');
-  bubble.classList.remove('show');
+  document.getElementById('tour-bubble').classList.remove('show');
   
-  botWrap.classList.add('walking');
-  botWrap.style.left = '';
-  botWrap.style.right = '22px';
-  clearTimeout(botWrap.walkTimer);
-  botWrap.walkTimer = setTimeout(() => botWrap.classList.remove('walking'), 700);
+  // Отправляем в правый нижний угол и включаем патруль
+  walkBotTo(window.innerWidth - 60, 22, () => {
+      botState = 'idle';
+      startIdlePatrol();
+  });
   
   document.getElementById('bot-log').innerHTML = ''; 
   addMsg('Привет! Как твои дела? Экскурсия завершена. Если что-то забудешь — я всегда тут.', 'bot', ['Что ты умеешь?', 'Открой журнал', 'Покажи долги']);
@@ -1914,35 +1843,35 @@ let logoClicks = 0;
 let logoTimer;
 
 function handleLogoClick() {
+  botState = 'easter';
+  stopIdlePatrol();
   logoClicks++;
   clearTimeout(logoTimer);
   
-  const botWrap = document.getElementById('bot-toggle-wrap');
   const bubble = document.getElementById('tour-bubble');
   const textEl = document.getElementById('tour-text');
   
-  // Убираем кнопки в пузыре для пасхалки
+  // Прячем кнопки в пузыре для пасхалки
   document.querySelector('.tour-btns').style.display = 'none';
   
-  // Робот бежит налево к логотипу
-  botWrap.classList.add('walking');
-  botWrap.style.left = '160px';
-  botWrap.style.right = 'auto';
-  clearTimeout(botWrap.walkTimer);
-  botWrap.walkTimer = setTimeout(() => botWrap.classList.remove('walking'), 700);
-
-  if (logoClicks === 1) {
-    textEl.innerHTML = "Ты нажал один раз, что будет дальше? 👀";
-    bubble.classList.add('show');
-    logoTimer = setTimeout(() => resetLogoEasterEgg(), 4000);
-  } else if (logoClicks === 2) {
-    textEl.innerHTML = "Ты нажал второй раз... 🤖";
-    bubble.classList.add('show');
-    logoTimer = setTimeout(() => resetLogoEasterEgg(), 4000);
-  } else if (logoClicks === 3) {
-    resetLogoEasterEgg();
-    openMiniGame();
-  }
+  const logoRect = document.querySelector('.logo').getBoundingClientRect();
+  const tX = logoRect.left + logoRect.width / 2;
+  const tY = window.innerHeight - logoRect.bottom - 120; // подбегаем под логотип
+  
+  walkBotTo(tX, tY, () => {
+      if (logoClicks === 1) {
+        textEl.innerHTML = "Ты нажал один раз, что будет дальше? 👀";
+        bubble.classList.add('show');
+        logoTimer = setTimeout(resetLogoEasterEgg, 4000);
+      } else if (logoClicks === 2) {
+        textEl.innerHTML = "Ты нажал второй раз... 🤖";
+        bubble.classList.add('show');
+        logoTimer = setTimeout(resetLogoEasterEgg, 4000);
+      } else if (logoClicks === 3) {
+        resetLogoEasterEgg();
+        openMiniGame();
+      }
+  });
 }
 
 function resetLogoEasterEgg() {
@@ -1950,12 +1879,8 @@ function resetLogoEasterEgg() {
   document.getElementById('tour-bubble').classList.remove('show');
   document.querySelector('.tour-btns').style.display = 'flex';
   
-  const botWrap = document.getElementById('bot-toggle-wrap');
-  botWrap.classList.add('walking');
-  botWrap.style.left = '';
-  botWrap.style.right = '22px';
-  clearTimeout(botWrap.walkTimer);
-  botWrap.walkTimer = setTimeout(() => botWrap.classList.remove('walking'), 700);
+  botState = 'idle';
+  startIdlePatrol();
 }
 
 let gameScore = 0;
@@ -1989,8 +1914,23 @@ function moveGameTarget() {
 /* ======================= ЛОГИКА ЧАТА БОТА ======================= */
 function toggleBot(){
   const botEl = document.getElementById('bot');
-  botEl.classList.toggle('open');
-  document.getElementById('tour-bubble').classList.remove('show');
+  
+  if (botState === 'chat') {
+      // Закрываем чат
+      botEl.classList.remove('open');
+      botState = 'idle';
+      startIdlePatrol();
+  } else {
+      // Открываем чат
+      botState = 'chat';
+      stopIdlePatrol();
+      document.getElementById('tour-bubble').classList.remove('show');
+      
+      // Бот бежит в правый нижний угол, чтобы открыть там окно чата
+      walkBotTo(window.innerWidth - 60, 22, () => {
+          botEl.classList.add('open');
+      });
+  }
 }
 
 (function initBotEyes(){
@@ -2042,9 +1982,9 @@ function addMsg(text, cls, buttons = []){
 }
 function answer(q){
   const g = getActiveGroupData();
-  if (q.includes('привет') || q.includes('помощь') || q.includes('умеешь') || q.includes('функции')) {
+  if (q.includes('привет') || q.includes('помощь') || q.includes('умеешь') || q.includes('функции') || q.includes('дела')) {
     return {
-      text: 'Привет! Как твои дела? Я умею многое! Выберите, что вам подсказать:',
+      text: 'Привет! У меня всё отлично! Я умею многое! Выберите, что вам подсказать:',
       buttons: ['Расписание', 'Какая неделя?', 'Долги студентов', 'Сколько человек в группе?', 'Дедлайны', 'Где скачать CSV?']
     };
   }
