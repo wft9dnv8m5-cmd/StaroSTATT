@@ -44,12 +44,11 @@
   --font-sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
   --font-display:"BubbledotICG-FinePos","Geist Pixel Circle",monospace;
   
-  /* Apple Glassmorphism Colors */
-  --apple-glass: rgba(30, 30, 32, 0.65);
-  --apple-glass-strong: rgba(20, 20, 22, 0.85);
-  --apple-border: rgba(255, 255, 255, 0.15);
-  --apple-border-light: rgba(255, 255, 255, 0.25);
-  --apple-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  /* Apple Liquid Glass Colors & Effects */
+  --liquid-bg: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.01) 100%);
+  --liquid-border: 1px solid rgba(255, 255, 255, 0.18);
+  --liquid-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.25);
+  --liquid-blur: blur(40px) saturate(200%);
   --neon-green: #00ff66;
 }
 *,*::before,*::after{box-sizing:border-box}
@@ -115,8 +114,8 @@ body.app-mode .scrim{background:rgba(0,0,0,.74);backdrop-filter:blur(7px);-webki
 .profile-avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:16px; background:linear-gradient(135deg, #00c6ff, #0072ff); box-shadow:0 2px 6px rgba(0,0,0,.3); color:#fff; font-family:var(--font-display); font-weight:bold;}
 .profile-name{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dropdown{position:absolute;top:calc(100% + 10px);right:0;min-width:220px;padding:6px;z-index:60;
-  background:rgba(18,18,20,.96);border:1px solid var(--card-border);border-radius:16px;
-  box-shadow:0 20px 50px rgba(0,0,0,.5);backdrop-filter:blur(18px);display:none}
+  background:var(--liquid-bg); border:var(--liquid-border); border-radius:16px;
+  box-shadow:var(--liquid-shadow); backdrop-filter:var(--liquid-blur); -webkit-backdrop-filter:var(--liquid-blur); display:none}
 .dropdown.show{display:block;animation:fadeUp .22s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 .dropdown button{display:block;width:100%;text-align:left;background:none;border:none;color:var(--text);
@@ -153,7 +152,7 @@ body.app-mode .scrim{background:rgba(0,0,0,.74);backdrop-filter:blur(7px);-webki
   background:var(--pill-dark);color:#fff;font-size:15px;font-weight:500;cursor:pointer}
  
 /* ---------- страницы и переходы ---------- */
-main{position:relative;} /* Убран z-index для корректной работы подсветки */
+main{position:relative;}
 .view{display:none}
 .view.active{display:block}
 .app-view{max-width:1150px;margin:0 auto;padding:clamp(96px,14vh,132px) clamp(14px,3vw,32px) 70px}
@@ -329,13 +328,14 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
  
 .empty{padding:26px;text-align:center;color:var(--muted);font-size:13.5px}
  
-/* ---------- модалки ---------- */
+/* ---------- модалки (Apple Glass) ---------- */
 .modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:18px;
   background:rgba(0,0,0,.72);backdrop-filter:blur(10px)}
 .modal.open{display:flex;animation:overlayIn .25s ease}
-.modal-box{width:100%;max-width:440px;max-height:90vh;overflow-y:auto;background:var(--apple-glass-strong);
-  border:1px solid var(--card-border);border-radius:26px;padding:28px;box-shadow:0 30px 80px rgba(0,0,0,.6);
-  backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); animation:menuIn .32s cubic-bezier(.22,1,.36,1)}
+.modal-box{width:100%;max-width:440px;max-height:90vh;overflow-y:auto;
+  background:var(--liquid-bg); border:var(--liquid-border); border-radius:26px; padding:28px;
+  box-shadow:var(--liquid-shadow); backdrop-filter:var(--liquid-blur); -webkit-backdrop-filter:var(--liquid-blur);
+  animation:menuIn .32s cubic-bezier(.22,1,.36,1)}
 .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
 .modal-head h2{margin:0;font-size:19px;font-weight:600}
 .x{background:none;border:none;color:var(--muted);font-size:24px;line-height:1;cursor:pointer}
@@ -383,18 +383,18 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
  
 /* ---------- тосты ---------- */
 #toasts{position:fixed;bottom:22px;left:22px;z-index:200;display:flex;flex-direction:column;gap:10px;max-width:330px}
-.toast{padding:14px 16px;border-radius:16px;background:var(--apple-glass-strong);border:1px solid var(--card-border);
-  border-left:3px solid var(--bad);font-size:13.5px;line-height:1.45;box-shadow:var(--apple-shadow);
-  backdrop-filter:blur(10px); animation:toastIn .3s cubic-bezier(.22,1,.36,1)}
+.toast{padding:14px 16px;border-radius:16px;background:var(--liquid-bg);border:var(--liquid-border);
+  border-left:3px solid var(--bad);font-size:13.5px;line-height:1.45;box-shadow:var(--liquid-shadow);
+  backdrop-filter:var(--liquid-blur); -webkit-backdrop-filter:var(--liquid-blur); animation:toastIn .3s cubic-bezier(.22,1,.36,1)}
 .toast.success{border-left-color:var(--neon-green)}
 .toast b{display:block;margin-bottom:3px;font-weight:600}
 @keyframes toastIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
 @keyframes toastOut{to{opacity:0}}
  
-/* ---------- БОТ APPLE GLASS STYLE (Умный Адаптив & Ходьба) ---------- */
+/* ---------- БОТ APPLE LIQUID GLASS (Умный Адаптив & Центрирование) ---------- */
 #tour-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 9997; 
-  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: 0.5s ease;
+  backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); opacity: 0; pointer-events: none; transition: 0.5s ease;
 }
 #tour-overlay.show { opacity: 1; pointer-events: auto; }
 
@@ -403,7 +403,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   position: relative !important; z-index: 9998 !important;
   box-shadow: 0 0 0 3px var(--neon-green), 0 0 35px rgba(0, 255, 102, 0.4) !important;
   border-radius: inherit; transition: box-shadow 0.3s ease;
-  background: rgba(0, 255, 102, 0.1) !important;
+  background: rgba(0, 255, 102, 0.08) !important;
 }
 
 #bot-toggle-wrap {
@@ -418,10 +418,9 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 /* Умный пузырь в стиле Apple iMessage (Сообщение с хвостиком) */
 .tour-bubble {
   position: absolute; bottom: calc(100% + 15px);
-  background: var(--apple-glass-strong);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--apple-border-light);
-  box-shadow: var(--apple-shadow);
+  background: var(--liquid-bg); border: var(--liquid-border);
+  backdrop-filter: var(--liquid-blur); -webkit-backdrop-filter: var(--liquid-blur);
+  box-shadow: var(--liquid-shadow);
   color: #fff; padding: 18px; 
   width: 280px; text-align: left;
   opacity: 0; pointer-events: none;
@@ -437,7 +436,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .bubble-center.show { transform: translateX(-50%) scale(1) !important; }
 .bubble-center::after {
   content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-  border: 10px solid transparent; border-top-color: var(--apple-glass-strong);
+  border: 10px solid transparent; border-top-color: rgba(30, 30, 35, 0.8); /* Ближайший цвет к liquid */
 }
 
 .bubble-left {
@@ -446,7 +445,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .bubble-left.show { transform: scale(1) !important; }
 .bubble-left::after {
   content: ''; position: absolute; top: 100%; left: 30px; transform: translateX(-50%);
-  border: 10px solid transparent; border-top-color: var(--apple-glass-strong);
+  border: 10px solid transparent; border-top-color: rgba(30, 30, 35, 0.8);
 }
 
 .bubble-right {
@@ -455,7 +454,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .bubble-right.show { transform: scale(1) !important; }
 .bubble-right::after {
   content: ''; position: absolute; top: 100%; right: 30px; transform: translateX(50%);
-  border: 10px solid transparent; border-top-color: var(--apple-glass-strong);
+  border: 10px solid transparent; border-top-color: rgba(30, 30, 35, 0.8);
 }
 
 #tour-text { font-size: 14px; line-height: 1.5; margin-bottom: 14px; font-weight:500; font-family:-apple-system, sans-serif;}
@@ -473,9 +472,9 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 }
 #bot-toggle:hover { transform: scale(1.05); }
 
-/* ИСПРАВЛЕНИЕ: Зеркалирование только тела робота (чтобы текст в пузыре не переворачивался!) */
+/* Зеркалирование тела робота при ходьбе влево (но не текста i/e!) */
 #bot-toggle-wrap.bot-flipped .bot-robot { transform: scaleX(-1); }
-#bot-toggle-wrap.bot-flipped .bot-logo-text { transform: scaleX(-1); } /* Чтобы текст i/e читался нормально */
+#bot-toggle-wrap.bot-flipped .bot-logo-text { transform: scaleX(-1); }
 
 .bot-robot {
   position: relative; width: 100%; height: 100%;
@@ -484,17 +483,17 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 
 .bot-head {
   width: 44px; height: 32px; border-radius: 16px;
-  background: var(--apple-glass); border: 1px solid var(--apple-border-light);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,255,102,0.1);
+  background: var(--liquid-bg); border: var(--liquid-border);
+  backdrop-filter: var(--liquid-blur); -webkit-backdrop-filter: var(--liquid-blur);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,255,102,0.15);
   display: flex; align-items: center; justify-content: center; gap: 8px;
   position: relative; z-index: 3;
 }
 .bot-body {
   width: 40px; height: 44px; border-radius: 12px;
-  background: var(--apple-glass); border: 1px solid var(--apple-border-light);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,255,102,0.1);
+  background: var(--liquid-bg); border: var(--liquid-border);
+  backdrop-filter: var(--liquid-blur); -webkit-backdrop-filter: var(--liquid-blur);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,255,102,0.15);
   margin-top: -6px; z-index: 2; position: relative;
   display: grid; place-items: center;
 }
@@ -502,8 +501,9 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 
 .bot-limbs { position: absolute; inset: 0; pointer-events: none;}
 .bot-arm, .bot-leg {
-  position: absolute; background: rgba(30,30,32,0.8); border: 1px solid var(--apple-border-light);
+  position: absolute; background: rgba(40,40,45,0.6); border: var(--liquid-border);
   border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
 }
 .bot-arm { width: 9px; height: 24px; top: 34px; transform-origin: top center; z-index: 1;}
 .bot-arm-l { left: 2px; transform: rotate(15deg); }
@@ -536,16 +536,15 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   98% { transform: scaleY(0.1); }
 }
 
-/* Окно чата (Apple Glass) */
+/* Окно чата (Apple Liquid Glass) */
 #bot {
   position: fixed; right: 22px; bottom: 120px; z-index: 10000; width: 340px; max-width: calc(100vw - 36px); height: 460px;
   display: flex; flex-direction: column; overflow: hidden;
-  background: rgba(20, 20, 22, 0.75); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255,255,255,0.15); border-radius: 20px;
-  box-shadow: 0 24px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+  background: var(--liquid-bg); border: var(--liquid-border); border-radius: 20px;
+  box-shadow: var(--liquid-shadow); backdrop-filter: var(--liquid-blur); -webkit-backdrop-filter: var(--liquid-blur);
   opacity: 0; transform: translateY(14px); pointer-events: none; transition: .3s cubic-bezier(.22,1,.36,1);
 }
-#bot.open { opacity: 1; transform: none; pointer-events: auto; box-shadow: 0 24px 60px rgba(0,255,102,.25), 0 0 0 1px rgba(0,255,102,0.3); }
+#bot.open { opacity: 1; transform: none; pointer-events: auto; box-shadow: var(--liquid-shadow), 0 0 0 1px rgba(0,255,102,0.3); }
 #bot header {
   display: flex; justify-content: space-between; align-items: center; padding: 16px 18px;
   border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 15px; font-weight: 500; color: #fff;
@@ -555,13 +554,13 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 #bot header button:hover { color: var(--neon-green); }
 #bot-log { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
 .msg { max-width: 88%; padding: 11px 15px; border-radius: 16px; font-size: 13.5px; line-height: 1.45; white-space: pre-wrap; font-family:-apple-system, sans-serif;}
-.msg.bot { background: rgba(0, 255, 102, 0.1); border: 1px solid rgba(0, 255, 102, 0.2); color: #fff; border-bottom-left-radius: 4px; align-self: flex-start; }
-.msg.me { background: var(--neon-green); color: #000; border-bottom-right-radius: 4px; align-self: flex-end; font-weight: 600; }
-.bot-action-btn { display: inline-block; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 7px 12px; margin: 6px 6px 0 0; color: #fff; cursor: pointer; font-size: 12.5px; transition: 0.2s; font-weight: 500; }
+.msg.bot { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; border-bottom-left-radius: 4px; align-self: flex-start; }
+.msg.me { background: var(--neon-green); color: #000; border-bottom-right-radius: 4px; align-self: flex-end; font-weight: 600; box-shadow: 0 4px 15px rgba(0,255,102,0.2); }
+.bot-action-btn { display: inline-block; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 7px 12px; margin: 6px 6px 0 0; color: #fff; cursor: pointer; font-size: 12.5px; transition: 0.2s; font-weight: 500; }
 .bot-action-btn:hover { background: var(--neon-green); color: #000; border-color:var(--neon-green); transform: translateY(-1px); }
 #bot-form { display: flex; align-items: center; gap: 8px; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); }
-#bot-input { background: rgba(255,255,255,0.08); border: 1px solid transparent; border-radius: 12px; padding: 10px 14px; font-size: 13.5px; color: #fff; flex: 1; transition: 0.2s; }
-#bot-input:focus { border-color: var(--neon-green); outline: none; }
+#bot-input { background: rgba(255,255,255,0.05); border: 1px solid transparent; border-radius: 12px; padding: 10px 14px; font-size: 13.5px; color: #fff; flex: 1; transition: 0.2s; }
+#bot-input:focus { border-color: var(--neon-green); outline: none; background: rgba(255,255,255,0.1); }
 #bot-form button { background: none; border: none; color: var(--neon-green); font-size: 18px; cursor: pointer; padding: 4px 8px; transition: 0.2s; }
 #bot-form button:hover { transform: scale(1.1); }
 
@@ -965,12 +964,12 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   </div>
 </div>
  
-<!-- БОТ-APPLE-GLASS -->
+<!-- БОТ-APPLE-LIQUID-GLASS -->
 <div id="bot-toggle-wrap">
   <div class="tour-bubble bubble-center" id="tour-bubble">
     <div id="tour-text"></div>
     <div class="tour-btns">
-      <button class="tour-btn tour-btn-skip" onclick="disableTourForever()">Закрыть обучение</button>
+      <button class="tour-btn tour-btn-skip" onclick="disableTourForever()">Больше не показывать</button>
       <button class="tour-btn tour-btn-next" onclick="nextTourStep()">Дальше ➔</button>
     </div>
   </div>
@@ -1621,7 +1620,7 @@ let botX = 0;
 let botY = 22;
 let idleTimer;
 
-// Инициализация при загрузке (чтобы бот сразу стоял на месте, а не улетал)
+// Инициализация при загрузке (чтобы бот сразу стоял на месте)
 function initBotPosition() {
     const wrap = document.getElementById('bot-toggle-wrap');
     botX = window.innerWidth - 60; 
@@ -1643,7 +1642,7 @@ window.addEventListener('resize', () => {
     }
 });
 
-// Центральная функция передвижения (жесткие ограничения экрана)
+// Перемещение робота
 function walkBotTo(targetX, targetY, callback) {
     const wrap = document.getElementById('bot-toggle-wrap');
     const bubble = document.getElementById('tour-bubble');
@@ -1656,7 +1655,7 @@ function walkBotTo(targetX, targetY, callback) {
     const maxY = window.innerHeight - 180; 
     targetY = Math.max(minY, Math.min(targetY, maxY));
 
-    // Поворачиваем лицо в нужную сторону (ИСХОДНОЕ ИСПРАВЛЕНИЕ ЗЕРКАЛИРОВАНИЯ)
+    // Поворачиваем лицо в нужную сторону
     if (targetX < botX - 5) {
         wrap.classList.add('bot-flipped');
     } else if (targetX > botX + 5) {
@@ -1674,14 +1673,16 @@ function walkBotTo(targetX, targetY, callback) {
     botX = targetX;
     botY = targetY;
 
-    // Умное позиционирование пузыря (хвостик всегда смотрит на голову)
-    bubble.className = 'tour-bubble'; 
-    if (targetX < 160) {
-        bubble.classList.add('bubble-left');
-    } else if (targetX > window.innerWidth - 160) {
-        bubble.classList.add('bubble-right');
-    } else {
-        bubble.classList.add('bubble-center');
+    // Умное позиционирование пузыря (только если не тур)
+    if (botState !== 'tour') {
+        bubble.className = 'tour-bubble'; 
+        if (targetX < 160) {
+            bubble.classList.add('bubble-left');
+        } else if (targetX > window.innerWidth - 160) {
+            bubble.classList.add('bubble-right');
+        } else {
+            bubble.classList.add('bubble-center');
+        }
     }
 
     clearTimeout(wrap.walkTimer);
@@ -1691,7 +1692,7 @@ function walkBotTo(targetX, targetY, callback) {
     }, duration);
 }
 
-/* --- Логика патрулирования (гуляет по низу) --- */
+/* --- Логика патрулирования --- */
 function startIdlePatrol() {
     clearTimeout(idleTimer);
     if (botState !== 'idle') return;
@@ -1747,9 +1748,8 @@ if (auth){
   }).catch(() => { clearTimeout(authTimer); loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); });
 } else { clearTimeout(authTimer); loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); }
 
-// Проверка первого визита или отмены тура
 function checkFirstVisit() {
-  if (localStorage.getItem('bot_tour_completed_final') !== 'true') {
+  if (localStorage.getItem('bot_tour_completed_final_v2') !== 'true') {
     setTimeout(startTour, 1000);
   } else {
     botState = 'idle';
@@ -1785,39 +1785,31 @@ function goToTourStep(index) {
   switchPage(step.page);
   
   setTimeout(() => {
-    if (step.target === null) {
-      walkBotTo(window.innerWidth / 2, 22, showBubbleContent);
-    } else if (step.target === 'home') {
-      walkBotTo(window.innerWidth - 60, 22, showBubbleContent);
-    } else {
-      const targetEl = document.querySelector(step.target);
-      if (targetEl) {
-        if(window.innerWidth <= 720) targetEl.scrollIntoView({behavior: 'smooth', block: 'center'});
-        
-        setTimeout(() => {
-          const rect = targetEl.getBoundingClientRect();
-          let tX = rect.left + rect.width / 2;
-          let distFromBottom = window.innerHeight - rect.bottom - 120;
-          
-          walkBotTo(tX, Math.max(22, distFromBottom), () => {
-             targetEl.classList.add('tour-highlight');
-             showBubbleContent();
-          });
-        }, window.innerWidth <= 720 ? 300 : 0);
-      }
-    }
+    // В туре робот всегда бежит строго в центр экрана
+    let tX = window.innerWidth / 2;
+    let tY = window.innerHeight / 2 - 40; // Чуть ниже центра, чтобы пузырь был идеально по середине
 
-    function showBubbleContent() {
-      document.getElementById('tour-text').innerHTML = step.text;
-      if (step.isEnd) {
-        document.querySelector('.tour-btn-next').textContent = 'Закончить';
-        document.querySelector('.tour-btn-skip').style.display = 'none';
-      } else {
-        document.querySelector('.tour-btn-next').textContent = 'Дальше ➔';
-        document.querySelector('.tour-btn-skip').style.display = 'block';
-      }
-      bubble.classList.add('show');
+    const targetEl = step.target ? document.querySelector(step.target) : null;
+    
+    if (targetEl && window.innerWidth <= 720) {
+        targetEl.scrollIntoView({behavior: 'smooth', block: 'center'});
     }
+    
+    walkBotTo(tX, tY, () => {
+         if (targetEl) targetEl.classList.add('tour-highlight');
+         
+         // Фиксируем центральный пузырь для обучения
+         bubble.className = 'tour-bubble bubble-center show'; 
+         
+         document.getElementById('tour-text').innerHTML = step.text;
+         if (step.isEnd) {
+           document.querySelector('.tour-btn-next').textContent = 'Закончить';
+           document.querySelector('.tour-btn-skip').style.display = 'none';
+         } else {
+           document.querySelector('.tour-btn-next').textContent = 'Дальше ➔';
+           document.querySelector('.tour-btn-skip').style.display = 'block';
+         }
+    });
   }, 100);
 }
 
@@ -1826,8 +1818,7 @@ function endTour() {
   document.getElementById('tour-overlay').classList.remove('show');
   document.getElementById('tour-bubble').classList.remove('show');
   
-  // Сохраняем информацию о том, что обучение завершено
-  localStorage.setItem('bot_tour_completed_final', 'true');
+  localStorage.setItem('bot_tour_completed_final_v2', 'true');
   
   walkBotTo(window.innerWidth - 60, 22, () => {
       botState = 'idle';
@@ -1838,7 +1829,6 @@ function endTour() {
   addMsg('Привет! Как твои дела? Обучение завершено. Если что-то забудешь — я всегда тут.', 'bot', ['Что ты умеешь?', 'Открой журнал', 'Покажи долги', 'Обучение']);
 }
 
-// Отдельная функция для жесткой отмены показа навсегда (нажатие на "Больше не показывать")
 function disableTourForever() {
   endTour();
 }
@@ -1986,8 +1976,8 @@ function answer(q){
   
   if (q.includes('обучени') || q.includes('тур') || q.includes('экскурси')) {
     setTimeout(() => {
-        toggleBot(); // Закрываем чат
-        startTour(); // Запускаем обучение
+        toggleBot(); 
+        startTour(); 
     }, 600);
     return { text: 'Без проблем! Начинаю экскурсию по сайту...', buttons: [] };
   }
