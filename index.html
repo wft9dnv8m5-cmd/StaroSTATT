@@ -41,9 +41,15 @@
   --input:rgba(0,0,0,.45);
   --ok:#8ef0b8;
   --bad:#ff7a7a;
-  --font-sans:"Inter","Segoe UI",system-ui,sans-serif;
+  --font-sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
   --font-display:"BubbledotICG-FinePos","Geist Pixel Circle",monospace;
-  --neon-green:#00ff66; /* Новый кибер-цвет */
+  
+  /* Apple Glassmorphism Colors */
+  --apple-glass: rgba(255, 255, 255, 0.08);
+  --apple-glass-strong: rgba(255, 255, 255, 0.15);
+  --apple-border: rgba(255, 255, 255, 0.15);
+  --apple-border-light: rgba(255, 255, 255, 0.25);
+  --apple-shadow: 0 10px 40px rgba(0,0,0,0.4);
 }
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;padding:0}
@@ -379,174 +385,157 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .toast{padding:14px 16px;border-radius:16px;background:rgba(18,18,20,.96);border:1px solid var(--card-border);
   border-left:3px solid var(--bad);font-size:13.5px;line-height:1.45;box-shadow:0 16px 40px rgba(0,0,0,.5);
   animation:toastIn .3s cubic-bezier(.22,1,.36,1)}
-.toast.success{border-left-color:var(--neon-green)}
+.toast.success{border-left-color:#fff}
 .toast b{display:block;margin-bottom:3px;font-weight:600}
 @keyframes toastIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
 @keyframes toastOut{to{opacity:0}}
  
-/* ---------- БОТ КИБЕРПАНК (Экскурсия) ---------- */
+/* ---------- БОТ APPLE GLASS STYLE (Экскурсия / Ходьба) ---------- */
 #tour-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 9997;
-  backdrop-filter: blur(2px); opacity: 0; pointer-events: none; transition: 0.5s ease;
+  position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 9997; /* Легкое прозрачное затемнение */
+  backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); opacity: 0; pointer-events: none; transition: 0.5s ease;
 }
 #tour-overlay.show { opacity: 1; pointer-events: auto; }
 
 .tour-highlight {
-  position: relative;
-  z-index: 9998 !important;
-  box-shadow: 0 0 0 3px rgba(0, 255, 102, 0.6), 0 0 25px rgba(0, 255, 102, 0.4) !important;
-  border-radius: inherit;
-  transition: box-shadow 0.3s ease;
-  background: rgba(16, 16, 18, 0.9);
+  position: relative; z-index: 9998 !important;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8), 0 0 25px rgba(255, 255, 255, 0.3) !important;
+  border-radius: inherit; transition: box-shadow 0.3s ease;
+  background: rgba(30, 30, 32, 0.8);
 }
 
-#bot-toggle-wrap{
-  position:fixed; right:22px; bottom:22px; z-index:9999;
-  display:flex; flex-direction:column; align-items:center; gap:14px;
-  transition: left 0.7s cubic-bezier(0.34, 1.3, 0.64, 1), top 0.7s cubic-bezier(0.34, 1.3, 0.64, 1), transform 0.4s;
+#bot-toggle-wrap {
+  position: fixed; bottom: 22px; right: 22px; z-index: 9999;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  /* Плавное перемещение только по горизонтали */
+  transition: left 0.7s cubic-bezier(0.34, 1.3, 0.64, 1), transform 0.4s;
 }
-#bot-toggle-wrap.flying {
-  right: auto; bottom: auto;
-  transform: translate(-50%, -50%); 
-  animation: hoverFly 2.5s infinite ease-in-out alternate;
-}
-@keyframes hoverFly { from { transform: translate(-50%, -50%) translateY(0); } to { transform: translate(-50%, -50%) translateY(-10px); } }
 
-/* Пузырь во время полета/обучения */
+/* Пузырь во время обучения и пасхалок */
 .tour-bubble {
-  position: absolute; bottom: calc(100% + 20px); left: 50%;
+  position: absolute; bottom: calc(100% + 15px); left: 50%;
   transform: translateX(-50%) scale(0.9);
-  background: rgba(12, 12, 14, 0.95);
-  border: 1px solid rgba(0, 255, 102, 0.4);
-  box-shadow: 0 10px 30px rgba(0, 255, 102, 0.25);
+  background: rgba(30, 30, 32, 0.7);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--apple-border-light);
+  box-shadow: var(--apple-shadow);
   color: #fff; padding: 18px; border-radius: 16px;
   width: 280px; text-align: left;
   opacity: 0; pointer-events: none;
   transition: 0.3s cubic-bezier(0.22,1,0.36,1);
-  backdrop-filter: blur(10px);
 }
 .tour-bubble.show { opacity: 1; transform: translateX(-50%) scale(1); pointer-events: auto; }
 .tour-bubble::after {
   content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-  border-width: 8px; border-style: solid; border-color: rgba(0, 255, 102, 0.4) transparent transparent transparent;
+  border-width: 8px; border-style: solid; border-color: rgba(255,255,255,0.2) transparent transparent transparent;
 }
-#tour-text { font-size: 13.5px; line-height: 1.5; margin-bottom: 14px; }
+#tour-text { font-size: 14px; line-height: 1.5; margin-bottom: 14px; font-weight:500; font-family:-apple-system, sans-serif;}
 .tour-btns { display: flex; justify-content: space-between; gap: 8px; }
 .tour-btn { flex: 1; padding: 8px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.2s; }
-.tour-btn-next { background: var(--neon-green); color: #000; box-shadow: 0 0 10px rgba(0,255,102,0.4); }
-.tour-btn-next:hover { transform: translateY(-1px); box-shadow: 0 0 15px rgba(0,255,102,0.6); }
-.tour-btn-skip { background: transparent; color: var(--muted); border: 1px solid #444; }
+.tour-btn-next { background: #fff; color: #000; }
+.tour-btn-next:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,255,255,0.2); }
+.tour-btn-skip { background: transparent; color: var(--muted); border: 1px solid #555; }
 .tour-btn-skip:hover { color: #fff; border-color: #888; }
 
-/* Сам дрон */
-#bot-toggle{
-  width:64px; height:64px; border-radius:50%; border:none; cursor:pointer; padding:0; position:relative;
-  background: linear-gradient(145deg, #1f212a 0%, #111216 100%);
-  box-shadow: 0 0 0 1px rgba(0, 255, 102, 0.2), 0 10px 25px rgba(0,0,0,.6), inset 0 2px 10px rgba(255,255,255,0.05);
-  transition: transform .25s ease;
+/* Сам Робот-Стекло */
+#bot-toggle {
+  width: 60px; height: 86px; border: none; cursor: pointer; padding: 0; position: relative;
+  background: transparent; box-shadow: none; transition: transform .25s ease;
 }
-#bot-toggle:hover{transform:scale(1.08)}
+#bot-toggle:hover { transform: scale(1.05); }
 
-.bot-robot{position:relative;width:100%;height:100%}
-.bot-antenna{position:absolute;top:-4px;left:50%;width:3px;height:12px;background:var(--neon-green);transform:translateX(-50%); border-radius:2px;}
-.bot-antenna::before{content:"";position:absolute;top:-4px;left:50%;width:6px;height:6px;border-radius:50%;
-  background:#fff;transform:translateX(-50%);box-shadow:0 0 12px #fff, 0 0 20px var(--neon-green);
-  animation:antennaBlink 1.5s infinite}
-@keyframes antennaBlink{0%,100%{opacity:1}50%{opacity:.4}}
+.bot-robot {
+  position: relative; width: 100%; height: 100%;
+  display: flex; flex-direction: column; align-items: center;
+}
 
-.bot-head{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:40px;height:22px;border-radius:12px;
-  background:#0a0a0c;display:flex;align-items:center;justify-content:center;gap:8px; border:1px solid rgba(0,255,102,0.2);}
+.bot-head {
+  width: 44px; height: 32px; border-radius: 16px;
+  background: var(--apple-glass); border: 1px solid var(--apple-border-light);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  position: relative; z-index: 3;
+}
+.bot-body {
+  width: 40px; height: 44px; border-radius: 12px;
+  background: var(--apple-glass); border: 1px solid var(--apple-border-light);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  margin-top: -6px; z-index: 2; position: relative;
+  display: grid; place-items: center;
+}
+.bot-logo-text { font-family: monospace; font-size: 12px; font-weight: bold; color: #fff; opacity: 0.9; letter-spacing: 0.5px;}
 
-/* Живые глаза */
+.bot-limbs { position: absolute; inset: 0; pointer-events: none;}
+.bot-arm, .bot-leg {
+  position: absolute; background: var(--apple-glass-strong); border: 1px solid var(--apple-border-light);
+  border-radius: 4px; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.bot-arm { width: 9px; height: 24px; top: 34px; transform-origin: top center; z-index: 1;}
+.bot-arm-l { left: 2px; transform: rotate(15deg); }
+.bot-arm-r { right: 2px; transform: rotate(-15deg); }
+.bot-leg { width: 11px; height: 22px; top: 66px; transform-origin: top center; z-index: 1;}
+.bot-leg-l { left: 14px; }
+.bot-leg-r { right: 14px; }
+
+/* Анимация ходьбы (ограничена по низу) */
+#bot-toggle-wrap.walking .bot-leg-l { animation: walkLegL 0.4s infinite alternate linear; }
+#bot-toggle-wrap.walking .bot-leg-r { animation: walkLegR 0.4s infinite alternate linear; }
+#bot-toggle-wrap.walking .bot-robot { animation: walkBob 0.4s infinite alternate linear; }
+@keyframes walkLegL { from { transform: rotate(25deg); } to { transform: rotate(-25deg); } }
+@keyframes walkLegR { from { transform: rotate(-25deg); } to { transform: rotate(25deg); } }
+@keyframes walkBob { from { transform: translateY(0); } to { transform: translateY(-4px); } }
+
+/* Живые глазки */
 .bot-eye {
-  width: 10px; height: 10px; border-radius: 50%;
-  background: var(--neon-green);
-  box-shadow: 0 0 8px var(--neon-green);
+  width: 9px; height: 9px; border-radius: 50%;
+  background: rgba(255,255,255,0.9); box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
   overflow: hidden; position: relative;
-  transition: transform .1s ease;
+  animation: blinkEye 4s infinite;
 }
-.bot-eye::after {
-  content: ""; position: absolute; top: -5px; left: 0; right: 0; height: 6px;
-  background: #0a0a0c;
-  animation: eyeSquint 5s infinite alternate;
+.bot-pupil {
+  width: 4px; height: 4px; border-radius: 50%; background: #000;
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); transition: transform .08s linear;
 }
-@keyframes eyeSquint {
-  0%, 85% { transform: translateY(0); }
-  90%, 100% { transform: translateY(3px); }
-}
-.bot-pupil{width:4px;height:4px;border-radius:50%;background:#000;transition:transform .08s linear; position:relative; z-index:2;}
-
-/* Логотип i/e */
-.bot-logo-text {
-  position: absolute;
-  bottom: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: monospace;
-  font-size: 11px;
-  font-weight: bold;
-  color: var(--neon-green);
-  text-shadow: 0 0 5px var(--neon-green);
-  z-index: 5;
+@keyframes blinkEye {
+  0%, 95%, 100% { transform: scaleY(1); }
+  98% { transform: scaleY(0.1); }
 }
 
-/* Механические руки */
-.bot-arm {
-  position: absolute; top: 32px; width: 10px; height: 18px; border-radius: 3px;
-  background: transparent; border: 2px solid var(--neon-green);
-  box-shadow: inset 0 0 4px var(--neon-green), 0 0 4px rgba(0,255,102,0.4);
-  transform-origin: top center; animation: armWave 3s ease-in-out infinite;
+/* Окно чата (Apple Glass) */
+#bot {
+  position: fixed; right: 22px; bottom: 120px; z-index: 90; width: 340px; max-width: calc(100vw - 36px); height: 460px;
+  display: flex; flex-direction: column; overflow: hidden;
+  background: rgba(30, 30, 32, 0.65); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--apple-border); border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+  opacity: 0; transform: translateY(14px); pointer-events: none; transition: .3s cubic-bezier(.22,1,.36,1);
 }
-.bot-arm::after {
-  content:""; position: absolute; bottom: -4px; left: -2px; width: 10px; height: 4px;
-  background: var(--neon-green); border-radius: 2px;
+#bot.open { opacity: 1; transform: none; pointer-events: auto; }
+#bot header {
+  display: flex; justify-content: space-between; align-items: center; padding: 16px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 15px; font-weight: 500; color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
-.bot-arm-l{left:4px;transform:rotate(20deg);animation-delay:0s}
-.bot-arm-r{right:4px;transform:rotate(-20deg);animation-delay:.4s}
-@keyframes armWave{0%,100%{transform:rotate(20deg)}50%{transform:rotate(35deg)}}
-.bot-arm-r{animation-name:armWaveR}
-@keyframes armWaveR{0%,100%{transform:rotate(-20deg)}50%{transform:rotate(-35deg)}}
+#bot header button { background: none; border: none; color: var(--muted); font-size: 22px; cursor: pointer; transition: .2s; }
+#bot header button:hover { color: #fff; }
+#bot-log { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.msg { max-width: 88%; padding: 11px 15px; border-radius: 16px; font-size: 13.5px; line-height: 1.45; white-space: pre-wrap; font-family:-apple-system, sans-serif;}
+.msg.bot { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.05); color: #fff; border-bottom-left-radius: 4px; align-self: flex-start; }
+.msg.me { background: #fff; color: #000; border-bottom-right-radius: 4px; align-self: flex-end; font-weight: 500; }
+.bot-action-btn { display: inline-block; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 7px 12px; margin: 6px 6px 0 0; color: #fff; cursor: pointer; font-size: 12.5px; transition: 0.2s; font-weight: 500; }
+.bot-action-btn:hover { background: #fff; color: #000; transform: translateY(-1px); }
+#bot-form { display: flex; align-items: center; gap: 8px; padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); }
+#bot-input { background: rgba(255,255,255,0.08); border: 1px solid transparent; border-radius: 12px; padding: 10px 14px; font-size: 13.5px; color: #fff; flex: 1; transition: 0.2s; }
+#bot-input:focus { border-color: rgba(255,255,255,0.4); outline: none; }
+#bot-form button { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; padding: 4px 8px; transition: 0.2s; }
+#bot-form button:hover { transform: scale(1.1); }
 
-/* Плазменный след (длинный шлейф при полете) */
-.bot-trail {
-  position: absolute; top: 100%; left: 50%;
-  width: 14px; height: 60px;
-  background: linear-gradient(to bottom, var(--neon-green), transparent);
-  transform: translateX(-50%);
-  filter: blur(6px); opacity: 0;
-  transition: opacity 0.3s, height 0.3s;
-  pointer-events: none;
-}
-#bot-toggle-wrap.flying .bot-trail {
-  opacity: 0.6; height: 110px;
-  animation: trailFlicker 0.15s infinite alternate;
-}
-@keyframes trailFlicker {
-  from { opacity: 0.4; height: 90px; }
-  to { opacity: 0.7; height: 120px; filter: blur(8px); }
-}
-
-/* Окно чата */
-#bot{position:fixed;right:22px;bottom:100px;z-index:90;width:340px;max-width:calc(100vw - 36px);height:460px;
-  display:flex;flex-direction:column;overflow:hidden;background:rgba(12,12,14,.95);border:1px solid var(--card-border);
-  border-radius:24px;box-shadow:0 24px 60px rgba(0,255,102,.15);backdrop-filter:blur(18px);
-  opacity:0;transform:translateY(14px);pointer-events:none;transition:.28s cubic-bezier(.22,1,.36,1)}
-#bot.open{opacity:1;transform:none;pointer-events:auto; box-shadow:0 24px 60px rgba(0,255,102,.25), 0 0 0 1px rgba(0,255,102,0.2);}
-#bot header{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;
-  border-bottom:1px solid rgba(255,255,255,0.08);font-size:14.5px;font-weight:600; color:var(--neon-green);}
-#bot header button{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer; transition:.2s;}
-#bot header button:hover{color:#fff;}
-#bot-log{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
-.msg{max-width:88%;padding:11px 15px;border-radius:16px;font-size:13.5px;line-height:1.45;white-space:pre-wrap}
-.msg.bot{background:rgba(0,255,102,.08);border:1px solid rgba(0,255,102,.15); border-bottom-left-radius:4px;align-self:flex-start}
-.msg.me{background:var(--neon-green);color:#000;border-bottom-right-radius:4px;align-self:flex-end; font-weight:500;}
-.bot-action-btn { display:inline-block; background:rgba(255,255,255,.05); border:1px solid rgba(0,255,102,.3); border-radius:12px; padding:7px 12px; margin:6px 6px 0 0; color:var(--neon-green); cursor:pointer; font-size:12.5px; transition:0.2s; font-weight:500;}
-.bot-action-btn:hover { background:var(--neon-green); color:#000; transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,255,102,.3);}
-#bot-form{display:flex;align-items:center;gap:8px;padding:12px;border-top:1px solid rgba(255,255,255,0.08)}
-#bot-input{background:rgba(255,255,255,0.05);border:1px solid transparent;border-radius:12px;padding:10px 14px;font-size:13.5px;color:#fff;flex:1; transition:0.2s;}
-#bot-input:focus{border-color:var(--neon-green); outline:none;}
-#bot-form button{background:none;border:none;color:var(--neon-green);font-size:18px;cursor:pointer; padding:4px 8px; transition:0.2s;}
-#bot-form button:hover{transform:scale(1.1);}
+/* Мини игра (пасхалка) */
+#game-area { position:relative; width:100%; height:260px; background:rgba(255,255,255,0.05); border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); }
+#game-target { position:absolute; width:44px; height:44px; background:#fff; border-radius:12px; top:50px; left:50px; cursor:pointer; display:grid; place-items:center; color:#000; font-family:var(--font-display); font-weight:bold; font-size:22px; transition:transform 0.1s; box-shadow:0 4px 12px rgba(0,0,0,0.3); }
+#game-target:active { transform:scale(0.9); }
  
 /* ---------- адаптив ---------- */
 @media (max-width:900px){.grid-2{grid-template-columns:1fr}}
@@ -590,7 +579,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
  
 <header class="site-header">
   <div class="header-inner">
-    <button class="logo" onclick="switchPage('landing')" aria-label="На главную">
+    <button class="logo" onclick="handleLogoClick()" aria-label="На главную">
       <img src="image.png" alt="" width="52" height="52" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
       <span class="logo-fallback">S</span>
     </button>
@@ -930,8 +919,20 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     <div class="avatar-grid" id="avatar-grid"></div>
   </div>
 </div>
+
+<!-- МИНИ ИГРА -->
+<div class="modal" id="game-modal">
+  <div class="modal-box" style="text-align:center;">
+    <div class="modal-head"><h2>Поймай S-ку!</h2><button class="x" onclick="closeModal('game-modal')">×</button></div>
+    <p class="hint">Нажми на прыгающий кубик 5 раз подряд</p>
+    <div id="game-area">
+       <div id="game-target">S</div>
+    </div>
+    <p id="game-score" style="margin-top:20px; font-size:18px; font-weight:bold;">Счёт: 0 / 5</p>
+  </div>
+</div>
  
-<!-- БОТ-ДРОН И ЧАТ -->
+<!-- БОТ-APPLE-GLASS (ХОДЯЩИЙ ПО НИЗУ) -->
 <div id="bot-toggle-wrap">
   <div class="tour-bubble" id="tour-bubble">
     <div id="tour-text"></div>
@@ -943,16 +944,19 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 
   <button id="bot-toggle" onclick="toggleBot()" aria-label="Открыть помощника StaroBot">
     <div class="bot-robot">
-      <span class="bot-antenna"></span>
       <div class="bot-head">
         <span class="bot-eye"><span class="bot-pupil"></span></span>
         <span class="bot-eye"><span class="bot-pupil"></span></span>
       </div>
-      <div class="bot-logo-text">&lt;i/e&gt;</div>
-      <span class="bot-arm bot-arm-l"></span>
-      <span class="bot-arm bot-arm-r"></span>
-      <div class="bot-thruster"></div> <!-- Плазменный след -->
-      <div class="bot-trail"></div>
+      <div class="bot-body">
+        <div class="bot-logo-text">&lt;i/e&gt;</div>
+      </div>
+      <div class="bot-limbs">
+        <span class="bot-arm bot-arm-l"></span>
+        <span class="bot-arm bot-arm-r"></span>
+        <span class="bot-leg bot-leg-l"></span>
+        <span class="bot-leg bot-leg-r"></span>
+      </div>
     </div>
   </button>
 </div>
@@ -1337,14 +1341,14 @@ function updateProfileName() {
  
 /* ======================= ГРАФИЧЕСКИЙ АВАТАР ======================= */
 const avatarStyles = [
-  { char: "S", bg: "linear-gradient(135deg, #00f2fe, #4facfe)" }, // Кибер-синий
-  { char: "S", bg: "linear-gradient(135deg, #00ff66, #0ba360)" }, // Неон-зеленый (под бота)
-  { char: "S", bg: "linear-gradient(135deg, #ff0844, #ffb199)" }, // Огненно-красный
-  { char: "S", bg: "linear-gradient(135deg, #f093fb, #f5576c)" }, // Маджента
-  { char: "S", bg: "linear-gradient(135deg, #fa709a, #fee140)" }, // Закат
-  { char: "S", bg: "linear-gradient(135deg, #30cfd0, #330867)" }, // Космос
-  { char: "S", bg: "linear-gradient(135deg, #cfd9df, #e2ebf0)", col: "#111" }, // Серебро
-  { char: "S", bg: "linear-gradient(135deg, #f6d365, #fda085)" }  // Персик
+  { char: "S", bg: "linear-gradient(135deg, #00f2fe, #4facfe)" }, 
+  { char: "S", bg: "linear-gradient(135deg, #00ff66, #0ba360)" }, 
+  { char: "S", bg: "linear-gradient(135deg, #ff0844, #ffb199)" }, 
+  { char: "S", bg: "linear-gradient(135deg, #f093fb, #f5576c)" }, 
+  { char: "S", bg: "linear-gradient(135deg, #fa709a, #fee140)" }, 
+  { char: "S", bg: "linear-gradient(135deg, #30cfd0, #330867)" }, 
+  { char: "S", bg: "linear-gradient(135deg, #cfd9df, #e2ebf0)", col: "#111" }, 
+  { char: "S", bg: "linear-gradient(135deg, #f6d365, #fda085)" }  
 ];
 
 function applyAvatarUI() {
@@ -1785,7 +1789,7 @@ function exportCuratorCSV(){
   a.click();
 }
 
-/* ======================= БОТ ЭКСКУРСИЯ И ЖЁСТКОЕ ПОЗИЦИОНИРОВАНИЕ ======================= */
+/* ======================= БОТ ЭКСКУРСИЯ (ХОДИТ ПО НИЗУ) ======================= */
 const tourSteps = [
   { text: "Привет! 👋 Я твой кибер-помощник StaroBot. Давай я проведу быструю экскурсию по твоему новому журналу!", page: 'landing', target: null },
   { text: "Это главная навигация. Отсюда можно переходить между журналом, настройками группы и отчётами.", page: 'landing', target: '#tour-nav' },
@@ -1798,7 +1802,7 @@ const tourSteps = [
 let currentTourStep = 0;
 
 function checkFirstVisit() {
-  if (!localStorage.getItem('bot_tour_v4')) {
+  if (!localStorage.getItem('bot_tour_v5')) {
     setTimeout(startTour, 1000);
   } else {
     document.getElementById('bot-log').innerHTML = ''; 
@@ -1809,11 +1813,10 @@ function checkFirstVisit() {
 function startTour() {
   currentTourStep = 0;
   document.getElementById('tour-overlay').classList.add('show');
-  const botWrap = document.getElementById('bot-toggle-wrap');
-  botWrap.classList.add('flying');
+  
   if(document.getElementById('bot').classList.contains('open')) toggleBot();
   goToTourStep(0);
-  localStorage.setItem('bot_tour_v4', 'true');
+  localStorage.setItem('bot_tour_v5', 'true');
 }
 
 function nextTourStep() {
@@ -1833,36 +1836,42 @@ function goToTourStep(index) {
   switchPage(step.page);
   
   setTimeout(() => {
+    // ЖЕСТКИЕ ОГРАНИЧЕНИЯ ДЛЯ ХОДЬБЫ
+    const minX = 150; 
+    const maxX = window.innerWidth - 150;
+    
     if (step.target === null) {
-      botWrap.style.left = '50vw';
-      botWrap.style.top = '50vh';
+      // Идем в центр
+      botWrap.classList.add('walking');
+      botWrap.style.left = Math.max(minX, Math.min(maxX, window.innerWidth / 2)) + 'px';
+      botWrap.style.right = 'auto';
+      clearTimeout(botWrap.walkTimer);
+      botWrap.walkTimer = setTimeout(() => botWrap.classList.remove('walking'), 700);
     } else if (step.target === 'home') {
+      // Идем домой
+      botWrap.classList.add('walking');
       botWrap.style.left = '';
-      botWrap.style.top = '';
-      botWrap.classList.remove('flying');
+      botWrap.style.right = '22px';
+      clearTimeout(botWrap.walkTimer);
+      botWrap.walkTimer = setTimeout(() => botWrap.classList.remove('walking'), 700);
     } else {
       const targetEl = document.querySelector(step.target);
       if (targetEl) {
         if(window.innerWidth <= 720) targetEl.scrollIntoView({behavior: 'smooth', block: 'center'});
-        
         setTimeout(() => {
           const rect = targetEl.getBoundingClientRect();
           let targetX = rect.left + rect.width / 2;
-          let targetY = rect.bottom + 100; // Робот всегда ниже элемента
           
-          // ЖЁСТКИЕ ОГРАНИЧЕНИЯ (чтобы робот и пузырь всегда были в экране)
-          const minX = 160; 
-          const maxX = window.innerWidth - 160;
           if (targetX < minX) targetX = minX;
           if (targetX > maxX) targetX = maxX;
           
-          const minY = 220; // Оставляем 220px сверху для текстового пузыря
-          const maxY = window.innerHeight - 80;
-          if (targetY < minY) targetY = minY;
-          if (targetY > maxY) targetY = maxY;
-          
+          botWrap.classList.add('walking');
           botWrap.style.left = targetX + 'px';
-          botWrap.style.top = targetY + 'px';
+          botWrap.style.right = 'auto';
+          
+          clearTimeout(botWrap.walkTimer);
+          botWrap.walkTimer = setTimeout(() => botWrap.classList.remove('walking'), 700);
+
           targetEl.classList.add('tour-highlight');
         }, window.innerWidth <= 720 ? 300 : 0);
       }
@@ -1878,7 +1887,7 @@ function goToTourStep(index) {
         document.querySelector('.tour-btn-skip').style.display = 'block';
       }
       bubble.classList.add('show');
-    }, 400);
+    }, 500); // Ждем пока дойдет
   }, 100);
 }
 
@@ -1890,12 +1899,91 @@ function endTour() {
   document.getElementById('tour-overlay').classList.remove('show');
   bubble.classList.remove('show');
   
+  botWrap.classList.add('walking');
   botWrap.style.left = '';
-  botWrap.style.top = '';
-  botWrap.classList.remove('flying');
+  botWrap.style.right = '22px';
+  clearTimeout(botWrap.walkTimer);
+  botWrap.walkTimer = setTimeout(() => botWrap.classList.remove('walking'), 700);
   
   document.getElementById('bot-log').innerHTML = ''; 
   addMsg('Привет! Как твои дела? Экскурсия завершена. Если что-то забудешь — я всегда тут.', 'bot', ['Что ты умеешь?', 'Открой журнал', 'Покажи долги']);
+}
+
+/* ======================= МИНИ-ИГРА И ПАСХАЛКА ЛОГОТИПА ======================= */
+let logoClicks = 0;
+let logoTimer;
+
+function handleLogoClick() {
+  logoClicks++;
+  clearTimeout(logoTimer);
+  
+  const botWrap = document.getElementById('bot-toggle-wrap');
+  const bubble = document.getElementById('tour-bubble');
+  const textEl = document.getElementById('tour-text');
+  
+  // Убираем кнопки в пузыре для пасхалки
+  document.querySelector('.tour-btns').style.display = 'none';
+  
+  // Робот бежит налево к логотипу
+  botWrap.classList.add('walking');
+  botWrap.style.left = '160px';
+  botWrap.style.right = 'auto';
+  clearTimeout(botWrap.walkTimer);
+  botWrap.walkTimer = setTimeout(() => botWrap.classList.remove('walking'), 700);
+
+  if (logoClicks === 1) {
+    textEl.innerHTML = "Ты нажал один раз, что будет дальше? 👀";
+    bubble.classList.add('show');
+    logoTimer = setTimeout(() => resetLogoEasterEgg(), 4000);
+  } else if (logoClicks === 2) {
+    textEl.innerHTML = "Ты нажал второй раз... 🤖";
+    bubble.classList.add('show');
+    logoTimer = setTimeout(() => resetLogoEasterEgg(), 4000);
+  } else if (logoClicks === 3) {
+    resetLogoEasterEgg();
+    openMiniGame();
+  }
+}
+
+function resetLogoEasterEgg() {
+  logoClicks = 0;
+  document.getElementById('tour-bubble').classList.remove('show');
+  document.querySelector('.tour-btns').style.display = 'flex';
+  
+  const botWrap = document.getElementById('bot-toggle-wrap');
+  botWrap.classList.add('walking');
+  botWrap.style.left = '';
+  botWrap.style.right = '22px';
+  clearTimeout(botWrap.walkTimer);
+  botWrap.walkTimer = setTimeout(() => botWrap.classList.remove('walking'), 700);
+}
+
+let gameScore = 0;
+function openMiniGame() {
+  gameScore = 0;
+  document.getElementById('game-score').textContent = 'Счёт: 0 / 5';
+  openModal('game-modal');
+  moveGameTarget();
+}
+document.getElementById('game-target').addEventListener('click', () => {
+  gameScore++;
+  document.getElementById('game-score').textContent = `Счёт: ${gameScore} / 5`;
+  if (gameScore >= 5) {
+    setTimeout(() => {
+      alert("Ты победил! Отличная реакция 🎉");
+      closeModal('game-modal');
+    }, 100);
+  } else {
+    moveGameTarget();
+  }
+});
+function moveGameTarget() {
+  const t = document.getElementById('game-target');
+  const area = document.getElementById('game-area');
+  const maxX = area.clientWidth - 50;
+  const maxY = area.clientHeight - 50;
+  t.style.left = Math.floor(Math.random() * maxX) + 'px';
+  t.style.top = Math.floor(Math.random() * maxY) + 'px';
 }
 
 /* ======================= ЛОГИКА ЧАТА БОТА ======================= */
@@ -1911,12 +1999,12 @@ function toggleBot(){
   if (!btn) return;
   document.addEventListener('mousemove', e => {
     const r = btn.getBoundingClientRect();
-    const cx = r.left + r.width / 2, cy = r.top + r.height / 2 - 8;
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
     let dx = e.clientX - cx, dy = e.clientY - cy;
     const dist = Math.hypot(dx, dy) || 1, max = 2.5;
     dx = (dx / dist) * Math.min(max, dist / 20);
     dy = (dy / dist) * Math.min(max, dist / 20);
-    pupils.forEach(p => { p.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px)'; });
+    pupils.forEach(p => { p.style.transform = `translate(calc(-50% + ${dx.toFixed(1)}px), calc(-50% + ${dy.toFixed(1)}px))`; });
   });
 })();
 
@@ -1970,7 +2058,7 @@ function answer(q){
   }
   if (q.includes('человек') || q.includes('студент') && !q.includes('долг')) return { text: 'В текущей группе ' + g.students.length + ' человек.', buttons: ['Покажи статистику'] };
   if ((q.includes('открой') || q.includes('перейди')) && q.includes('групп')){ switchPage('group'); return { text: 'Открываю страницу группы.', buttons: [] }; }
-  if (q.includes('аватар')) return { text: 'Аватар меняется через профиль в правом верхнем углу — кнопка «Сменить логотип».', buttons: [] };
+  if (q.includes('аватар') || q.includes('имя') || q.includes('никнейм')) return { text: 'Аватар и имя меняются через профиль в правом верхнем углу (нажми на свой логотип).', buttons: [] };
   if (q.includes('csv') || q.includes('экспорт') || q.includes('скач')) {
     switchPage('reports');
     return { text: 'Я открыл вам раздел отчётов. Выгрузка смотра — кнопка «Скачать CSV» прямо над таблицей.', buttons: [] };
