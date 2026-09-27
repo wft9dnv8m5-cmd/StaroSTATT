@@ -392,7 +392,7 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 @keyframes toastIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
 @keyframes toastOut{to{opacity:0}}
  
-/* ---------- БОТ APPLE LIQUID GLASS (Адаптив & Экскурсия) ---------- */
+/* ---------- ЧАТ И ЭКСКУРСИЯ (Адаптив & Apple Liquid Glass Button) ---------- */
 #tour-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 9997; 
   opacity: 0; pointer-events: none; transition: 0.5s ease;
@@ -408,55 +408,27 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 
 #bot-toggle-wrap {
   position: fixed; z-index: 9999;
-  display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 14px;
-  width: 60px;
-  /* Перемещается только по JS, изначально за экраном */
-  left: -100px; bottom: 22px; opacity: 0;
-  transition: left 0.6s cubic-bezier(0.34, 1.3, 0.64, 1), bottom 0.6s cubic-bezier(0.34, 1.3, 0.64, 1), opacity 0.3s;
+  display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-end; gap: 14px;
+  right: 22px; bottom: 22px;
 }
 
 /* Умный пузырь в стиле Apple iMessage (Сообщение с хвостиком) */
 .tour-bubble {
-  position: absolute; bottom: calc(100% + 15px);
-  background: rgba(35, 35, 40, 0.95); /* Менее прозрачно, чтобы текст читался идеально */
+  position: absolute; bottom: calc(100% + 15px); right: 0;
+  background: rgba(35, 35, 40, 0.95);
   backdrop-filter: var(--liquid-blur); -webkit-backdrop-filter: var(--liquid-blur);
   border: var(--liquid-border);
   box-shadow: var(--liquid-shadow);
   color: #fff; padding: 18px; 
   width: 280px; text-align: left;
   opacity: 0; pointer-events: none;
+  border-radius: 18px 18px 0 18px; transform: scale(0.9); transform-origin: bottom right;
   transition: opacity 0.3s, transform 0.3s cubic-bezier(0.22,1,0.36,1);
 }
 
-.tour-bubble.show { opacity: 1 !important; pointer-events: auto !important; }
-
-/* Варианты позиционирования пузыря (с правильными галочками-указателями) */
-.bubble-center {
-  border-radius: 18px; left: 50%; transform: translateX(-50%) scale(0.9); transform-origin: bottom center;
-}
-.bubble-center.show { transform: translateX(-50%) scale(1) !important; }
-.bubble-center::after {
-  content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-  border-left: 10px solid transparent; border-right: 10px solid transparent;
-  border-top: 10px solid rgba(35, 35, 40, 0.95);
-}
-
-.bubble-left {
-  border-radius: 18px 18px 18px 0; left: -10px; transform: scale(0.9); transform-origin: bottom left;
-}
-.bubble-left.show { transform: scale(1) !important; }
-.bubble-left::after {
-  content: ''; position: absolute; top: 100%; left: 30px; transform: translateX(-50%);
-  border-left: 10px solid transparent; border-right: 10px solid transparent;
-  border-top: 10px solid rgba(35, 35, 40, 0.95);
-}
-
-.bubble-right {
-  border-radius: 18px 18px 0 18px; right: -10px; transform: scale(0.9); transform-origin: bottom right;
-}
-.bubble-right.show { transform: scale(1) !important; }
-.bubble-right::after {
-  content: ''; position: absolute; top: 100%; right: 30px; transform: translateX(50%);
+.tour-bubble.show { opacity: 1 !important; pointer-events: auto !important; transform: scale(1) !important; }
+.tour-bubble::after {
+  content: ''; position: absolute; top: 100%; right: 20px;
   border-left: 10px solid transparent; border-right: 10px solid transparent;
   border-top: 10px solid rgba(35, 35, 40, 0.95);
 }
@@ -469,115 +441,22 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
 .tour-btn-skip { background: transparent; color: var(--muted); border: 1px solid #555; }
 .tour-btn-skip:hover { color: #fff; border-color: #888; }
 
-/* Сам Робот-Стекло */
+/* Статичная кнопка чата */
 #bot-toggle {
-  width: 60px; height: 86px; border: none; cursor: pointer; padding: 0; position: relative;
-  background: transparent; box-shadow: none; transition: transform .25s ease;
-}
-#bot-toggle:hover { transform: scale(1.05); }
-
-/* Зеркалирование супергероя при полёте влево */
-#bot-toggle-wrap.bot-flipped .bot-robot { transform: scaleX(-1); }
-
-.bot-robot {
-  position: relative; width: 100%; height: 100%;
-  display: flex; flex-direction: column; align-items: center;
-}
-
-/* Плащ StaroBot'а — развевается на лету */
-.bot-cape{
-  position:absolute; top:24px; left:50%; width:32px; height:42px;
-  transform:translateX(-50%); transform-origin:top center;
-  background:linear-gradient(200deg,#e5202f,#7a0812 78%);
-  clip-path:polygon(14% 0%,86% 0%,100% 96%,50% 80%,0% 96%);
-  box-shadow:0 6px 14px rgba(0,0,0,.5); z-index:0;
-  animation:capeIdle 2.8s ease-in-out infinite;
-}
-@keyframes capeIdle{0%,100%{transform:translateX(-50%) rotate(-3deg)}50%{transform:translateX(-50%) rotate(4deg)}}
-#bot-toggle-wrap.is-walking .bot-cape{animation:capeFly .26s ease-in-out infinite alternate}
-@keyframes capeFly{
-  from{transform:translateX(-50%) rotate(-18deg) skewX(10deg) scaleY(1.06)}
-  to{transform:translateX(-50%) rotate(10deg) skewX(-6deg) scaleY(.95)}
-}
-
-.bot-head {
-  width: 36px; height: 28px; border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
+  width: 56px; height: 56px; border: none; border-radius: 50%; padding: 0;
   background: var(--liquid-bg); border: var(--liquid-border);
-  backdrop-filter: var(--liquid-blur); -webkit-backdrop-filter: var(--liquid-blur);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,255,102,0.15);
-  display: flex; align-items: center; justify-content: center; gap: 7px;
-  position: relative; z-index: 3;
+  box-shadow: var(--liquid-shadow); backdrop-filter: var(--liquid-blur); -webkit-backdrop-filter: var(--liquid-blur);
+  color: var(--neon-green); font-size: 24px; cursor: pointer;
+  display: grid; place-items: center; transition: transform .25s ease, box-shadow .25s ease;
 }
-.bot-head::before{
-  content:''; position:absolute; top:-4px; left:50%; transform:translateX(-50%) rotate(10deg);
-  width:8px; height:8px; border-radius:50% 50% 50% 0; background:rgba(18,18,20,.9); z-index:4;
-}
-.bot-body {
-  width: 34px; height: 40px; border-radius: 40% 40% 44% 44% / 32% 32% 46% 46%;
-  background: var(--liquid-bg); border: var(--liquid-border);
-  backdrop-filter: var(--liquid-blur); -webkit-backdrop-filter: var(--liquid-blur);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,255,102,0.15);
-  margin-top: -5px; z-index: 2; position: relative;
-  display: grid; place-items: center;
-}
-/* Щит-эмблема с буквой S на груди, как в логотипе сайта */
-.bot-emblem{
-  width:18px; height:20px;
-  clip-path:polygon(50% 0%,100% 22%,100% 62%,50% 100%,0% 62%,0% 22%);
-  background:linear-gradient(160deg,#ffd23f,#f2a900);
-  display:grid; place-items:center;
-  box-shadow:0 0 8px rgba(255,210,63,.55), inset 0 0 4px rgba(0,0,0,.35);
-}
-.bot-emblem span{ font-family:var(--font-display); font-weight:bold; font-size:10px; color:#141414; line-height:1; }
-
-.bot-limbs { position: absolute; inset: 0; pointer-events: none;}
-.bot-arm, .bot-leg {
-  position: absolute; background: rgba(40,40,45,0.6); border: var(--liquid-border);
-  border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-}
-/* Поза полёта: кулак вперёд-вверх, вторая рука прижата к телу */
-.bot-arm { width: 8px; height: 20px; top: 30px; transform-origin: top center; z-index: 1;}
-.bot-arm-l { left: 1px; transform: rotate(48deg); }
-.bot-arm-r { right: -1px; transform: rotate(-68deg); }
-.bot-leg { width: 9px; height: 18px; top: 58px; transform-origin: top center; z-index: 1; border-radius:5px 5px 8px 8px;}
-.bot-leg-l { left: 15px; transform: rotate(8deg); }
-.bot-leg-r { right: 15px; transform: rotate(18deg); }
-
-/* Реактивный след при полёте */
-.bot-trail{ position:absolute; top:58%; left:-3px; display:flex; flex-direction:column; gap:3px; opacity:0; z-index:0; }
-.bot-trail span{ width:12px; height:2.5px; border-radius:2px; background:var(--neon-green); box-shadow:0 0 6px var(--neon-green); }
-.bot-trail span:nth-child(2){ width:8px; opacity:.7; }
-.bot-trail span:nth-child(3){ width:5px; opacity:.4; }
-#bot-toggle-wrap.is-walking .bot-trail{ opacity:1; animation:trailPulse .3s ease-in-out infinite; }
-@keyframes trailPulse{0%,100%{transform:translateX(0)}50%{transform:translateX(-3px)}}
-
-/* Полёт вместо ходьбы: наклон корпуса + лёгкое покачивание + порхание ног */
-#bot-toggle-wrap.is-walking .bot-robot { animation: flyBank 0.5s ease-in-out infinite alternate; }
-@keyframes flyBank{ from{ transform: rotate(-9deg) translateY(0); } to{ transform: rotate(-4deg) translateY(-5px); } }
-#bot-toggle-wrap.is-walking .bot-leg-l { animation: legFlutter 0.22s infinite alternate linear; }
-#bot-toggle-wrap.is-walking .bot-leg-r { animation: legFlutter 0.22s infinite alternate-reverse linear; }
-@keyframes legFlutter{ from{ transform: rotate(4deg); } to{ transform: rotate(24deg); } }
-
-/* Живые глазки */
-.bot-eye {
-  width: 9px; height: 9px; border-radius: 50%;
-  background: var(--neon-green); box-shadow: inset 0 1px 3px rgba(0,0,0,0.5), 0 0 6px var(--neon-green);
-  overflow: hidden; position: relative;
-  animation: blinkEye 4s infinite;
-}
-.bot-pupil {
-  width: 4px; height: 4px; border-radius: 50%; background: #000;
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); transition: transform .08s linear;
-}
-@keyframes blinkEye {
-  0%, 95%, 100% { transform: scaleY(1); }
-  98% { transform: scaleY(0.1); }
+#bot-toggle:hover {
+  transform: scale(1.08);
+  box-shadow: 0 10px 25px rgba(0, 255, 102, 0.2), inset 0 1px 1px rgba(255,255,255,0.2);
 }
 
 /* Окно чата (Apple Liquid Glass) */
 #bot {
-  position: fixed; right: 22px; bottom: 120px; z-index: 10000; width: 340px; max-width: calc(100vw - 36px); height: 460px;
+  position: fixed; right: 22px; bottom: 100px; z-index: 10000; width: 340px; max-width: calc(100vw - 36px); height: 460px;
   display: flex; flex-direction: column; overflow: hidden;
   background: var(--liquid-bg); border: var(--liquid-border); border-radius: 20px;
   box-shadow: var(--liquid-shadow); backdrop-filter: var(--liquid-blur); -webkit-backdrop-filter: var(--liquid-blur);
@@ -1003,9 +882,9 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
   </div>
 </div>
  
-<!-- БОТ-APPLE-LIQUID-GLASS -->
+<!-- APPLE LIQUID GLASS BUTTON -->
 <div id="bot-toggle-wrap">
-  <div class="tour-bubble bubble-center" id="tour-bubble">
+  <div class="tour-bubble" id="tour-bubble">
     <div id="tour-text"></div>
     <div class="tour-btns">
       <button class="tour-btn tour-btn-skip" onclick="disableTourForever()">Больше не показывать</button>
@@ -1013,29 +892,13 @@ tbody tr:hover td{background:rgba(255,255,255,.035)}
     </div>
   </div>
 
-  <button id="bot-toggle" onclick="toggleBot()" aria-label="Открыть супергероя-помощника StaroBot">
-    <div class="bot-robot">
-      <div class="bot-cape"></div>
-      <div class="bot-trail"><span></span><span></span><span></span></div>
-      <div class="bot-head">
-        <span class="bot-eye"><span class="bot-pupil"></span></span>
-        <span class="bot-eye"><span class="bot-pupil"></span></span>
-      </div>
-      <div class="bot-body">
-        <div class="bot-emblem"><span>S</span></div>
-      </div>
-      <div class="bot-limbs">
-        <span class="bot-arm bot-arm-l"></span>
-        <span class="bot-arm bot-arm-r"></span>
-        <span class="bot-leg bot-leg-l"></span>
-        <span class="bot-leg bot-leg-r"></span>
-      </div>
-    </div>
+  <button id="bot-toggle" onclick="toggleBot()" aria-label="Открыть чат-помощник">
+    <i class="fa-solid fa-message"></i>
   </button>
 </div>
 
 <div id="bot">
-  <header>StaroBot ✦<button onclick="toggleBot()" aria-label="Закрыть">×</button></header>
+  <header>Помощник ✦<button onclick="toggleBot()" aria-label="Закрыть">×</button></header>
   <div id="bot-log"></div>
   <form id="bot-form" onsubmit="sendBotQuery(event)">
     <input id="bot-input" placeholder="Напишите или выберите..." autocomplete="off">
@@ -1081,14 +944,14 @@ function rafThrottle(fn){
   const saveData = navigator.connection && navigator.connection.saveData;
   const isSmall = window.innerWidth <= 720;
   if (saveData || isSmall){
-    wrap.classList.add('bg-fallback'); // экономим трафик, батарею и CPU на телефоне
+    wrap.classList.add('bg-fallback'); 
     return;
   }
   video.setAttribute('preload', 'auto');
   video.play().catch(() => {});
 })();
 
-/* ======================= НАВИГАЦИЯ (Magic Line) ======================= */
+/* ======================= НАВИГАЦИЯ ======================= */
 function initMagicNav(){
   const pill = document.querySelector('.nav-pill');
   if (!pill) return;
@@ -1242,10 +1105,8 @@ let auth = null, db = null;
 if (typeof firebase !== 'undefined'){
   try {
     firebase.initializeApp(firebaseConfig); auth = firebase.auth(); db = firebase.firestore();
-    // Офлайн-кеш Firestore: журнал не "зависает" на плохой сети — читает/пишет локально,
-    // а синхронизируется с облаком, когда связь появится снова.
     db.enablePersistence({ synchronizeTabs: true }).catch(err => {
-      console.warn('Firestore offline-кеш не включился (несколько вкладок или старый браузер):', err.code);
+      console.warn('Firestore offline-кеш не включился:', err.code);
     });
   }
   catch(e){ console.warn('Firebase init failed, работаем в гостевом режиме', e); }
@@ -1301,7 +1162,6 @@ function loadLocalData(){
  
 let cloudSaveTimer = null;
 function saveToCloud(silent){
-  // Локально сохраняем всегда мгновенно — данные не теряются, даже если сеть медленная/офлайн
   try{
     localStorage.setItem('ss_all_groups', JSON.stringify(userData.groups));
     localStorage.setItem('ss_current_group', userData.currentGroup);
@@ -1311,8 +1171,6 @@ function saveToCloud(silent){
   applyAvatarUI();
   updateProfileName();
 
-  // В облако пишем с задержкой (дебаунс): быстрые правки (галочки, ввод текста)
-  // не шлют запрос на каждое изменение и не подвешивают интерфейс
   if (currentUser && db){
     clearTimeout(cloudSaveTimer);
     cloudSaveTimer = setTimeout(() => {
@@ -1696,111 +1554,9 @@ function exportCuratorCSV(){
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' })); a.download = 'Смотр_' + userData.currentGroup + '.csv'; a.click();
 }
 
-/* ======================= УМНАЯ СИСТЕМА ПЕРЕДВИЖЕНИЯ РОБОТА ======================= */
-let botState = 'idle'; 
-let botX = 0;
-let botY = 22;
-let idleTimer;
-
-// Инициализация при загрузке (робот сразу стоит на месте)
-function initBotPosition() {
-    const wrap = document.getElementById('bot-toggle-wrap');
-    botX = window.innerWidth - 60; 
-    botY = 22;
-    wrap.style.transitionDuration = '0s'; 
-    wrap.style.left = botX + 'px';
-    wrap.style.bottom = botY + 'px';
-    setTimeout(() => {
-        wrap.style.opacity = '1';
-        wrap.style.transitionDuration = ''; 
-    }, 100);
-}
-initBotPosition();
-
-window.addEventListener('resize', () => {
-    if (botX > window.innerWidth - 60) {
-        botX = window.innerWidth - 60;
-        document.getElementById('bot-toggle-wrap').style.left = botX + 'px';
-    }
-});
-
-// Перемещение робота
-function walkBotTo(targetX, targetY, callback) {
-    const wrap = document.getElementById('bot-toggle-wrap');
-    const bubble = document.getElementById('tour-bubble');
-
-    const minX = 40;
-    const maxX = window.innerWidth - 60;
-    targetX = Math.max(minX, Math.min(targetX, maxX));
-
-    const minY = 22;
-    const maxY = window.innerHeight - 180; 
-    targetY = Math.max(minY, Math.min(targetY, maxY));
-
-    if (targetX < botX - 5) {
-        wrap.classList.add('bot-flipped');
-    } else if (targetX > botX + 5) {
-        wrap.classList.remove('bot-flipped');
-    }
-
-    const distance = Math.hypot(targetX - botX, targetY - botY);
-    const duration = Math.max(400, (distance / 400) * 1000);
-
-    wrap.style.transitionDuration = `${duration}ms`;
-    wrap.style.left = targetX + 'px';
-    wrap.style.bottom = targetY + 'px';
-    wrap.classList.add('is-walking');
-
-    botX = targetX;
-    botY = targetY;
-
-    if (botState !== 'tour') {
-        bubble.className = 'tour-bubble'; 
-        if (targetX < 160) {
-            bubble.classList.add('bubble-left');
-        } else if (targetX > window.innerWidth - 160) {
-            bubble.classList.add('bubble-right');
-        } else {
-            bubble.classList.add('bubble-center');
-        }
-    }
-
-    clearTimeout(wrap.walkTimer);
-    wrap.walkTimer = setTimeout(() => {
-        wrap.classList.remove('is-walking');
-        if (callback) callback();
-    }, duration);
-}
-
-/* --- Логика патрулирования (гуляет строго по низу) --- */
-function startIdlePatrol() {
-    clearTimeout(idleTimer);
-    if (botState !== 'idle') return;
-
-    idleTimer = setTimeout(() => {
-        if (botState !== 'idle') return;
-        const randomX = 50 + Math.random() * (window.innerWidth - 150);
-        walkBotTo(randomX, 22, () => {
-            startIdlePatrol();
-        });
-    }, 4000 + Math.random() * 5000); 
-}
-
-function stopIdlePatrol() {
-    clearTimeout(idleTimer);
-    const wrap = document.getElementById('bot-toggle-wrap');
-    wrap.classList.remove('is-walking');
-}
-
-// Пока вкладка свёрнута — не гуляем и не тратим ресурсы; вернулись — продолжили как ни в чём не бывало
-document.addEventListener('visibilitychange', () => {
-    if (document.hidden) { clearTimeout(idleTimer); }
-    else if (botState === 'idle') { startIdlePatrol(); }
-});
-
 /* ======================= БОТ ЭКСКУРСИЯ ======================= */
 const tourSteps = [
-  { text: "Привет! 👋 Я твой кибер-помощник StaroBot. Давай я проведу быструю экскурсию по твоему новому журналу!", page: 'landing', target: null },
+  { text: "Привет! 👋 Я твой кибер-помощник. Давай я проведу быструю экскурсию по твоему новому журналу!", page: 'landing', target: null },
   { text: "Это главная навигация. Отсюда можно переходить между журналом, настройками группы и отчётами.", page: 'landing', target: '#tour-nav' },
   { text: "Тут настраивается расписание. Введи студентов и расписание на чётную/нечётную неделю всего один раз.", page: 'group', target: '#group-editor' },
   { text: "В журнале магия! Пары и даты подставляются сами. Кликай чекбоксы и пиши долги студентов прямо в строку.", page: 'journal', target: '#tour-journal-schedule' },
@@ -1809,6 +1565,7 @@ const tourSteps = [
 ];
 
 let currentTourStep = 0;
+let botState = 'idle';
 
 let authTimer = setTimeout(() => {
     let authUser = firebase && firebase.auth().currentUser;
@@ -1834,21 +1591,18 @@ if (auth){
   }).catch(() => { clearTimeout(authTimer); loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); });
 } else { clearTimeout(authTimer); loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); }
 
-// Проверка первого визита
 function checkFirstVisit() {
   if (localStorage.getItem('bot_tour_completed_final_v3') !== 'true') {
     setTimeout(startTour, 1000);
   } else {
     botState = 'idle';
-    startIdlePatrol();
     document.getElementById('bot-log').innerHTML = ''; 
-    addMsg('Привет! Как твои дела? Я ваш помощник StaroBot ✦\nГотов подсказать расписание, дедлайны или долги.', 'bot', ['Расписание', 'Дедлайны', 'Долги студентов', 'Какая неделя?', 'Обучение']);
+    addMsg('Привет! Как твои дела? Готов подсказать расписание, дедлайны или долги.', 'bot', ['Расписание', 'Дедлайны', 'Долги студентов', 'Какая неделя?', 'Обучение']);
   }
 }
 
 function startTour() {
   botState = 'tour';
-  stopIdlePatrol();
   currentTourStep = 0;
   document.getElementById('tour-overlay').classList.add('show');
   
@@ -1872,33 +1626,23 @@ function goToTourStep(index) {
   switchPage(step.page);
   
   setTimeout(() => {
-    // В туре робот всегда бежит строго в центр экрана
-    let tX = window.innerWidth / 2;
-    let tY = window.innerHeight / 2 - 40; 
-
     const targetEl = step.target ? document.querySelector(step.target) : null;
-    
-    // Если есть таргет на мобилке - просто плавно скроллим к нему
     if (targetEl && window.innerWidth <= 720) {
         targetEl.scrollIntoView({behavior: 'smooth', block: 'center'});
     }
     
-    walkBotTo(tX, tY, () => {
-         if (targetEl) targetEl.classList.add('tour-highlight');
-         
-         // Фиксируем центральный пузырь для обучения (текст никогда не обрежется)
-         bubble.className = 'tour-bubble bubble-center show'; 
-         
-         document.getElementById('tour-text').innerHTML = step.text;
-         if (step.isEnd) {
-           document.querySelector('.tour-btn-next').textContent = 'Закончить';
-           document.querySelector('.tour-btn-skip').style.display = 'none';
-         } else {
-           document.querySelector('.tour-btn-next').textContent = 'Дальше ➔';
-           document.querySelector('.tour-btn-skip').style.display = 'block';
-         }
-    });
-  }, 100);
+    if (targetEl) targetEl.classList.add('tour-highlight');
+    bubble.classList.add('show'); 
+    
+    document.getElementById('tour-text').innerHTML = step.text;
+    if (step.isEnd) {
+       document.querySelector('.tour-btn-next').textContent = 'Закончить';
+       document.querySelector('.tour-btn-skip').style.display = 'none';
+    } else {
+       document.querySelector('.tour-btn-next').textContent = 'Дальше ➔';
+       document.querySelector('.tour-btn-skip').style.display = 'block';
+    }
+  }, 300);
 }
 
 function endTour() {
@@ -1907,62 +1651,28 @@ function endTour() {
   document.getElementById('tour-bubble').classList.remove('show');
   
   localStorage.setItem('bot_tour_completed_final_v3', 'true');
-  
-  walkBotTo(window.innerWidth - 60, 22, () => {
-      botState = 'idle';
-      startIdlePatrol();
-  });
+  botState = 'idle';
   
   document.getElementById('bot-log').innerHTML = ''; 
   addMsg('Привет! Как твои дела? Обучение завершено. Если что-то забудешь — я всегда тут.', 'bot', ['Что ты умеешь?', 'Открой журнал', 'Покажи долги', 'Обучение']);
 }
 
-function disableTourForever() {
-  endTour();
-}
+function disableTourForever() { endTour(); }
 
 /* ======================= МИНИ-ИГРА И ПАСХАЛКА ЛОГОТИПА ======================= */
 let logoClicks = 0;
 let logoTimer;
 
 function handleLogoClick() {
-  botState = 'easter';
-  stopIdlePatrol();
   logoClicks++;
   clearTimeout(logoTimer);
   
-  const bubble = document.getElementById('tour-bubble');
-  const textEl = document.getElementById('tour-text');
-  
-  document.querySelector('.tour-btns').style.display = 'none';
-  
-  const logoRect = document.querySelector('.logo').getBoundingClientRect();
-  const tX = logoRect.left + logoRect.width / 2;
-  const tY = window.innerHeight - logoRect.bottom - 120;
-  
-  walkBotTo(tX, tY, () => {
-      if (logoClicks === 1) {
-        textEl.innerHTML = "Ты нажал один раз, что будет дальше? 👀";
-        bubble.classList.add('show');
-        logoTimer = setTimeout(resetLogoEasterEgg, 4000);
-      } else if (logoClicks === 2) {
-        textEl.innerHTML = "Ты нажал второй раз... 🤖";
-        bubble.classList.add('show');
-        logoTimer = setTimeout(resetLogoEasterEgg, 4000);
-      } else if (logoClicks >= 3) {
-        resetLogoEasterEgg();
-        openMiniGame();
-      }
-  });
-}
-
-function resetLogoEasterEgg() {
-  logoClicks = 0;
-  document.getElementById('tour-bubble').classList.remove('show');
-  document.querySelector('.tour-btns').style.display = 'flex';
-  
-  botState = 'idle';
-  startIdlePatrol();
+  if (logoClicks >= 3) {
+    logoClicks = 0;
+    openMiniGame();
+  } else {
+    logoTimer = setTimeout(() => { logoClicks = 0; }, 2000);
+  }
 }
 
 let gameScore = 0;
@@ -1996,36 +1706,15 @@ function moveGameTarget() {
 /* ======================= ЛОГИКА ЧАТА БОТА ======================= */
 function toggleBot(){
   const botEl = document.getElementById('bot');
-  
   if (botState === 'chat') {
       botEl.classList.remove('open');
       botState = 'idle';
-      startIdlePatrol();
   } else {
       botState = 'chat';
-      stopIdlePatrol();
       document.getElementById('tour-bubble').classList.remove('show');
-      
-      walkBotTo(window.innerWidth - 60, 22, () => {
-          botEl.classList.add('open');
-      });
+      botEl.classList.add('open');
   }
 }
-
-(function initBotEyes(){
-  const btn = document.getElementById('bot-toggle');
-  const pupils = document.querySelectorAll('#bot-toggle .bot-pupil');
-  if (!btn) return;
-  document.addEventListener('mousemove', rafThrottle(e => {
-    const r = btn.getBoundingClientRect();
-    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-    let dx = e.clientX - cx, dy = e.clientY - cy;
-    const dist = Math.hypot(dx, dy) || 1, max = 2.5;
-    dx = (dx / dist) * Math.min(max, dist / 20);
-    dy = (dy / dist) * Math.min(max, dist / 20);
-    pupils.forEach(p => { p.style.transform = `translate(calc(-50% + ${dx.toFixed(1)}px), calc(-50% + ${dy.toFixed(1)}px))`; });
-  }));
-})();
 
 function sendBotAction(text) {
   addMsg(text, 'me');
@@ -2063,11 +1752,8 @@ function answer(q){
   const g = getActiveGroupData();
   
   if (q.includes('обучени') || q.includes('тур') || q.includes('экскурси')) {
-    setTimeout(() => {
-        toggleBot(); 
-        startTour(); 
-    }, 600);
-    return { text: 'Без проблем! Выхожу в центр для проведения экскурсии по сайту...', buttons: [] };
+    setTimeout(() => { toggleBot(); startTour(); }, 600);
+    return { text: 'Без проблем! Провожу экскурсию по сайту...', buttons: [] };
   }
 
   if (q.includes('привет') || q.includes('помощь') || q.includes('умеешь') || q.includes('функции') || q.includes('дела')) {
@@ -2218,21 +1904,16 @@ function deleteLocalReview(id) {
   localStorage.setItem('ss_global_reviews', JSON.stringify(globalReviews));
 }
 
-/* ======================= PWA: SERVICE WORKER С САМООЧИСТКОЙ КЕША ======================= */
-// Важно: sw.js кеширует только статические файлы (html/css/js/иконки).
-// Данные журнала (localStorage + Firestore) — это отдельное хранилище,
-// service worker его никогда не трогает и не удаляет.
+/* ======================= PWA: SERVICE WORKER ======================= */
 if ('serviceWorker' in navigator){
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').then(reg => {
-      // Проверяем, нет ли уже новой версии сайта прямо сейчас
       reg.update().catch(() => {});
       reg.addEventListener('updatefound', () => {
         const fresh = reg.installing;
         if (!fresh) return;
         fresh.addEventListener('statechange', () => {
           if (fresh.state === 'installed' && navigator.serviceWorker.controller){
-            // Новая версия скачана и готова — просим её активироваться немедленно
             fresh.postMessage('skipWaiting');
           }
         });
@@ -2241,8 +1922,6 @@ if ('serviceWorker' in navigator){
       console.warn('StaroSTATT: service worker не зарегистрировался.');
     });
 
-    // Как только новая версия взяла управление — тихо перезагружаем страницу один раз,
-    // чтобы подхватить свежие файлы (все данные пользователя остаются на месте)
     let refreshedOnce = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       if (refreshedOnce) return;
