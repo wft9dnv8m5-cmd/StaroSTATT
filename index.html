@@ -71,12 +71,40 @@ a{color:inherit;text-decoration:none}
 :focus-visible{outline:2px solid #fff;outline-offset:3px;border-radius:6px}
  
 /* ---------- фон ---------- */
-.bg{position:fixed;inset:0;background:radial-gradient(ellipse at 20% 16%,#203329 0%,#111a18 48%,#0b1110 100%);overflow:hidden;z-index:0}
-.bg-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.bg{position:fixed;inset:0;background:linear-gradient(135deg,#101a16 0%,#17231f 48%,#101817 100%);overflow:hidden;z-index:0}
+.ambient-art{position:absolute;inset:0;overflow:hidden;pointer-events:none;user-select:none;opacity:.62;
+  transition:transform .75s cubic-bezier(.22,1,.36,1),filter .75s ease}
+.ambient-sheet{position:absolute;color:#d2dbd0;border:1px solid rgba(203,222,204,.2);border-radius:12px;
+  background:rgba(17,27,24,.72);box-shadow:0 20px 70px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.04);
+  backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+.ambient-ledger{top:18%;left:7%;width:252px;padding:18px 18px 14px;animation:ledgerDrift 34s ease-in-out infinite}
+.ambient-code{position:absolute;top:18%;right:7%;width:310px;margin:0;padding:18px 20px;overflow:hidden;
+  color:#b6c4b8;border:1px solid rgba(143,217,208,.18);border-radius:12px;background:rgba(13,24,23,.72);
+  box-shadow:0 20px 70px rgba(0,0,0,.18);font:12px/1.8 ui-monospace,SFMono-Regular,Menlo,monospace;
+  animation:codeDrift 39s ease-in-out infinite}
+.ambient-code .code-key{color:#d9f36b}.ambient-code .code-value{color:#8fd9d0}.ambient-code .code-comment{color:#87958d}
+.ambient-table{right:19%;bottom:10%;width:360px;padding:17px 18px 12px;animation:tableDrift 36s ease-in-out infinite}
+.ambient-sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;color:#e0e8dd;
+  font-size:10px;font-weight:700;letter-spacing:.1em}
+.ambient-sheet-head span:last-child{color:#91a89a;font-size:9px}
+.ambient-ledger-row{display:grid;grid-template-columns:1fr 54px 44px;gap:12px;align-items:center;min-height:26px;
+  border-top:1px solid rgba(205,221,207,.09);color:#9eaea1;font-size:9px}
+.ambient-ledger-row:first-of-type{color:#c8d5ca}
+.ambient-ledger-row span:last-child{text-align:right}
+.ambient-mark{display:inline-block;width:22px;height:5px;border-radius:99px;background:#9ecb83;opacity:.8}
+.ambient-mark.cool{background:#8fd9d0}.ambient-mark.warm{background:#e8b092}.ambient-mark.dim{background:#95a09a}
+.ambient-grid{display:grid;grid-template-columns:1.3fr .8fr .8fr .8fr;border-top:1px solid rgba(205,221,207,.1)}
+.ambient-grid span{min-height:28px;padding:8px 6px;border-right:1px solid rgba(205,221,207,.08);
+  border-bottom:1px solid rgba(205,221,207,.08);color:#aebcaf;font-size:8px;text-align:center}
+.ambient-grid span:nth-child(4n + 1){text-align:left;color:#d0dbd1}
+@keyframes ledgerDrift{0%,100%{transform:translate3d(0,0,0) rotate(-8deg)}50%{transform:translate3d(14px,-16px,0) rotate(-5deg)}}
+@keyframes codeDrift{0%,100%{transform:translate3d(0,0,0) rotate(6deg)}50%{transform:translate3d(-12px,18px,0) rotate(3deg)}}
+@keyframes tableDrift{0%,100%{transform:translate3d(0,0,0) rotate(-3deg)}50%{transform:translate3d(12px,-12px,0) rotate(-1deg)}}
+body.page-transition .ambient-art{transform:scale(1.035) rotate(.35deg);filter:brightness(1.22)}
 .scrim{position:fixed;inset:0;z-index:0;pointer-events:none;transition:background .5s ease,backdrop-filter .5s ease;
   background:radial-gradient(ellipse at 18% 10%,rgba(83,135,59,.24),transparent 38%),
     radial-gradient(ellipse at 88% 82%,rgba(77,118,128,.18),transparent 42%),rgba(7,13,12,.48)}
-body.app-mode .scrim{background:rgba(10,14,13,.86);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+body.app-mode .scrim{background:rgba(10,14,13,.66);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
  
 /* ---------- шапка и меню ---------- */
 .site-header{position:fixed;top:0;left:0;right:0;z-index:40;
@@ -296,6 +324,10 @@ td{padding:13px 14px;border-bottom:1px solid rgba(202,216,207,.1);font-size:14px
 tbody tr:last-child td{border-bottom:none}
 tbody tr:nth-child(even) td{background:rgba(225,233,226,.025)}
 tbody tr:hover td{background:rgba(217,243,107,.09)}
+.attendance-badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:600;white-space:nowrap}
+.attendance-badge.present{background:rgba(184,236,136,.12);color:#c5ef9a}
+.attendance-badge.absent{background:rgba(239,170,139,.12);color:#efaa8b}
+.attendance-badge.unmarked{background:rgba(202,216,207,.08);color:#b2beb5}
 .num{color:var(--muted);font-variant-numeric:tabular-nums}
 .sub{display:block;color:var(--muted);font-size:11px;margin-top:3px}
 .center{text-align:center}
@@ -323,6 +355,8 @@ tbody tr:hover td{background:rgba(217,243,107,.09)}
   border-radius:20px;padding:22px}
 .note.pinned{border-color:rgba(255,255,255,.55);box-shadow:0 0 24px rgba(255,255,255,.1)}
 .note h4{margin:0 0 9px;font-size:15.5px;font-weight:600;padding-right:28px}
+.review-sample{display:inline-flex;align-items:center;margin-left:8px;padding:3px 7px;border:1px solid rgba(202,216,207,.16);
+  border-radius:999px;color:var(--muted);font-size:9px;font-weight:600;vertical-align:middle}
 .note p{margin:0;color:#c6c6c6;font-size:13.5px;line-height:1.55;white-space:pre-wrap;flex:1}
 .note footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;
   border-top:1px solid rgba(255,255,255,.08);color:var(--muted);font-size:11.5px}
@@ -580,6 +614,9 @@ tbody tr:hover td{background:rgba(217,243,107,.09)}
 .game-status{flex:1;margin:0;color:#b7c0b5;font-size:12px;line-height:1.4}
 .game-footer .btn{flex:0 0 auto;padding:9px 13px;font-size:12px}
 @media(max-width:420px){
+  .ambient-ledger{top:16%;left:-138px}
+  .ambient-code{top:auto;right:-200px;bottom:20%}
+  .ambient-table{display:none}
   .game-box{padding:18px}
   .memory-grid{gap:7px}
   .memory-logo{font-size:23px}
@@ -620,10 +657,33 @@ tbody tr:hover td{background:rgba(217,243,107,.09)}
 </head>
 <body class="landing-mode">
  
-<div class="bg">
-  <video class="bg-video" autoplay muted loop playsinline>
-    <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260809_012548_ef22562c-c0ae-4816-ad9d-f8922af4e6a7.mp4" type="video/mp4">
-  </video>
+<div class="bg" aria-hidden="true">
+  <div class="ambient-art">
+    <div class="ambient-sheet ambient-ledger">
+      <div class="ambient-sheet-head"><span>ATTENDANCE LOG</span><span>WEEK 08 / 18</span></div>
+      <div class="ambient-ledger-row"><span>А. Иванов</span><span>ПРИСУТСТВИЕ</span><span><i class="ambient-mark"></i></span></div>
+      <div class="ambient-ledger-row"><span>М. Петрова</span><span>ПРИСУТСТВИЕ</span><span><i class="ambient-mark cool"></i></span></div>
+      <div class="ambient-ledger-row"><span>И. Садыков</span><span>ПРИСУТСТВИЕ</span><span><i class="ambient-mark warm"></i></span></div>
+      <div class="ambient-ledger-row"><span>С. Ахметова</span><span>ПРИСУТСТВИЕ</span><span><i class="ambient-mark dim"></i></span></div>
+    </div>
+    <pre class="ambient-code"><span class="code-comment">// weekly summary</span>
+<span class="code-key">const</span> journal = {
+  week: <span class="code-value">08</span>,
+  group: <span class="code-value">"ИБМ1-32Б"</span>,
+  lessons: <span class="code-value">24</span>,
+  attendance: <span class="code-value">96.4</span>
+};</pre>
+    <div class="ambient-sheet ambient-table">
+      <div class="ambient-sheet-head"><span>GROUP REPORT</span><span>SEMESTER / 01</span></div>
+      <div class="ambient-grid">
+        <span>СТУДЕНТ</span><span>ЛЕК.</span><span>СЕМ.</span><span>%</span>
+        <span>А. Иванов</span><span>12</span><span>08</span><span>94</span>
+        <span>М. Петрова</span><span>14</span><span>09</span><span>98</span>
+        <span>И. Садыков</span><span>10</span><span>07</span><span>87</span>
+        <span>С. Ахметова</span><span>13</span><span>10</span><span>100</span>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="scrim"></div>
 <div id="toasts"></div>
@@ -904,9 +964,10 @@ tbody tr:hover td{background:rgba(217,243,107,.09)}
     <div class="chips" id="subject-grid"></div>
     <div id="teacher-table-wrapper" style="display:none;margin-top:22px">
       <h3 id="teacher-subject-title">Предмет</h3>
+        <p class="hint" id="teacher-table-summary" style="margin:0 0 14px"></p>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Студент</th><th class="center">Посетил</th><th class="center">Всего</th><th class="center">%</th></tr></thead>
+          <thead><tr><th>Дата</th><th>Пара</th><th>Студент</th><th>Посещение</th><th class="center">Ответы</th><th>Заметки</th></tr></thead>
           <tbody id="teacher-tbody"></tbody>
         </table>
       </div>
@@ -918,7 +979,7 @@ tbody tr:hover td{background:rgba(217,243,107,.09)}
 <section class="view app-view" id="page-reviews">
   <div class="page-head">
     <h1>Reviews</h1>
-    <p>Ваши отзывы сохраняются для всех. Они помогают делать журнал лучше.</p>
+    <p>Отзывы помогают делать журнал лучше. При недоступности общего хранилища запись останется в этом браузере.</p>
   </div>
 
   <div class="card">
@@ -930,6 +991,7 @@ tbody tr:hover td{background:rgba(217,243,107,.09)}
       <textarea id="review-text" rows="4" placeholder="Всё отлично, но хотелось бы добавить функцию..."></textarea>
     </label>
     <button class="btn btn-primary" onclick="submitReview()">Отправить отзыв</button>
+    <p class="hint" id="reviews-storage-status" role="status" aria-live="polite" style="margin:12px 0 0"></p>
   </div>
 
   <div class="card">
@@ -1078,15 +1140,23 @@ function switchPage(page){
   const current = document.querySelector('.view.active');
   const target = document.getElementById('page-' + page);
   if (!target || target === current){ closeMenu(); return; }
+  document.body.classList.add('page-transition');
+  let leaveTimer;
  
   function enterTarget(){
     if (current){ current.classList.remove('active', 'leaving'); }
     target.classList.add('active', 'entering');
-    target.addEventListener('animationend', function done(e){
-      if (e.target !== target) return;
+    let enterFinished = false;
+    function finishEnter(e){
+      if (e && e.target !== target || enterFinished) return;
+      enterFinished = true;
+      clearTimeout(enterTimer);
       target.classList.remove('entering');
-      target.removeEventListener('animationend', done);
-    });
+      document.body.classList.remove('page-transition');
+      target.removeEventListener('animationend', finishEnter);
+    }
+    target.addEventListener('animationend', finishEnter);
+    const enterTimer = setTimeout(() => finishEnter(), 650);
     document.body.classList.toggle('landing-mode', page === 'landing');
     document.body.classList.toggle('app-mode', page !== 'landing');
     document.querySelectorAll('[data-page]').forEach(l => l.classList.toggle('active', l.dataset.page === page));
@@ -1097,11 +1167,16 @@ function switchPage(page){
  
   if (current){
     current.classList.add('leaving');
-    current.addEventListener('animationend', function done(e){
-      if (e.target !== current) return;
-      current.removeEventListener('animationend', done);
+    let leaveFinished = false;
+    function finishLeave(e){
+      if (e && e.target !== current || leaveFinished) return;
+      leaveFinished = true;
+      clearTimeout(leaveTimer);
+      current.removeEventListener('animationend', finishLeave);
       enterTarget();
-    }, { once: true });
+    }
+    current.addEventListener('animationend', finishLeave);
+    leaveTimer = setTimeout(() => finishLeave(), 260);
   } else {
     enterTarget();
   }
@@ -1795,8 +1870,7 @@ function initSubjects(){
   const found = new Set();
   ['even','odd'].forEach(wt => {
     for (const day in g.schedule[wt]) (g.schedule[wt][day] || []).forEach(l => {
-      const parts = String(l.text).split(' - ');
-      const nm = (parts[1] || parts[0]).replace(/\(Л\)|\(С\)/g, '').trim();
+      const nm = getSubjectFromLesson(l.text);
       if (nm) found.add(nm);
     });
   });
@@ -1808,33 +1882,87 @@ function initSubjects(){
     grid.appendChild(c);
   });
 }
+function getSubjectFromLesson(text){
+  const parts = String(text).split(' - ');
+  return (parts.slice(1).join(' - ') || parts[0]).replace(/\(Л\)|\(С\)/g, '').trim();
+}
+function getReportLessonDate(week, day){
+  const now = new Date();
+  const academicYear = now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1;
+  const semesterStart = new Date(academicYear, 8, 1);
+  const startDay = semesterStart.getDay();
+  const firstMonday = new Date(semesterStart);
+  firstMonday.setDate(semesterStart.getDate() - startDay + (startDay === 0 ? -6 : 1));
+  const dayOffset = { mon:0, tue:1, wed:2, thu:3, fri:4, sat:5 }[day] || 0;
+  const lessonDate = new Date(firstMonday);
+  lessonDate.setDate(firstMonday.getDate() + (week - 1) * 7 + dayOffset);
+  return lessonDate.toLocaleDateString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric' });
+}
 function buildSubjectStats(subject){
   const g = getActiveGroupData();
   document.getElementById('teacher-table-wrapper').style.display = 'block';
   document.getElementById('teacher-subject-title').textContent = subject;
-  const stats = g.students.map(() => 0);
-  let total = 0;
+  const tbody = document.getElementById('teacher-tbody');
+  const summary = document.getElementById('teacher-table-summary');
+  tbody.innerHTML = '';
+  const weekdays = ['mon','tue','wed','thu','fri','sat'];
+  const weekdayNames = { mon:'Понедельник', tue:'Вторник', wed:'Среда', thu:'Четверг', fri:'Пятница', sat:'Суббота' };
+  let meetings = 0, marked = 0, present = 0;
+  const rows = document.createDocumentFragment();
+
+  if (!g.students.length){
+    tbody.innerHTML = '<tr><td colspan="6" class="empty">Добавьте студентов на вкладке «Группа»</td></tr>';
+    summary.textContent = 'В расписании будут показаны все даты и отметки каждого студента.';
+    return;
+  }
+
   for (let w = 1; w <= 18; w++){
     const wt = (w % 2 !== 0) ? 'even' : 'odd';
-    for (const day in g.schedule[wt]) (g.schedule[wt][day] || []).forEach(l => {
-      if (String(l.text).includes(subject)){
-        total++;
-        g.students.forEach((_, s) => {
-          const cell = g.attendance[key(w, day, l.id, s)];
-          if (cell && cell.present) stats[s]++;
+    weekdays.forEach(day => {
+      (g.schedule[wt][day] || []).forEach(lesson => {
+        if (getSubjectFromLesson(lesson.text) !== subject) return;
+        meetings++;
+        const lessonDate = getReportLessonDate(w, day);
+        const lessonText = String(lesson.text);
+        const lessonParts = lessonText.split(' - ');
+        const time = lessonParts.length > 1 ? lessonParts[0] : 'Время не указано';
+        const lessonType = lessonText.includes('(Л)') ? 'Лекция' : lessonText.includes('(С)') ? 'Семинар' : 'Пара';
+
+        g.students.forEach((name, studentIndex) => {
+          const attendance = g.attendance[key(w, day, lesson.id, studentIndex)];
+          const status = !attendance ? 'Не отмечено' : attendance.present ? 'Был' : 'Отсутствовал';
+          if (attendance) marked++;
+          if (attendance && attendance.present) present++;
+
+          const tr = document.createElement('tr');
+          [lessonDate, `${time} · ${lessonType}`, name].forEach(value => {
+            const td = document.createElement('td');
+            td.textContent = value;
+            tr.appendChild(td);
+          });
+          const statusCell = document.createElement('td');
+          const statusBadge = document.createElement('span');
+          statusBadge.className = 'attendance-badge ' + (!attendance ? 'unmarked' : attendance.present ? 'present' : 'absent');
+          statusBadge.textContent = status;
+          statusCell.appendChild(statusBadge);
+          tr.appendChild(statusCell);
+          [attendance ? String(attendance.answers || 0) : '—', attendance && attendance.notes ? attendance.notes : '—'].forEach(value => {
+            const td = document.createElement('td');
+            td.textContent = value;
+            tr.appendChild(td);
+          });
+          rows.appendChild(tr);
         });
-      }
+      });
     });
   }
-  const tbody = document.getElementById('teacher-tbody'); tbody.innerHTML = '';
-  g.students.forEach((name, i) => {
-    const p = total ? Math.round(stats[i] / total * 100) : 0;
-    const tr = document.createElement('tr');
-    tr.innerHTML = '<td>' + name + '</td><td class="center mono-num">' + stats[i] + '</td>' +
-      '<td class="center mono-num">' + total + '</td>' +
-      '<td class="center mono-num" style="color:' + tone(p) + '">' + p + '%</td>';
-    tbody.appendChild(tr);
-  });
+  if (!meetings){
+    tbody.innerHTML = '<tr><td colspan="6" class="empty">Для этого предмета занятий в расписании нет</td></tr>';
+    summary.textContent = '';
+    return;
+  }
+  tbody.appendChild(rows);
+  summary.textContent = `Занятий: ${meetings} · посещено: ${present} · отметок: ${marked} из ${meetings * g.students.length}`;
 }
 function exportCuratorCSV(){
   if (!currentExportData.length) return showToast('Нечего выгружать — сначала заполните журнал.');
@@ -2198,39 +2326,90 @@ function answer(q){
 
 /* ======================= ГЛОБАЛЬНЫЕ ОТЗЫВЫ ======================= */
 let globalReviews = [];
+const exampleReviews = [
+  { id:'sample-review-1', clientId:'sample-review-1', name:'Мария, староста', text:'Удобно отмечать посещаемость сразу после пары: отметки, ответы и заметки остаются в одном журнале.', date:'2026-08-18T12:00:00.000Z', uid:'sample', sample:true },
+  { id:'sample-review-2', clientId:'sample-review-2', name:'Анонимный студент', text:'Стало проще следить за расписанием и понимать, какие пары и долги ещё нужно закрыть.', date:'2026-08-12T12:00:00.000Z', uid:'sample', sample:true }
+];
+
+function mergeReviews(...lists){
+  const reviewsById = new Map();
+  lists.forEach(list => (list || []).forEach(review => {
+    const key = review.clientId || review.id || `${review.name}|${review.date}|${review.text}`;
+    reviewsById.set(key, { ...reviewsById.get(key), ...review });
+  }));
+  return [...reviewsById.values()].sort((a, b) => new Date(b.date) - new Date(a.date));
+}
+
+function persistLocalReviews(reviews = globalReviews){
+  try { localStorage.setItem('ss_global_reviews', JSON.stringify(reviews)); }
+  catch(e) { return false; }
+  return true;
+}
+
 async function fetchGlobalReviews() {
+  const status = document.getElementById('reviews-storage-status');
+  loadLocalReviews();
+  const cachedReviews = globalReviews;
   if (db) {
     try {
       const snapshot = await db.collection('global_reviews').orderBy('date', 'desc').get();
-      globalReviews = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    } catch(e) { loadLocalReviews(); }
-  } else { loadLocalReviews(); }
+      const remoteReviews = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      globalReviews = mergeReviews(cachedReviews, remoteReviews, exampleReviews);
+      if (status) status.textContent = 'Общий список отзывов синхронизирован.';
+    } catch(e) {
+      globalReviews = mergeReviews(cachedReviews, exampleReviews);
+      if (status) status.textContent = 'Общий список пока недоступен. Новые отзывы сохраняются в этом браузере.';
+    }
+  } else {
+    globalReviews = mergeReviews(cachedReviews, exampleReviews);
+    if (status) status.textContent = 'Облачное хранилище недоступно. Новые отзывы сохраняются в этом браузере.';
+  }
+  persistLocalReviews();
   renderReviews();
 }
+
 function loadLocalReviews() {
-  try { globalReviews = JSON.parse(localStorage.getItem('ss_global_reviews') || '[]'); } 
-  catch(e) { globalReviews = []; }
+  try {
+    const cached = JSON.parse(localStorage.getItem('ss_global_reviews') || '[]');
+    globalReviews = mergeReviews(Array.isArray(cached) ? cached : [], exampleReviews);
+  } catch(e) { globalReviews = mergeReviews(exampleReviews); }
 }
+
 async function submitReview() {
   const nameInput = document.getElementById('review-name');
   const textInput = document.getElementById('review-text');
   const name = nameInput.value.trim();
   const text = textInput.value.trim();
   if (!name || !text) return showToast('Пожалуйста, заполните имя и текст отзыва.');
-  const newReview = { name: name, text: text, date: new Date().toISOString(), uid: currentUser ? currentUser.uid : 'anon' };
+  const clientId = 'local-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+  const newReview = { id: clientId, clientId, name, text, date: new Date().toISOString(), uid: currentUser ? currentUser.uid : 'anon' };
+  globalReviews = mergeReviews([newReview], globalReviews);
+  const savedLocally = persistLocalReviews();
   nameInput.value = ''; textInput.value = '';
+  let savedToCloud = false;
   if (db) {
     try {
-      const docRef = await db.collection('global_reviews').add(newReview);
-      newReview.id = docRef.id; globalReviews.unshift(newReview); 
-    } catch(e) { saveLocalReview(newReview); }
-  } else { saveLocalReview(newReview); }
-  renderReviews(); showToast('Отзыв успешно добавлен', 'success');
+      const cloudReview = { ...newReview };
+      delete cloudReview.id;
+      const docRef = await db.collection('global_reviews').add(cloudReview);
+      globalReviews = mergeReviews(globalReviews, [{ ...newReview, id:docRef.id, cloudId:docRef.id }]);
+      savedToCloud = true;
+    } catch(e) {}
+  }
+  persistLocalReviews();
+  renderReviews();
+  const storageStatus = document.getElementById('reviews-storage-status');
+  if (savedToCloud){
+    if (storageStatus) storageStatus.textContent = 'Отзыв опубликован в общем списке.';
+    showToast('Отзыв опубликован и сохранён', 'success');
+  }
+  else if (savedLocally){
+    if (storageStatus) storageStatus.textContent = 'Общая публикация недоступна. Отзыв сохранён в этом браузере.';
+    showToast('Отзыв сохранён на этом устройстве.', 'success');
+  }
+  else showToast('Не удалось сохранить отзыв. Проверьте свободное место в браузере.');
 }
-function saveLocalReview(review) {
-  review.id = Date.now().toString(); globalReviews.unshift(review);
-  localStorage.setItem('ss_global_reviews', JSON.stringify(globalReviews));
-}
+
 function renderReviews() {
   const box = document.getElementById('reviews-list');
   if (!box) return; box.innerHTML = '';
@@ -2238,25 +2417,49 @@ function renderReviews() {
     box.innerHTML = '<div class="card" style="grid-column:1/-1; margin:0;"><div class="empty">Пока нет ни одного отзыва. Будьте первыми!</div></div>'; return;
   }
   globalReviews.forEach(r => {
-    const el = document.createElement('article'); el.className = 'note'; 
-    el.innerHTML = `<h4>${r.name}</h4><p>${r.text}</p><footer>
-        <div style="display:flex;align-items:center"><span>${new Date(r.date).toLocaleDateString('ru-RU')}</span></div>
-        ${ (currentUser && currentUser.uid === r.uid) || (!currentUser && r.uid === 'anon') ? `<button class="btn-danger" onclick="deleteReview('${r.id}')">Удалить</button>` : '' }
-      </footer>`;
+    const el = document.createElement('article'); el.className = 'note';
+    const title = document.createElement('h4');
+    title.textContent = r.name || 'Аноним';
+    if (r.sample){
+      const badge = document.createElement('span');
+      badge.className = 'review-sample';
+      badge.textContent = 'Пример';
+      title.appendChild(badge);
+    }
+    const text = document.createElement('p');
+    text.textContent = r.text || '';
+    const footer = document.createElement('footer');
+    const date = document.createElement('span');
+    date.textContent = new Date(r.date).toLocaleDateString('ru-RU');
+    footer.appendChild(date);
+    const canDelete = !r.sample && (currentUser
+      ? currentUser.uid === r.uid
+      : r.uid === 'anon' && String(r.id).startsWith('local-'));
+    if (canDelete){
+      const remove = document.createElement('button');
+      remove.className = 'btn-danger';
+      remove.textContent = 'Удалить';
+      remove.onclick = () => deleteReview(r.id);
+      footer.appendChild(remove);
+    }
+    el.append(title, text, footer);
     box.appendChild(el);
   });
 }
+
 async function deleteReview(id) {
+  const review = globalReviews.find(item => item.id === id);
+  if (!review || review.sample) return;
   if (!confirm('Точно удалить этот отзыв?')) return;
-  if (db) {
-    try { await db.collection('global_reviews').doc(id).delete(); globalReviews = globalReviews.filter(r => r.id !== id);
-    } catch(e) { deleteLocalReview(id); }
-  } else { deleteLocalReview(id); }
-  renderReviews(); showToast('Отзыв удален', 'success');
-}
-function deleteLocalReview(id) {
-  globalReviews = globalReviews.filter(r => r.id !== id);
-  localStorage.setItem('ss_global_reviews', JSON.stringify(globalReviews));
+  const cloudId = review.cloudId || (!String(id).startsWith('local-') ? id : null);
+  if (db && cloudId){
+    try { await db.collection('global_reviews').doc(cloudId).delete(); }
+    catch(e) { return showToast('Не удалось удалить отзыв из общего хранилища.'); }
+  }
+  globalReviews = globalReviews.filter(item => item.id !== id && item.clientId !== review.clientId);
+  persistLocalReviews();
+  renderReviews();
+  showToast('Отзыв удалён', 'success');
 }
 
 /* ======================= PWA: SERVICE WORKER ======================= */
