@@ -72,18 +72,18 @@ a{color:inherit;text-decoration:none}
  
 /* ---------- фон ---------- */
 .bg{position:fixed;inset:0;background:linear-gradient(135deg,#101a16 0%,#17231f 48%,#101817 100%);overflow:hidden;z-index:0}
-.ambient-art{position:absolute;inset:0;overflow:hidden;pointer-events:none;user-select:none;opacity:.62;
+.ambient-art{position:absolute;inset:0;overflow:hidden;pointer-events:none;user-select:none;opacity:.76;
   transition:transform .75s cubic-bezier(.22,1,.36,1),filter .75s ease}
 .ambient-sheet{position:absolute;color:#d2dbd0;border:1px solid rgba(203,222,204,.2);border-radius:12px;
   background:rgba(17,27,24,.72);box-shadow:0 20px 70px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.04);
   backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
-.ambient-ledger{top:18%;left:7%;width:252px;padding:18px 18px 14px;animation:ledgerDrift 34s ease-in-out infinite}
+.ambient-ledger{top:14%;left:7%;width:252px;padding:18px 18px 14px;animation:ledgerDrift 25s ease-in-out infinite}
 .ambient-code{position:absolute;top:18%;right:7%;width:310px;margin:0;padding:18px 20px;overflow:hidden;
   color:#b6c4b8;border:1px solid rgba(143,217,208,.18);border-radius:12px;background:rgba(13,24,23,.72);
   box-shadow:0 20px 70px rgba(0,0,0,.18);font:12px/1.8 ui-monospace,SFMono-Regular,Menlo,monospace;
-  animation:codeDrift 39s ease-in-out infinite}
+  animation:codeDrift 29s ease-in-out infinite -8s}
 .ambient-code .code-key{color:#d9f36b}.ambient-code .code-value{color:#8fd9d0}.ambient-code .code-comment{color:#87958d}
-.ambient-table{right:19%;bottom:10%;width:360px;padding:17px 18px 12px;animation:tableDrift 36s ease-in-out infinite}
+.ambient-table{right:12%;bottom:8%;width:340px;padding:17px 18px 12px;animation:tableDrift 27s ease-in-out infinite -13s}
 .ambient-sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;color:#e0e8dd;
   font-size:10px;font-weight:700;letter-spacing:.1em}
 .ambient-sheet-head span:last-child{color:#91a89a;font-size:9px}
@@ -97,9 +97,23 @@ a{color:inherit;text-decoration:none}
 .ambient-grid span{min-height:28px;padding:8px 6px;border-right:1px solid rgba(205,221,207,.08);
   border-bottom:1px solid rgba(205,221,207,.08);color:#aebcaf;font-size:8px;text-align:center}
 .ambient-grid span:nth-child(4n + 1){text-align:left;color:#d0dbd1}
-@keyframes ledgerDrift{0%,100%{transform:translate3d(0,0,0) rotate(-8deg)}50%{transform:translate3d(14px,-16px,0) rotate(-5deg)}}
-@keyframes codeDrift{0%,100%{transform:translate3d(0,0,0) rotate(6deg)}50%{transform:translate3d(-12px,18px,0) rotate(3deg)}}
-@keyframes tableDrift{0%,100%{transform:translate3d(0,0,0) rotate(-3deg)}50%{transform:translate3d(12px,-12px,0) rotate(-1deg)}}
+.ambient-calendar{position:absolute;left:7%;bottom:9%;width:218px;padding:16px 16px 13px;animation:calendarDrift 28s ease-in-out infinite -5s}
+.ambient-calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.ambient-calendar-grid span{aspect-ratio:1;display:grid;place-items:center;border:1px solid rgba(205,221,207,.08);
+  border-radius:5px;color:#95a69a;font-size:8px}
+.ambient-calendar-grid span:nth-child(8),.ambient-calendar-grid span:nth-child(17),.ambient-calendar-grid span:nth-child(27){
+  border-color:rgba(217,243,107,.24);background:rgba(217,243,107,.12);color:#d9f36b}
+.ambient-chart{position:absolute;top:35%;left:38%;width:238px;padding:16px 17px 13px;animation:chartDrift 26s ease-in-out infinite -17s}
+.ambient-bars{height:70px;display:flex;align-items:flex-end;gap:9px;padding:0 4px;border-bottom:1px solid rgba(205,221,207,.16)}
+.ambient-bars span{flex:1;height:var(--bar);border:1px solid rgba(143,217,208,.2);border-bottom:0;border-radius:5px 5px 0 0;
+  background:linear-gradient(180deg,rgba(143,217,208,.38),rgba(143,217,208,.06))}
+.ambient-bars span:nth-child(3n + 1){background:linear-gradient(180deg,rgba(217,243,107,.34),rgba(217,243,107,.05))}
+.ambient-chart-labels{display:flex;justify-content:space-between;margin-top:7px;color:#87978b;font-size:8px}
+@keyframes ledgerDrift{0%,100%{transform:translate3d(0,0,0) rotate(-8deg)}50%{transform:translate3d(22px,-20px,0) rotate(-3deg)}}
+@keyframes codeDrift{0%,100%{transform:translate3d(0,0,0) rotate(6deg)}50%{transform:translate3d(-22px,25px,0) rotate(1deg)}}
+@keyframes tableDrift{0%,100%{transform:translate3d(0,0,0) rotate(-3deg)}50%{transform:translate3d(19px,-17px,0) rotate(1deg)}}
+@keyframes calendarDrift{0%,100%{transform:translate3d(0,0,0) rotate(4deg)}50%{transform:translate3d(-18px,-21px,0) rotate(8deg)}}
+@keyframes chartDrift{0%,100%{transform:translate3d(0,0,0) rotate(-5deg)}50%{transform:translate3d(21px,18px,0) rotate(-1deg)}}
 body.page-transition .ambient-art{transform:scale(1.035) rotate(.35deg);filter:brightness(1.22)}
 .scrim{position:fixed;inset:0;z-index:0;pointer-events:none;transition:background .5s ease,backdrop-filter .5s ease;
   background:radial-gradient(ellipse at 18% 10%,rgba(83,135,59,.24),transparent 38%),
@@ -613,10 +627,14 @@ tbody tr:hover td{background:rgba(217,243,107,.09)}
 .game-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}
 .game-status{flex:1;margin:0;color:#b7c0b5;font-size:12px;line-height:1.4}
 .game-footer .btn{flex:0 0 auto;padding:9px 13px;font-size:12px}
+@media(max-width:720px){
+  .ambient-ledger{top:8%;left:-132px;width:230px}
+  .ambient-code{top:8%;right:-220px;bottom:auto;width:280px}
+  .ambient-table{right:-210px;bottom:3%;width:280px}
+  .ambient-calendar{left:-126px;bottom:5%;width:204px}
+  .ambient-chart{top:42%;left:calc(50% - 106px);right:auto;width:212px}
+}
 @media(max-width:420px){
-  .ambient-ledger{top:16%;left:-138px}
-  .ambient-code{top:auto;right:-200px;bottom:20%}
-  .ambient-table{display:none}
   .game-box{padding:18px}
   .memory-grid{gap:7px}
   .memory-logo{font-size:23px}
@@ -682,6 +700,20 @@ tbody tr:hover td{background:rgba(217,243,107,.09)}
         <span>И. Садыков</span><span>10</span><span>07</span><span>87</span>
         <span>С. Ахметова</span><span>13</span><span>10</span><span>100</span>
       </div>
+    </div>
+    <div class="ambient-sheet ambient-calendar">
+      <div class="ambient-sheet-head"><span>LESSON CALENDAR</span><span>SEPTEMBER</span></div>
+      <div class="ambient-calendar-grid">
+        <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+        <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span>
+        <span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span>
+        <span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span>
+      </div>
+    </div>
+    <div class="ambient-sheet ambient-chart">
+      <div class="ambient-sheet-head"><span>ATTENDANCE RATE</span><span>WEEKLY</span></div>
+      <div class="ambient-bars"><span style="--bar:38%"></span><span style="--bar:62%"></span><span style="--bar:51%"></span><span style="--bar:82%"></span><span style="--bar:68%"></span><span style="--bar:94%"></span><span style="--bar:74%"></span><span style="--bar:100%"></span></div>
+      <div class="ambient-chart-labels"><span>01</span><span>04</span><span>08</span><span>12</span><span>16</span><span>18</span></div>
     </div>
   </div>
 </div>
@@ -1322,34 +1354,129 @@ function getActiveGroupData(){
   return g;
 }
  
-function loadLocalData(){
-  try{
-    const legacy = JSON.parse(localStorage.getItem('ss_all_groups'));
-    if (legacy && Object.keys(legacy).length){
-      userData = { 
-        currentGroup: localStorage.getItem('ss_current_group') || Object.keys(legacy)[0],
-        groups: legacy, 
-        avatar: parseInt(localStorage.getItem('ss_avatar_index')) || 0,
-        nickname: localStorage.getItem('ss_nickname') || ""
-      };
-    } else { userData = JSON.parse(JSON.stringify(defaultData)); }
-  } catch(e){ userData = JSON.parse(JSON.stringify(defaultData)); }
-}
- 
-function saveToCloud(silent){
-  if (currentUser && db){
-    db.collection('users').doc(currentUser.uid).set(userData)
-      .then(() => { if (!silent) showToast('Журнал сохранён в облаке', 'success'); })
-      .catch(() => showToast('Облако недоступно. Данные сохранены в браузере.'));
+const cloudSaveQueues = new Map();
+let lastCloudSaveWarning = 0;
+
+function restoreUserData(raw, legacyGroups = false){
+  const parsed = JSON.parse(raw);
+  if (legacyGroups){
+    const groupNames = Object.keys(parsed || {});
+    if (!groupNames.length) return false;
+    userData = {
+      currentGroup: localStorage.getItem('ss_current_group') || groupNames[0],
+      groups: parsed,
+      avatar: parseInt(localStorage.getItem('ss_avatar_index')) || 0,
+      nickname: localStorage.getItem('ss_nickname') || ''
+    };
+  } else if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+    userData = { ...JSON.parse(JSON.stringify(defaultData)), ...parsed };
+  } else {
+    return false;
   }
+  return true;
+}
+
+function loadLocalData(uid = null){
   try{
-    localStorage.setItem('ss_all_groups', JSON.stringify(userData.groups));
-    localStorage.setItem('ss_current_group', userData.currentGroup);
-    localStorage.setItem('ss_avatar_index', userData.avatar || 0);
-    localStorage.setItem('ss_nickname', userData.nickname || "");
+    if (uid){
+      const accountData = localStorage.getItem('ss_user_data_' + uid);
+      if (accountData){
+        if (restoreUserData(accountData)) return true;
+        userData = JSON.parse(JSON.stringify(defaultData));
+        return false;
+      }
+
+      const owner = localStorage.getItem('ss_local_owner');
+      if (owner && owner !== 'guest'){
+        userData = JSON.parse(JSON.stringify(defaultData));
+        return false;
+      }
+      const guestData = localStorage.getItem('ss_guest_user_data');
+      if (guestData){
+        if (restoreUserData(guestData)) return true;
+        userData = JSON.parse(JSON.stringify(defaultData));
+        return false;
+      }
+      if (owner === null){
+        const legacy = localStorage.getItem('ss_all_groups');
+        if (legacy && restoreUserData(legacy, true)) return true;
+      }
+      userData = JSON.parse(JSON.stringify(defaultData));
+      return false;
+    }
+
+    const owner = localStorage.getItem('ss_local_owner');
+    if (owner && owner !== 'guest'){
+      userData = JSON.parse(JSON.stringify(defaultData));
+      return false;
+    }
+    const guestData = localStorage.getItem('ss_guest_user_data');
+    if (guestData){
+      if (restoreUserData(guestData)) return true;
+      userData = JSON.parse(JSON.stringify(defaultData));
+      return false;
+    }
+    const legacy = localStorage.getItem('ss_all_groups');
+    if (legacy && restoreUserData(legacy, true)) return true;
   } catch(e){}
-  applyAvatarUI();
-  updateProfileName();
+  userData = JSON.parse(JSON.stringify(defaultData));
+  return false;
+}
+
+function persistLocalUserData(uid, snapshot){
+  try{
+    const serialized = JSON.stringify(snapshot);
+    if (uid){
+      localStorage.setItem('ss_user_data_' + uid, serialized);
+      localStorage.setItem('ss_local_owner', uid);
+    } else {
+      localStorage.setItem('ss_guest_user_data', serialized);
+      localStorage.setItem('ss_local_owner', 'guest');
+      localStorage.setItem('ss_all_groups', JSON.stringify(snapshot.groups));
+      localStorage.setItem('ss_current_group', snapshot.currentGroup);
+      localStorage.setItem('ss_avatar_index', snapshot.avatar || 0);
+      localStorage.setItem('ss_nickname', snapshot.nickname || '');
+    }
+    return true;
+  } catch(e){ return false; }
+}
+
+function warnCloudSaveFailure(){
+  const now = Date.now();
+  if (now - lastCloudSaveWarning < 15000) return;
+  lastCloudSaveWarning = now;
+  showToast('Не удалось синхронизировать данные аккаунта. Локальная копия сохранена.');
+}
+
+function saveToCloud(silent){
+  const uid = currentUser && currentUser.uid;
+  const snapshot = JSON.parse(JSON.stringify(userData));
+  const savedLocally = persistLocalUserData(uid, snapshot);
+
+  if (!uid || !db){
+    if (uid) warnCloudSaveFailure();
+    else if (!savedLocally) showToast('Не удалось сохранить данные в браузере. Проверьте свободное место.');
+    applyAvatarUI();
+    updateProfileName();
+    return Promise.resolve(false);
+  }
+
+  const previousSave = cloudSaveQueues.get(uid) || Promise.resolve();
+  const cloudSave = previousSave.catch(() => {}).then(() => db.collection('users').doc(uid).set(snapshot));
+  cloudSaveQueues.set(uid, cloudSave);
+
+  return cloudSave.then(() => {
+    if (cloudSaveQueues.get(uid) === cloudSave) cloudSaveQueues.delete(uid);
+    if (!silent && currentUser && currentUser.uid === uid) showToast('Журнал сохранён в облаке', 'success');
+    return true;
+  }).catch(() => {
+    if (cloudSaveQueues.get(uid) === cloudSave) cloudSaveQueues.delete(uid);
+    warnCloudSaveFailure();
+    return false;
+  }).finally(() => {
+    applyAvatarUI();
+    updateProfileName();
+  });
 }
  
 /* ======================= АВТОРИЗАЦИЯ ======================= */
@@ -1437,14 +1564,22 @@ if (auth){
       if (user){
         currentUser = user;
         db.collection('users').doc(user.uid).get().then(doc => {
-          if (doc.exists){ 
-            userData = doc.data(); 
+          if (doc.exists){
+            userData = { ...JSON.parse(JSON.stringify(defaultData)), ...doc.data() };
             if (userData.avatar === undefined) userData.avatar = 0; 
             if (userData.nickname === undefined) userData.nickname = "";
+            persistLocalUserData(user.uid, userData);
+          } else {
+            loadLocalData(user.uid);
+            saveToCloud(true);
           }
-          else { loadLocalData(); saveToCloud(true); }
           initApp(); checkFirstVisit();
-        }).catch(() => { loadLocalData(); initApp(); checkFirstVisit(); });
+        }).catch(() => {
+          loadLocalData(user.uid);
+          persistLocalUserData(user.uid, userData);
+          warnCloudSaveFailure();
+          initApp(); checkFirstVisit();
+        });
       } else { currentUser = null; loadLocalData(); initApp(); checkFirstVisit(); }
     });
   }).catch(() => { clearTimeout(bootTimer); loadLocalData(); setAuthUI(null); initApp(); checkFirstVisit(); });
